@@ -1,8 +1,19 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet } from '@ionic/react';
+import {
+  IonApp,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import { ellipse, square, triangle } from 'ionicons/icons';
+import StopsTab from './pages/StopsTab';
+import ServicesTab from './pages/ServicesTab';
+import MapTab from './pages/MapTab';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -26,10 +37,28 @@ import './theme/variables.css';
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/home" component={Home} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
-      </IonRouterOutlet>
+      <IonTabs>
+        <IonRouterOutlet>
+          <Route path="/services" component={StopsTab} exact={true} />
+          <Route path="/stops" component={ServicesTab} exact={true} />
+          <Route path="/map" component={MapTab} />
+          <Route path="/" render={() => <Redirect to="/services" />} exact={true} />
+        </IonRouterOutlet>
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="services" href="/services">
+            <IonIcon icon={triangle} />
+            <IonLabel>Services</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="stops" href="/stops">
+            <IonIcon icon={ellipse} />
+            <IonLabel>Stops</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="map" href="/map">
+            <IonIcon icon={square} />
+            <IonLabel>Map</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonTabs>
     </IonReactRouter>
   </IonApp>
 );
