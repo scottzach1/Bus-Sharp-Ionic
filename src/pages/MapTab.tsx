@@ -17,7 +17,7 @@ const MapTab: React.FC = () => {
             <IonTitle size="large">Map</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="Map View" />
+        <ExploreContainer name="Interactive Map" />
       </IonContent>
     </IonPage>
   );
