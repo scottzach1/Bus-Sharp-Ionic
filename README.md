@@ -70,9 +70,9 @@ Bus# will integrate with several different services, combining them all
 into one easy to use application.
 [Ionic Famework](https://ionicframework.com/) will be use to create the
 user interface.
-[Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/) allows the
-app to read scheduled information for services. As well as this the Metlink API allows for RTI (Real Time
-Information).
+[Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/)
+allows the app to read scheduled information for services. As well as
+this the Metlink API allows for RTI (Real Time Information).
 [Google Maps API](https://docs.microsoft.com/en-us/xamarin/android/platform/maps-and-location/maps/maps-api)
 will integrate the stops and services with an interactive map
 [Google Transit APIs](https://developers.google.com/transit/gtfs/reference?hl=en)
@@ -128,7 +128,8 @@ it will take for two developers to complete this implementation.
 
 The following team are the sole developers and designers of Bus#.
 
-| [![Zac Scott](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1422/avatar.png)](https://gitlab.ecs.vuw.ac.nz/scottzach1) | [![Zac Scott](https://secure.gravatar.com/avatar/67a542faaf2a3767cb875db27f83c9d6?s=180&d=identicon)](https://gitlab.ecs.vuw.ac.nz/cookharr)
-| --- | --- |
-| [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1) | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr) |
-| 300447976 | 300402048 |
+| [![Zac Scott](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1422/avatar.png)](https://gitlab.ecs.vuw.ac.nz/scottzach1) | [![Zac Scott](https://secure.gravatar.com/avatar/67a542faaf2a3767cb875db27f83c9d6?s=180&d=identicon)](https://gitlab.ecs.vuw.ac.nz/cookharr) |
+|:-----------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
+| [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1)                                                                               | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr)                                                                                       |
+| 300447976                                                                                                                          | 300402048                                                                                                                                    |
+
