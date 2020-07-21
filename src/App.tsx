@@ -1,3 +1,4 @@
+import 'fetch';
 import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
@@ -22,33 +23,35 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const App: React.FC = () => (
-    <IonApp>
-        <IonReactRouter>
-            <IonTabs>
-                <IonRouterOutlet>
-                    <Route path="/services" component={ServicesTab} exact={true}/>
-                    <Route path="/stops" component={StopsTab} exact={true}/>
-                    <Route path="/map" component={MapTab}/>
-                    <Route path="/" render={() => <Redirect to="/services"/>} exact={true}/>
-                </IonRouterOutlet>
-                <IonTabBar slot="bottom">
-                    <IonTabButton tab="services" href="/services">
-                        <IonIcon icon={triangle}/>
-                        <IonLabel>Services</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="stops" href="/stops">
-                        <IonIcon icon={ellipse}/>
-                        <IonLabel>Stops</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="map" href="/map">
-                        <IonIcon icon={square}/>
-                        <IonLabel>Map</IonLabel>
-                    </IonTabButton>
-                </IonTabBar>
-            </IonTabs>
-        </IonReactRouter>
-    </IonApp>
-);
+const App: React.FC = () => {
+    return (
+        <IonApp>
+            <IonReactRouter>
+                <IonTabs>
+                    <IonRouterOutlet>
+                        <Route path="/services" component={ServicesTab} exact={true}/>
+                        <Route path="/stops" component={StopsTab} exact={true}/>
+                        <Route path="/map" component={MapTab}/>
+                        <Route path="/" render={() => <Redirect to="/services"/>} exact={true}/>
+                    </IonRouterOutlet>
+                    <IonTabBar slot="bottom">
+                        <IonTabButton tab="services" href="/services">
+                            <IonIcon icon={triangle}/>
+                            <IonLabel>Services</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="stops" href="/stops">
+                            <IonIcon icon={ellipse}/>
+                            <IonLabel>Stops</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="map" href="/map">
+                            <IonIcon icon={square}/>
+                            <IonLabel>Map</IonLabel>
+                        </IonTabButton>
+                    </IonTabBar>
+                </IonTabs>
+            </IonReactRouter>
+        </IonApp>
+    )
+};
 
 export default App;
