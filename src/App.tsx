@@ -3,7 +3,7 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {ellipse, square, triangle} from 'ionicons/icons';
+import {baseball, ellipse, square, triangle} from 'ionicons/icons';
 import StopsTab from './pages/StopsTab';
 import ServicesTab from './pages/ServicesTab';
 import MapTab from './pages/MapTab';
@@ -22,6 +22,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
+import DataTab from "./pages/DataTab";
 
 const App: React.FC = () => {
     return (
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                         <Route path="/services" component={ServicesTab} exact={true}/>
                         <Route path="/stops" component={StopsTab} exact={true}/>
                         <Route path="/map" component={MapTab}/>
+                        <Route path="/data" component={DataTab}/>
                         <Route path="/" render={() => <Redirect to="/services"/>} exact={true}/>
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
@@ -45,6 +47,10 @@ const App: React.FC = () => {
                         </IonTabButton>
                         <IonTabButton tab="map" href="/map">
                             <IonIcon icon={square}/>
+                            <IonLabel>Map</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="data" href="/data">
+                            <IonIcon icon={baseball}/>
                             <IonLabel>Map</IonLabel>
                         </IonTabButton>
                     </IonTabBar>
