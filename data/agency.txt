@@ -1,0 +1,24 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url
+VLYF,"Valley Flyer",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+MNE,"Mana Coach Services Ltd",http://www.manacoach.co.nz,Pacific/Auckland,en,,http://www.manacoach.co.nz
+MNM,"Metlink",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+GOW,"Go Wellington",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+RUNC,"Runcimans Motors Ltd",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+RAIL,"Metlink Rail",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+NBM,"Metlink",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+TZM,"Metlink",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+WCCL,"Wellington Cable Car",http://www.wellingtoncablecar.co.nz,Pacific/Auckland,en,,http://www.wellingtoncablecar.co.nz/times-fares
+MANA,"Mana Coach Services Ltd",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+NBE,"New Zealand Bus",http://www.metlink.org.nz,Pacific/Auckland,en,,https://www.metlink.org.nz/tickets-and-fares/airport
+UBU,"Unallocated Bus Unit",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+UZM,"Metlink",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+CLSC,"Classic Coaches",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+EBYW,"East By West Ferry",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares/ferry
+UZO,"Horizons",http://www.horizons.govt.nz,Pacific/Auckland,en,,http://www.horizons.govt.nz
+NLDS,"Newlands Coach Services",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+HRC,"Horizons",http://www.horizons.govt.nz,Pacific/Auckland,en,,http://www.horizons.govt.nz
+TZE,"Tranzit Coachlines",https://tranzit.co.nz/,Pacific/Auckland,en,,https://tranzit.co.nz/
+MADG,"Madge Coachlines Ltd",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+PTXL,"Paraparaumu Taxis Ltd",http://www.metlink.org.nz,Pacific/Auckland,en,,http://www.metlink.org.nz/tickets-and-fares
+NCE,"New Zealand Coach Services",https://www.nzcoach.co.nz/,Pacific/Auckland,en,,https://www.nzcoach.co.nz/
+
