@@ -1,14 +1,17 @@
 # Bus# (Bus-Sharp)
 
-> A lightweight utility app to manage public transport in the Wellington region.
+> A lightweight utility app to manage public transport in the Wellington
+> region.
 
 
 ## About
 
 Bus# is a lightweight utility mobile application. The app allows users
 to easily access public transportation information for the Wellington
-region. The target audience will encompass anyone of any age that will
-use Wellingtons public transportation system.
+region. The target audience will encompass anyone of all ages that will
+use Wellingtons public transportation system. Existing applications in
+this marketplace lack certain features and usability that Bus# aims to
+address.
 
 
 ## Features
@@ -55,8 +58,9 @@ lists why it is a feature in this app.
   removes another thing to remember.
 
 - **Add bus stops and services from a map preview (Google maps):**
-  Interactions with this application should come as second nature to its users. Although a provided help menu will be available to users,
-  this feature intends to make searching and saving bus routes and stops
+  Interactions with this application should come as second nature to its
+  users. Although a provided help menu will be available to users, this
+  feature intends to make searching and saving bus routes and stops
   easier for the user.
 
 - **Pivot seamlessly between a service and bus stop:** This feature aims
@@ -64,9 +68,9 @@ lists why it is a feature in this app.
 
 ## Integration
 
-Bus# will integrate with several services, combining them all into one easy to use application.
-[Ionic Framework](https://ionicframework.com/) will be used to create the
-user interface.
+Bus# will integrate with several services, combining them all into one
+easy to use application. [Ionic Framework](https://ionicframework.com/)
+will be used to create the user interface.
 [Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/)
 allows the app to read scheduled information for services. As well as
 this the Metlink API allows for RTI (Real Time Information).
@@ -126,7 +130,7 @@ it will take for two developers to complete this implementation.
 The following team are the sole developers and designers of Bus#.
 
 | [![Zac Scott](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1422/avatar.png)](https://gitlab.ecs.vuw.ac.nz/scottzach1) | [![Harrison Cook](https://gitlab.ecs.vuw.ac.nz/uploads/-/system/user/avatar/1476/avatar.png)](https://gitlab.ecs.vuw.ac.nz/cookharr) |
-|:-----------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------|
-| [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1)                                                                               | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr)                                                                                       |
-| 300447976                                                                                                                          | 300402048                                                                                                                                    |
+|:-----------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
+| [Zac Scott](https://gitlab.ecs.vuw.ac.nz/scottzach1)                                                                               | [Harrison Cook](https://gitlab.ecs.vuw.ac.nz/cookharr)                                                                               |
+| 300447976                                                                                                                          | 300402048                                                                                                                            |
 
