@@ -32,7 +32,7 @@
     "react-scripts": "3.4.1",
     "typescript": "3.8.3",
     "fetch": "^1.1.0",
-    "file-reader": "^1.1.1"
+    "react-papaparse": "^3.4.0"
   },
   "description": "An Ionic project",
   "devDependencies": {
