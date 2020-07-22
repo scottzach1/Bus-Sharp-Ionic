@@ -1,12 +1,11 @@
 # Bus# (Bus-Sharp)
 
-> A light weight utility app to manage public transport in the  
-> Wellington region.
+> A lightweight utility app to manage public transport in the Wellington region.
 
 
 ## About
 
-Bus# is a light weight utility mobile application. The app allows users
+Bus# is a lightweight utility mobile application. The app allows users
 to easily access public transportation information for the Wellington
 region. The target audience will encompass anyone of any age that will
 use Wellingtons public transportation system.
@@ -18,7 +17,7 @@ Key features of the Bus# application are listed below. Each feature also
 lists why it is a feature in this app.
 
 - **Save your favourite bus stops:** Saving your favourite bus stops
-  allows users to quickly navigate to commonly used stops and veiw it's
+  allows users to quickly navigate to commonly used stops and view its
   timetable. The idea is to remove navigation through the app (and
   larger load times) to find a particular stop.
 
@@ -49,15 +48,14 @@ lists why it is a feature in this app.
   technology over other mapping APIs will allow the user the best
   experience.
 
-- **Schedule a reminder to leave for a bus stop:** By schduling a
+- **Schedule a reminder to leave for a bus stop:** By scheduling a
   reminder, users can set up a regular time table that will notify them
   when they are needing to leave such that they don't forget their bus.
-  This feature is crucial for those with busy lives and schdules, as it
+  This feature is crucial for those with busy lives and schedules, as it
   removes another thing to remember.
 
 - **Add bus stops and services from a map preview (Google maps):**
-  Interactions with this application should come as second nature to
-  it's users. Although a provided help menu will be available to users,
+  Interactions with this application should come as second nature to its users. Although a provided help menu will be available to users,
   this feature intends to make searching and saving bus routes and stops
   easier for the user.
 
@@ -66,15 +64,14 @@ lists why it is a feature in this app.
 
 ## Integration
 
-Bus# will integrate with several different services, combining them all
-into one easy to use application.
-[Ionic Famework](https://ionicframework.com/) will be use to create the
+Bus# will integrate with several services, combining them all into one easy to use application.
+[Ionic Framework](https://ionicframework.com/) will be used to create the
 user interface.
 [Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/)
 allows the app to read scheduled information for services. As well as
 this the Metlink API allows for RTI (Real Time Information).
 [Google Maps API](https://docs.microsoft.com/en-us/xamarin/android/platform/maps-and-location/maps/maps-api)
-will integrate the stops and services with an interactive map
+will integrate the stops and services with an interactive map.
 [Google Transit APIs](https://developers.google.com/transit/gtfs/reference?hl=en)
 can link the data from Metlink with Googles Map APIs. Recommended by
 Metlink
@@ -99,7 +96,7 @@ biggest competitors in this market space.
     - Lack of visual feedback (i.e Courtenay Place stop A vs B)
 
 
-- Metlink: Official app for transit in Wellington
+- Metlink: The official app for transit in Wellington
   - Pros
     - Lots of information.
     - Many features.
