@@ -66,21 +66,6 @@ lists why it is a feature in this app.
 - **Pivot seamlessly between a service and bus stop:** This feature aims
   at allowing a user to use Bus# effectively almost immediately.
 
-## Integration
-
-Bus# will integrate with several services, combining them all into one
-easy to use application. [Ionic Framework](https://ionicframework.com/)
-will be used to create the user interface.
-[Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/)
-allows the app to read scheduled information for services. As well as
-this the Metlink API allows for RTI (Real Time Information).
-[Google Maps API](https://docs.microsoft.com/en-us/xamarin/android/platform/maps-and-location/maps/maps-api)
-will integrate the stops and services with an interactive map.
-[Google Transit APIs](https://developers.google.com/transit/gtfs/reference?hl=en)
-can link the data from Metlink with Googles Map APIs. Recommended by
-Metlink
-[here](https://www.metlink.org.nz/customer-services/general-transit-file-specification/).
-
 ## Competition
 
 Bus# won't be the first app on mobile to help users navigate public
@@ -113,6 +98,22 @@ biggest competitors in this market space.
     - Uses a lot of data.
     - Can't schedule reminders.
     - Notifications are annoying.
+
+## Integration
+
+Bus# will integrate with several services, combining them all into one
+easy to use application. [Ionic Framework](https://ionicframework.com/)
+will be used to create the user interface.
+[Metlink GTFS](https://www.metlink.org.nz/customer-services/general-transit-file-specification/)
+allows the app to read scheduled information for services. As well as
+this the Metlink API allows for RTI (Real Time Information).
+[Google Maps API](https://docs.microsoft.com/en-us/xamarin/android/platform/maps-and-location/maps/maps-api)
+will integrate the stops and services with an interactive map.
+[Google Transit APIs](https://developers.google.com/transit/gtfs/reference?hl=en)
+can link the data from Metlink with Googles Map APIs. Recommended by
+Metlink
+[here](https://www.metlink.org.nz/customer-services/general-transit-file-specification/).
+
 
 ## Time Breakdown
 
