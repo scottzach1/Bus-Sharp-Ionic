@@ -13,11 +13,12 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
         const proxy = "https://cors-anywhere.herokuapp.com/";
         const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
 
-        try {
-            setStopData(await (await fetch(proxy + url + stopName)).json());
-        } catch (e) {
-            setErrorMessage(e);
-        }
+        fetch(proxy + url + stopName)
+            .then(resp => {
+                if (!resp.ok) setErrorMessage(resp.statusText);
+                else Promise.resolve(resp.json())
+                    .then(data => setStopData(data));
+            });
     }
 
     function generateStopCards() {
@@ -64,7 +65,7 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
                 generateStopCards()
             )}
             {errorMessage && (
-                <p>{errorMessage}</p>
+                <p>Failed: {errorMessage}</p>
             )}
         </div>
     );
