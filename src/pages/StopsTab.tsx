@@ -20,7 +20,7 @@ const StopsTab: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <ExploreContainer name="Bus Stops"/>
-                <MetlinkStopView stopName="7910"/>
+                <MetlinkStopView stopCode="7910"/>
             </IonContent>
         </IonPage>
     );
