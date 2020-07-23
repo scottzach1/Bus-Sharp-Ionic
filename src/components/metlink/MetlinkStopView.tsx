@@ -2,10 +2,10 @@ import React, {FC, useState} from 'react';
 import {IonItem, IonLabel, IonList} from "@ionic/react";
 
 interface Props {
-    stopName: string;
+    stopCode: string;
 }
 
-const MetlinkStopView: FC<Props> = ({stopName}) => {
+const MetlinkStopView: FC<Props> = ({stopCode}) => {
     const [stopData, setStopData] = useState<any>()
     const [errorMessage, setErrorMessage] = useState<string>()
 
@@ -13,7 +13,8 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
         const proxy = "https://cors-anywhere.herokuapp.com/";
         const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
 
-        fetch(proxy + url + stopName)
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
+        fetch(proxy + url + stopCode)
             .then(resp => {
                 if (!resp.ok) setErrorMessage(resp.statusText);
                 else Promise.resolve(resp.json())
@@ -22,6 +23,7 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
     }
 
     function generateStopCards() {
+        // This will contain `IonItem`s which will be entries in the `IonList` returned by this function.
         const cards = [];
 
         let count: number = 0;
@@ -33,19 +35,22 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
         })
 
         for (const service of services) {
-            const date: Date = new Date(service.AimedArrival);
-            let mins: number | string = Math.round((date.getTime() - currentDate.getTime()) / 60000);
-            mins = (mins < 0) ? 'due' : mins + ' mins';
+            // Parse the time information from the response json.
+            const arrivalDate: Date = new Date(service.AimedArrival);
+            let timeRemaining: number | string = Math.round((arrivalDate.getTime() - currentDate.getTime()) / 60000);
+            timeRemaining = (timeRemaining < 0) ? 'due' : timeRemaining + ' mins';
 
+            // Check whether the data from the feed was live.
             let realTime: string = (service.IsRealtime) ? ' (live)' : '';
 
             cards.push(
                 <IonItem key={count}>
                     <IonLabel>
-                        {service.ServiceID} - {service.Service.Name} {realTime} - {mins}.
+                        {service.ServiceID} - {service.Service.Name} {realTime} - {timeRemaining}.
                     </IonLabel>
                 </IonItem>
             )
+
             count++;
         }
 
@@ -56,12 +61,14 @@ const MetlinkStopView: FC<Props> = ({stopName}) => {
         )
     }
 
+    // Call the async method to update the page when data arrives.
     getStopData()
 
     return (
         <div>
-            <h3>Stop {stopName}</h3>
+            <h3>Stop {stopCode}</h3>
             {stopData && (
+                // Generate the `IonList` for all upcoming times.
                 generateStopCards()
             )}
             {errorMessage && (
