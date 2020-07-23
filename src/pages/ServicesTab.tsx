@@ -17,7 +17,6 @@ const ServicesTab: React.FC = () => {
                         <IonTitle size="large">Services</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-
                 <ExploreContainer name="Bus Services"/>
             </IonContent>
         </IonPage>
