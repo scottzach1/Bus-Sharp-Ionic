@@ -70,3 +70,11 @@
   silently download the archive in the background to the `public`
   directory to begin with. Likely making this packages functionality
   obsolete.
+
+## Proxy URL
+
+- When trying to pull data from the Metlink API in browser, I began
+  encountering an error `No 'Access-Control-Allow-Origin' header is
+  present on the requested resource`. To bypass this, on simple solution
+  is to utilise a CORS proxy. To solve this we are using a great
+  [StackOverflow response](https://stackoverflow.com/a/43881141).
