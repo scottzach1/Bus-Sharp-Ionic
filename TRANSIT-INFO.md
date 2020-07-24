@@ -11,6 +11,17 @@
 - [Metlink GTFS latest dump](https://www.metlink.org.nz/assets/Google_Transit/google-transit.zip)
 - [Kiwicon Talk referencing Metlinks GTFS](https://www.youtube.com/watch?v=Ier5BF952Y8)
 
+## Unofficial API Queries
+
+| Query                                    | Example                                                      |
+|:-----------------------------------------|:-------------------------------------------------------------|
+| View all stops for a given service.      | `https://www.metlink.org.nz/api/v1/ServiceMap/14`            |
+| View all departures for a given service. | `https://www.metlink.org.nz/api/v1/StopDepartures/7093`      |
+| View service information.                | `https://www.metlink.org.nz/api/v1/Service/14`               |
+| View stop information.                   | `https://www.metlink.org.nz/api/v1/StopSearch/7910`          |
+| View locations of a given service?       | `https://www.metlink.org.nz/api/v1/ServiceLocation/14`       |
+| Shows stops near a location.             | `https://www.metlink.org.nz/api/v1/StopNearby/-41.28/174.76` |
+
 ## Transit Feeds
 
 - TransitFeed API Key: 16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b
@@ -22,10 +33,10 @@
 
 | Query                                                          | Example                                                                                                                                 |
 |:---------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| Get all available locations with corresponding feeds.          | https://api.transitfeeds.com/v1/getLocations?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b                                                   |
-| Gets all available feeds for Wellington (area 29)              | https://api.transitfeeds.com/v1/getFeeds?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&location=29&descendants=1&page=1&limit=10             |
-| Get available versions for a given feed.                       | https://api.transitfeeds.com/v1/getFeedVersions?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&feed=metlink%2F22&page=1&limit=10&err=1&warn=1 |
-| Get the latest dataset (Same as download link on Metlink site. | https://api.transitfeeds.com/v1/getLatestFeedVersion?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&feed=metlink%2F22                         |
+| Get all available locations with corresponding feeds.          | `https://api.transitfeeds.com/v1/getLocations?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b`                                                   |
+| Gets all available feeds for Wellington (area 29)              | `https://api.transitfeeds.com/v1/getFeeds?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&location=29&descendants=1&page=1&limit=10`             |
+| Get available versions for a given feed.                       | `https://api.transitfeeds.com/v1/getFeedVersions?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&feed=metlink%2F22&page=1&limit=10&err=1&warn=1` |
+| Get the latest dataset (Same as download link on Metlink site. | `https://api.transitfeeds.com/v1/getLatestFeedVersion?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&feed=metlink%2F22`                         |
 
 ## Parsing CSVs
 
@@ -79,3 +90,4 @@
   present on the requested resource`. To bypass this, on simple solution
   is to utilise a CORS proxy. To solve this we are using a great
   [StackOverflow response](https://stackoverflow.com/a/43881141).
+
