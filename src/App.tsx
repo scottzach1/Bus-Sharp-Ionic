@@ -3,7 +3,7 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {baseball, ellipse, square, triangle} from 'ionicons/icons';
+import {baseball, bus, ellipse, map, settings, square, stopCircleOutline, triangle} from 'ionicons/icons';
 import StopsTab from './pages/StopsTab';
 import ServicesTab from './pages/ServicesTab';
 import MapTab from './pages/MapTab';
@@ -38,20 +38,20 @@ const App: React.FC = () => {
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
                         <IonTabButton tab="services" href="/services">
-                            <IonIcon icon={triangle}/>
+                            <IonIcon icon={bus}/>
                             <IonLabel>Services</IonLabel>
                         </IonTabButton>
                         <IonTabButton tab="stops" href="/stops">
-                            <IonIcon icon={ellipse}/>
+                            <IonIcon icon={stopCircleOutline}/>
                             <IonLabel>Stops</IonLabel>
                         </IonTabButton>
                         <IonTabButton tab="map" href="/map">
-                            <IonIcon icon={square}/>
+                            <IonIcon icon={map}/>
                             <IonLabel>Map</IonLabel>
                         </IonTabButton>
                         <IonTabButton tab="data" href="/data">
-                            <IonIcon icon={baseball}/>
-                            <IonLabel>Map</IonLabel>
+                            <IonIcon icon={settings}/>
+                            <IonLabel>Settings</IonLabel>
                         </IonTabButton>
                     </IonTabBar>
                 </IonTabs>
