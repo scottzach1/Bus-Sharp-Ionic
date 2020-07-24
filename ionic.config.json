@@ -1,0 +1,7 @@
+{
+  "name": "BusSharp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

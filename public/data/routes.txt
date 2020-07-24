@@ -1,0 +1,99 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+2000,TZM,"200","Masterton - Greytown - Featherston - Martinborough",,3,,6cace4,000000
+232,TZM,"23z","Wellington Zoo - Wellington",,3,,636466,ffffff
+2010,TZM,"201","Masterton - Masterton West - Masterton",,3,,636466,ffffff
+1450,TZM,"145","Belmont - Melling - Lower Hutt",,3,,6cace4,000000
+310,NBM,"31x","Miramar North - Wellington (Express)",,3,,636466,ffffff
+2030,TZM,"203","Masterton - Masterton North - Masterton",,3,,636466,ffffff
+320,TZM,"32x","Houghton Bay - Island Bay - Berhampore - Wellington (Express)",,3,,636466,ffffff
+280,NBM,"28","Beacon Hill - Strathmore Park Shops",,3,,636466,ffffff
+20,NBM,"2","Karori - Wellington - Hataitai - Seatoun",,3,,005eb8,ffffff
+350,NBM,"35","Hataitai - Wellington",,3,,636466,ffffff
+9918,NBM,"N8","After Midnight (Lower Hutt - Petone - Wellington)",,3,,000000,ffffff
+3,RAIL,"MEL","Melling Line (Melling - Wellington)",,2,,ff6600,000000
+1200,TZM,"120","Stokes Valley - Taita - Epuni - Lower Hutt",,3,,008854,000000
+2500,UZM,"250","Paraparaumu - Raumati South - Paraparaumu",,3,,6cace4,000000
+270,TZM,"27","Vogeltown - Wellington",,3,,636466,ffffff
+10,TZM,"1","Johnsonville West/Churton Park/Grenada Village - Island Bay",,3,,e31837,ffffff
+9916,TZM,"N6","After Midnight (Wellington - Porirua - Whitby - Plimmerton)",,3,,000000,ffffff
+601,MNM,"60e","Porirua - Tawa - Johnsonville - Wellington",,3,,636466,ffffff
+1600,TZM,"160","Wainuiomata North - Waterloo - Lower Hutt",,3,,6cace4,000000
+2910,UZO,"291","Waikanae - Levin",,3,,636466,ffffff
+520,MNM,"52","Johnsonville - Newlands - Wellington",,3,,6cace4,000000
+9913,NBM,"N3","After Midnight (Wellington - Kelburn - Karori - Northland)",,3,,000000,ffffff
+360,NBM,"36","Lyall Bay - Kilbirnie - Hataitai - Wellington",,3,,636466,ffffff
+830,NBM,"83","Eastbourne - Lower Hutt - Petone - Wellington",,3,,6cace4,000000
+2300,TZM,"230","Whitby (The Crowsnest) - Aotea - Porirua",,3,,6cace4,000000
+2060,TZM,"206","Masterton - Masterton East - Masterton",,3,,636466,ffffff
+1120,TZM,"112","Te Marua - Timberlea - Maoribank - Upper Hutt",,3,,6cace4,000000
+190,TZM,"19","Johnsonville - Churton Park - Johnsonville",,3,,6cace4,000000
+121,NBM,"12e","Strathmore Park - Kilbirnie - Hataitai - Wellington",,3,,636466,ffffff
+9914,TZM,"N4","After Midnight (Wellington - Wadestown - Ngaio - Khandallah)",,3,,000000,ffffff
+1210,TZM,"121","Stokes Valley Heights - Naenae - Lower Hutt - Seaview",,3,,6cace4,000000
+240,TZM,"24","Johnsonville - Broadmeadows - Wellington - Miramar Heights",,3,,6cace4,000000
+4,RAIL,"WRL","Wairarapa Line (Masterton - Wellington)",,2,,ffc000,000000
+8,EBYW,"WHF","Wellington Harbour Ferry (Days Bay - Queens Wharf)",,4,,6cace4,000000
+171,TZM,"17e","Kowhai Park - Brooklyn - Wellington",,3,,636466,ffffff
+130,NBM,"13","Mairangi - Glenmore Street - Brandon Street",,3,,636466,ffffff
+2260,TZM,"226","Sievers Grove - Elsdon - Sievers Grove",,3,,6cace4,000000
+1140,TZM,"114","Trentham - Elderslea - Upper Hutt",,3,,6cace4,000000
+2020,TZM,"202","Masterton - Masterton South - Masterton",,3,,636466,ffffff
+2610,UZM,"261","Paraparaumu Beach - Paraparaumu (via Guildford Drive)",,3,,6cace4,000000
+1130,TZM,"113","Riverstone Terraces - Upper Hutt",,3,,636466,ffffff
+230,TZM,"23","Houghton Bay - Newtown - Vogeltown - Kingston",,3,,6cace4,000000
+600,MNM,"60","Porirua - Tawa - Johnsonville",,3,,6cace4,000000
+330,NBM,"33","Karori South - Brandon Street",,3,,636466,ffffff
+181,NBM,"18e","Miramar - Newtown - Kelburn - Karori",,3,,6cace4,000000
+2360,TZM,"236","Whitby (Navigation Drive) - Paremata - Papakowhai - Porirua",,3,,6cace4,000000
+570,MNM,"57","Woodridge - Wellington",,3,,636466,ffffff
+300,NBM,"30x","Scorching Bay/Moa Point - Wellington (Express)",,3,,636466,ffffff
+231,TZM,"23e","Houghton Bay - Newtown - Wellington",,3,,636466,ffffff
+6,RAIL,"JVL","Johnsonville Line (Johnsonville - Wellington)",,2,,42c3dc,000000
+580,MNM,"58","Newlands - Wellington",,3,,636466,ffffff
+370,NBM,"37","Karori (Wrights Hill) - Kelburn - Brandon Street",,3,,636466,ffffff
+2200,TZM,"220","Titahi Bay - Porirua - Ascot Park",,3,,008854,000000
+9922,TZM,"N22","After Midnight (Wellington - Naenae - Stokes Valley - Upper Hutt)",,3,,000000,ffffff
+1540,TZM,"154","Petone - Korokoro - Petone",,3,,6cace4,000000
+260,TZM,"26","Khandallah - Ngaio - Brandon Street",,3,,636466,ffffff
+1300,TZM,"130","Naenae - Waterloo - Lower Hutt - Petone",,3,,00689e,ffffff
+1110,TZM,"111","Upper Hutt - Totara Park - Upper Hutt",,3,,6cace4,000000
+170,TZM,"17","Kowhai Park - Brooklyn",,3,,6cace4,000000
+2900,UZM,"290","Waikanae - Otaki - Waikanae",,3,,6cace4,000000
+291,TZM,"29e","Newtown - Southgate - Owhiro Bay - Brooklyn (Wellington extension)",,3,,636466,ffffff
+140,NBM,"14","Wilton - Wellington - Roseneath - Hataitai - Kilbirnie",,3,,6cace4,000000
+2,RAIL,"KPL","Kapiti Line (Waikanae - Wellington)",,2,,d4e031,000000
+9966,TZM,"N66","After Midnight (Wellington - Lower Hutt - Waterloo - Wainuiomata)",,3,,000000,ffffff
+120,NBM,"12","Strathmore Park - Kilbirnie - Newtown",,3,,6cace4,000000
+30,NBM,"3","Lyall Bay/Rongotai - Kilbirnie - Newtown - Wellington",,3,,5e9732,000000
+1150,TZM,"115","Upper Hutt - Pinehaven - Upper Hutt",,3,,6cace4,000000
+2620,UZM,"262","Paraparaumu Beach - Paraparaumu (via Mazengarb Road)",,3,,6cace4,000000
+1700,TZM,"170","Lower Hutt - Wainuiomata South - Lower Hutt",,3,,6cace4,000000
+9912,NBM,"N2","After Midnight (Wellington - Miramar - Strathmore Park - Seatoun)",,3,,000000,ffffff
+850,NBM,"85x","Eastbourne - Wellington (Express)",,3,,636466,ffffff
+560,MNM,"56","Johnsonville - Paparangi - Wellington",,3,,636466,ffffff
+2800,UZM,"280","Waikanae - Waikanae Beach - Waikanae",,3,,6cace4,000000
+180,NBM,"18","Miramar - Kilbirnie",,3,,6cace4,000000
+2100,TZM,"210","Titahi Bay - Porirua",,3,,6cace4,000000
+9,WCCL,"CCL","Cable Car (Kelburn - Wellington)",,5,,db2032,ffffff
+1100,TZM,"110","Emerald Hill - Upper Hutt - Lower Hutt - Petone",,3,,9849b8,ffffff
+210,NBM,"21","Karori (Wrights Hill) - Kelburn - Courtenay Place",,3,,ee80b3,000000
+2040,TZM,"204","Greytown - Woodside",,3,,636466,ffffff
+220,NBM,"22","Johnsonville - Mairangi - Kelburn - Wellington",,3,,f58025,000000
+70,TZM,"7","Kingston - Brooklyn - Wellington",,3,,9f219f,ffffff
+2600,UZM,"260","Raumati Beach - Paraparaumu Beach - Paraparaumu",,3,,6cace4,000000
+840,NBM,"84","Eastbourne - Gracefield - Petone - Wellington",,3,,636466,ffffff
+9915,TZM,"N5","After Midnight (Wellington - Newlands - Churton Park - Johnsonville)",,3,,000000,ffffff
+5,RAIL,"HVL","Hutt Valley Line (Upper Hutt - Wellington)",,2,,ff6600,000000
+2510,UZM,"251","Paekakariki - Paraparaumu - Kapiti Health Centre",,3,,636466,ffffff
+9988,NBM,"N88","After Midnight (Wellington - Petone - Lower Hutt - Eastbourne)",,3,,000000,ffffff
+191,TZM,"19e","Johnsonville - Churton Park - Johnsonville (Wellington extension)",,3,,636466,ffffff
+340,NBM,"34","Karori West - Brandon Street",,3,,636466,ffffff
+2810,UZM,"281","Waikanae - Waikanae East - Waikanae",,3,,6cace4,000000
+810,NBM,"81","Eastbourne - Petone - Wellington",,3,,636466,ffffff
+3000,TZM,"300","Whenua Tapu Cemetery - Porirua - Titahi Bay",,3,,636466,ffffff
+250,TZM,"25","Khandallah - Wellington - Aro Valley - Highbury",,3,,6cace4,000000
+1500,TZM,"150","Kelson - Lower Hutt - Maungaraki - Petone",,3,,6cace4,000000
+200,NBM,"20","Kilbirnie - Mt Victoria - Courtenay Place",,3,,6cace4,000000
+290,TZM,"29","Newtown - Southgate - Owhiro Bay - Brooklyn",,3,,6cace4,000000
+9911,TZM,"N1","After Midnight (Wellington - Island Bay - Houghton Bay - Lyall Bay)",,3,,000000,ffffff
+2640,UZM,"264","Paraparaumu East - Paraparaumu - Kapiti Health Centre",,3,,636466,ffffff
