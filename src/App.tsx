@@ -3,7 +3,7 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {baseball, bus, ellipse, map, settings, square, stopCircleOutline, triangle} from 'ionicons/icons';
+import {bus, map, settings, stopCircleOutline} from 'ionicons/icons';
 import StopsTab from './pages/StopsTab';
 import ServicesTab from './pages/ServicesTab';
 import MapTab from './pages/MapTab';
