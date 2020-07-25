@@ -32,7 +32,8 @@
     "react-scripts": "3.4.1",
     "typescript": "3.8.3",
     "fetch": "^1.1.0",
-    "react-papaparse": "^3.4.0"
+    "react-papaparse": "^3.4.0",
+    "@react-google-maps/api": "^1.9.9"
   },
   "description": "An Ionic project",
   "devDependencies": {
