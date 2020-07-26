@@ -2,8 +2,7 @@ import React from 'react';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import './StopsTab.css';
-
-import MetlinkStopView from '../components/metlink/MetlinkStopView'
+import MetlinkStopMap from "../components/metlink/MetlinkStopsMap";
 
 const StopsTab: React.FC = () => {
     return (
@@ -20,7 +19,8 @@ const StopsTab: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <ExploreContainer name="Bus Stops"/>
-                <MetlinkStopView stopCode="7910"/>
+                {/*<MetlinkStopView stopCode="7910"/>*/}
+                <MetlinkStopMap/>
             </IonContent>
         </IonPage>
     );
