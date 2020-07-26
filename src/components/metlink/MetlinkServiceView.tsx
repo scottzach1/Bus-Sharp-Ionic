@@ -1,5 +1,7 @@
 import React, {FC, useState} from 'react';
-import {GoogleMap, Marker, Polyline, useLoadScript} from "@react-google-maps/api";
+import {GoogleMap, InfoWindow, Marker, Polyline, useLoadScript} from "@react-google-maps/api";
+import {IonIcon} from "@ionic/react";
+import {locationSharp} from "ionicons/icons";
 
 interface Props {
     serviceCode: string;
@@ -23,6 +25,8 @@ const options = {
 const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     const [serviceName, setServiceName] = useState<string | null>(null);
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
+    const [selectedStop, setSelectedStop] = useState<any | null>();
+    const [selectedStopName, setSelectedStopName] = useState<string>("boop");
     const [routePath, setRoutePath] = React.useState<any[]>([]);
     const [stopMarkers, setStopMarkers] = React.useState<any[]>([])
     const [errorMessage, setErrorMessage] = useState<string>()
@@ -74,8 +78,11 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                 }
 
                 parsedRoutes.push(
-                    <Polyline key={"route:" + serviceCode + "-path:" + counter++} path={parsedRoute}
-                              options={{strokeColor: "#e076b4"}}/>
+                    <Polyline
+                        key={"route:" + serviceCode + "-path:" + counter++}
+                        path={parsedRoute}
+                        options={{strokeColor: "#e076b4"}}
+                    />
                 );
             }
         }
@@ -86,21 +93,39 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                 const location: string[] = point.LatLng.split(",");
                 const stopCode: string = point.Sms;
 
-                parsedMarkers.push(
-                    <Marker
-                        position={{
-                            lat: parseFloat(location[0]),
-                            lng: parseFloat(location[1]),
-                        }}
-                        key={'stop-' + stopCode}
-                    />
-                );
+                const marker = {
+                    position: {
+                        lat: parseFloat(location[0]),
+                        lng: parseFloat(location[1]),
+                    },
+                    code: stopCode,
+                    key: ('stop-' + stopCode)
+                }
+
+                // Set the onclick to select itself (requires separate declaration and assignment).
+                parsedMarkers.push(marker);
             }
         }
 
         // Set prop values at same time here to avoid reload between calculations.
         if (routePath.length === 0) setRoutePath(parsedRoutes);
         if (stopMarkers.length === 0) setStopMarkers(parsedMarkers);
+    }
+
+    async function updateStopName(stopCode: string | number) {
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const url = "https://www.metlink.org.nz/api/v1/StopSearch/";
+
+        const stopName: string = await fetch(proxy + url + stopCode)
+            .then(resp => {
+                if (!resp.ok) return setSelectedStop(() => stopCode + " - unknown")
+                else return Promise.resolve(resp.json())
+                    .then(data => {
+                        return data[0].Name
+                    });
+            });
+
+        setSelectedStopName(stopName);
     }
 
     getRouteData().then();
@@ -123,8 +148,38 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                 {routePath && (
                     routePath
                 )}
-                {stopMarkers && (
-                    stopMarkers
+
+                {stopMarkers.map((marker) => (
+                    <Marker
+                        key={marker.key}
+                        position={{
+                            lat: marker.position.lat,
+                            lng: marker.position.lng
+                        }}
+                        onClick={() => {
+                            setSelectedStop(marker);
+                            setSelectedStopName("");
+                            updateStopName(marker.code);
+                        }}
+                    />
+                ))}
+
+                {selectedStop && (
+                    <InfoWindow
+                        position={{
+                            lat: selectedStop.position.lat,
+                            lng: selectedStop.position.lng
+                        }}
+                        onCloseClick={() => {
+                            setSelectedStop(null)
+                            setSelectedStopName("cleared");
+                        }}
+                    >
+                        <div itemID="selected-stop-popup">
+                            <IonIcon icon={locationSharp}/>
+                            <strong>{selectedStopName}</strong>
+                        </div>
+                    </InfoWindow>
                 )}
             </GoogleMap>
         </div>
