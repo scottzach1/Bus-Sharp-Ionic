@@ -68,26 +68,12 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                         lng: parseFloat(location[1]),
                     }}
                     key={counter++ + ':' + location[0] + ',' + location[1]}
-                    options={}
                 />
             );
         }
 
         setMarkers(parsedMarkers);
     }
-
-// markers.push(
-//     <Marker
-//         key={latlng[0] + '-' + latlng[1]}
-//         position={{
-//             lat: latlng[0],
-//             lng: latlng[1],
-//         }}
-//     />
-// );
-
-// return markers;
-// }
 
     getRouteData().then();
 
