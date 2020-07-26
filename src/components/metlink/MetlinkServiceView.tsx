@@ -26,7 +26,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     const [serviceName, setServiceName] = useState<string | null>(null);
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [selectedStop, setSelectedStop] = useState<any | null>();
-    const [selectedStopName, setSelectedStopName] = useState<string>("boop");
+    const [selectedStopName, setSelectedStopName] = useState<string>("");
     const [routePath, setRoutePath] = React.useState<any[]>([]);
     const [stopMarkers, setStopMarkers] = React.useState<any[]>([])
     const [errorMessage, setErrorMessage] = useState<string>()
@@ -159,7 +159,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                         onClick={() => {
                             setSelectedStop(marker);
                             setSelectedStopName("");
-                            updateStopName(marker.code);
+                            updateStopName(marker.code).then();
                         }}
                     />
                 ))}
