@@ -104,7 +104,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     getRouteData().then();
 
     return (
-        <div>
+        <div className={"metlink-service-view"}>
             <p>Service Code: {serviceCode}</p>
             {errorMessage && (
                 errorMessage
