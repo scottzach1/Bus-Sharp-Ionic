@@ -1,5 +1,6 @@
 import React, {FC} from "react";
 import {IonSpinner} from "@ionic/react"
+import "./LoadingSpinner.css"
 
 
 const LoadingSpinner: FC = () => {
