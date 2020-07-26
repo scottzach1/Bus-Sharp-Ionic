@@ -1,5 +1,7 @@
 import React, {FC, useState} from 'react';
-import {IonItem, IonLabel, IonList} from "@ionic/react";
+import {IonContent, IonItem, IonLabel, IonList, IonPage} from "@ionic/react";
+import LoadingSpinner from '../ui/LoadingSpinner';
+import {Simulate} from "react-dom/test-utils";
 
 interface Props {
     stopCode: string;
@@ -73,6 +75,9 @@ const MetlinkStopView: FC<Props> = ({stopCode}) => {
             )}
             {errorMessage && (
                 <p>Failed: {errorMessage}</p>
+            )}
+            {(!stopData && !errorMessage) && (
+                <LoadingSpinner/>
             )}
         </div>
     );
