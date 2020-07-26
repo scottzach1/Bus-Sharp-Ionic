@@ -23,7 +23,7 @@ const options = {
 const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     const [serviceData, setServiceData] = useState<any | null>(null);
     // const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-    const [routePath, setRoutePath] = React.useState<any>();
+    const [routePath, setRoutePath] = React.useState<any[]>();
     const [stopMarkers, setStopMarkers] = React.useState<any[]>([])
     const [errorMessage, setErrorMessage] = useState<string>()
 
@@ -54,18 +54,26 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     }
 
     function generateMapRoute(mapData: any) {
-        let parsedRoute: any[] = [];
+        let parsedRoutes: any[] = [];
         let parsedMarkers: any[] = [];
 
+        for (const route of mapData.RouteMaps) {
+            let parsedRoute: any[] = [];
 
-        for (const point of mapData.RouteMaps[0].Path) {
-            const location: string[] = point.split(",");
+            for (const point of route.Path) {
+                const location: string[] = point.split(",");
 
-            parsedRoute.push({
-                lat: parseFloat(location[0]),
-                lng: parseFloat(location[1]),
-            });
+                parsedRoute.push({
+                    lat: parseFloat(location[0]),
+                    lng: parseFloat(location[1]),
+                });
+            }
+
+            parsedRoutes.push(
+                <Polyline key={"route-" + serviceCode} path={parsedRoute} options={{strokeColor: "#e076b4"}}/>
+            );
         }
+
 
         for (const point of mapData.StopLocations) {
             const location: string[] = point.LatLng.split(",");
@@ -82,9 +90,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
             );
         }
 
-        setRoutePath(
-            <Polyline key={"route-" + serviceCode} path={parsedRoute} options={{strokeColor: "#e076b4"}}/>
-        );
+        setRoutePath(parsedRoutes);
         setStopMarkers(parsedMarkers);
     }
 
