@@ -2,12 +2,19 @@ import React, {FC, useState} from "react";
 import {IonContent, IonLabel} from "@ionic/react";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import {readString} from "react-papaparse";
+import "./MetlinkDataFeed.css";
 
 
 const MetlinkDataFeed: FC = () => {
     const [versionData, setVersionData] = useState<string>()
     const [currentFeedInfo, setCurrentFeedInfo] = useState<Array<any>>()
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [isTitleRow, setTitleRow] = useState<boolean>(true);
+
+
+    const [colCount, setColCount] = useState<number>(0);
+    const [rowCount, setRowCount] = useState<number>(0);
+    const [newRow, setNewRow] = useState<boolean>(false);
 
     async function getVersionData() {
         if (isLoaded) return
@@ -29,20 +36,14 @@ const MetlinkDataFeed: FC = () => {
 
     return (
         <div>
-            {versionData && (
-                <IonLabel>
-                    Latest Version Data: {versionData}
-                </IonLabel>
-            )}
-            {!versionData && (
-                <LoadingSpinner/>
-            )
-            }
-            {currentFeedInfo && (
-                <IonLabel>
-                    Current Version Data: <br/> {currentFeedInfo}
-                </IonLabel>
-            )}
+            {(versionData && currentFeedInfo) &&
+            <IonLabel id="data-text">
+                Version Data: <br/>{versionData} <br/><br/>
+                Current Feed: <br/> {currentFeedInfo}
+            </IonLabel>}
+
+            {(!versionData || !currentFeedInfo) && <LoadingSpinner/>}
+
         </div>
     )
 }

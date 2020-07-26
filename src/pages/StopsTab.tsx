@@ -14,9 +14,7 @@ const StopsTab: React.FC = () => {
                     <IonTitle>Stops</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent>
-                <MetlinkStopView stopCode="7910"/>
-            </IonContent>
+            <MetlinkStopView stopCode="7910"/>
         </IonPage>
     );
 };
