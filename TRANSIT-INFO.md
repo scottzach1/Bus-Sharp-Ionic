@@ -28,6 +28,8 @@
 - [TransitFeed Swagger](https://openmobilitydata.org/api/swagger/#!/default/getLatestFeedVersion)
 - [Google transitfeed Github](https://github.com/google/transitfeed)
   releases (Contains a couple tools to validate data).
+- [Metlink Transit Feed](http://transitfeeds.com/p/metlink/22/latest) -
+  View the latest Metlink GTFS data on Transitfeeds own website.
 
 ## Example Queries
 
