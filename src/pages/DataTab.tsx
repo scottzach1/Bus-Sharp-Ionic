@@ -9,8 +9,6 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 const DataTab: React.FC = () => {
     const [versionData, setVersionData] = useState<string>()
     const [currentFeedInfo, setCurrentFeedInfo] = useState<Array<any>>()
-    const [searchValue, setSearchValue] = useState<string>("")
-
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
     async function getVersionData() {
@@ -18,7 +16,7 @@ const DataTab: React.FC = () => {
 
         const url = 'https://api.transitfeeds.com/v1/getFeedVersions?key=16d2be4b-c141-4e14-a4bb-c40b8f7dcb7b&feed=metlink%2F22&page=1&limit=10&err=1&warn=1';
         const json = await (await fetch(url)).json();
-        
+
         setVersionData(json.results.versions[0].id);
 
         const feedInfo: string = await fetch('data/feed_info.txt')
@@ -39,11 +37,6 @@ const DataTab: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <IonHeader collapse="condense">
-                    <IonToolbar>
-                        <IonTitle size="large">Data</IonTitle>
-                    </IonToolbar>
-                </IonHeader>
                 {versionData && (
                     <IonLabel>
                         Latest Version Data: {versionData}
