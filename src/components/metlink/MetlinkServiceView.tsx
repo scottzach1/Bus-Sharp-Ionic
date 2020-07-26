@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {GoogleMap, Marker, useLoadScript} from "@react-google-maps/api";
+import {GoogleMap, Polyline, useLoadScript} from "@react-google-maps/api";
 
 interface Props {
     serviceCode: string;
@@ -23,7 +23,7 @@ const options = {
 const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     const [serviceData, setServiceData] = useState<any | null>(null);
     // const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
-    const [markers, setMarkers] = React.useState<any[]>([]);
+    const [routePath, setRoutePath] = React.useState<any>([]);
     const [errorMessage, setErrorMessage] = useState<string>()
 
     const {isLoaded, loadError} = useLoadScript({
@@ -55,24 +55,28 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
     function generateMapMarkers(mapData: any) {
         let parsedMarkers: any[] = [];
 
-        console.log(mapData);
-
-        let counter: number = 0;
         for (const point of mapData.RouteMaps[0].Path) {
             const location: string[] = point.split(",");
 
-            parsedMarkers.push(
-                <Marker
-                    position={{
-                        lat: parseFloat(location[0]),
-                        lng: parseFloat(location[1]),
-                    }}
-                    key={counter++ + ':' + location[0] + ',' + location[1]}
-                />
-            );
+            parsedMarkers.push({
+                lat: parseFloat(location[0]),
+                lng: parseFloat(location[1]),
+            });
+
+            // parsedMarkers.push(
+            // <Marker
+            //     position={{
+            //         lat: parseFloat(location[0]),
+            //         lng: parseFloat(location[1]),
+            //     }}
+            //     key={counter++ + ':' + location[0] + ',' + location[1]}
+            // />
+            // );
         }
 
-        setMarkers(parsedMarkers);
+        setRoutePath(
+            <Polyline key={"route-" + serviceCode} path={parsedMarkers} options={{strokeColor: "#e076b4"}} />
+        );
     }
 
     getRouteData().then();
@@ -89,8 +93,8 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                     console.log(event);
                 }}
             >
-                {markers && (
-                    markers
+                {routePath && (
+                    routePath
                 )}
             </GoogleMap>
         </div>
