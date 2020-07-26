@@ -21,6 +21,7 @@ const options = {
 }
 
 const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
+    const [serviceName, setServiceName] = useState<string | null>(null);
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [routePath, setRoutePath] = React.useState<any[]>([]);
     const [stopMarkers, setStopMarkers] = React.useState<any[]>([])
@@ -45,6 +46,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
                 if (!resp.ok) setErrorMessage(resp.statusText);
                 else Promise.resolve(resp.json())
                     .then(data => {
+                        setServiceName(data.Name);
                         setDataIsLoaded(true);
                         generateMapRoute(data);
                     });
@@ -105,7 +107,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
 
     return (
         <div className={"metlink-service-view"}>
-            <p>Service Code: {serviceCode}</p>
+            <p>Service: {serviceCode} {serviceName && ("(" + serviceName + ")")}</p>
             {errorMessage && (
                 errorMessage
             )}
