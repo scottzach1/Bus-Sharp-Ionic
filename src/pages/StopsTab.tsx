@@ -1,10 +1,11 @@
 import React from 'react';
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar} from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import './StopsTab.css';
 import MetlinkStopMap from "../components/metlink/MetlinkStopsMap";
 
 const StopsTab: React.FC = () => {
+
     return (
         <IonPage>
             <IonHeader>
