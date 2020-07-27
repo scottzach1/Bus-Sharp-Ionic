@@ -55,7 +55,7 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
             // Pre-calculate values, update prop after.
             let counter: number = 0;
             for (const point of mapData.StopLocations) {
-                const name = point.Sms;
+                const name = null;
                 const code = point.Sms;
                 const location = point.LatLng;
                 const key = "marker:" + code + "-count" + counter++;

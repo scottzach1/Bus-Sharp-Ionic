@@ -2,6 +2,7 @@ import React, {FC, useState} from "react";
 import {GoogleMap, InfoWindow, Marker, Polyline, useLoadScript} from "@react-google-maps/api";
 import {IonIcon} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
+import {readRemoteFile} from "react-papaparse";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -25,6 +26,7 @@ const options = {
 
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
+    const [stopData, setStopData] = useState<any | null>(null);
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -34,6 +36,38 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     // Separate returns here to stop 'too many reloads' error.
     if (loadError) return (<p>"Error: load error"</p>)
     if (!isLoaded) return (<p>"Error: not loaded"</p>)
+
+    async function getStopData() {
+        if (stopData) return;
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
+
+        // Read Remote CSV.
+        readRemoteFile(proxy + url, {
+            download: true,
+            header: true,
+            complete: (results: any) => {
+                let data: any = {};
+
+                for (const stop of results.data) {
+                    const name: string = stop.stop_id + ' - ' + stop.stop_name;
+                    const code: string = stop.stop_id;
+                    data[code] = name;
+                }
+
+                setStopData(data);
+            },
+        })
+
+    }
+
+    getStopData().then();
+
+    function getStopName(stop: StopMarker) {
+        if (stop.name) return stop.name;
+        else if (stopData[stop.code]) return stopData[stop.code];
+        else return stop.code + " - unknown";
+    }
 
     return (
         <div className={"google-map-widget"}>
@@ -82,8 +116,8 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                         }}
                     >
                         <div itemID="selected-stop-popup">
-                            <IonIcon icon={locationSharp}/>
-                            <strong>{selectedStop.name}</strong>
+                            <span><IonIcon icon={locationSharp}/></span>
+                            <strong>{getStopName(selectedStop)}</strong>
                         </div>
                     </InfoWindow>
                 )}
@@ -112,22 +146,20 @@ class ServiceRoute {
 }
 
 class StopMarker {
-    public name: string;
+    public name: string | null;
     public code: string;
     public key: string;
     public location: Position;
 
     /**
      * Creates a new stop marker to be parsed by the GoogleMapWidget.
-     * @param name - of the stop.
+     * @param name - of the stop (Set to `null` if unknown).
      * @param code - of the stop.
      * @param key - unique key for the stop.
-     * @param lat - (opt) numerical latitude of the marker.
-     * @param lng - (opt) numerical longitude of the marker.
      * @param cordString - (opt) string representation of the location. (eg. "-41.3160304,174.7937765,0")
      * @param position - (opt) directly sets the position of the Marker in its raw form.
      */
-    constructor(name: string, code: string, key: string, cordString?: string, position?: Position) {
+    constructor(name: string | null, code: string, key: string, cordString?: string, position?: Position) {
         this.name = name;
         this.code = code;
         this.key = key;
@@ -142,14 +174,14 @@ class Position {
 
     /**
      * Creates a new Position
-     * @param lat
-     * @param lng
-     * @param cordString
+     * @param latitude - (opt) number containing the latitude of the marker coordinates.
+     * @param longitude - (opt) number containing the longitude of the marker coordinates.
+     * @param cordString - (opt) string representation of the location. (eg. "-41.3160304,174.7937765,0")
      */
-    constructor(lat?: number, lng?: number, cordString?: string) {
-        if (lat && lng) {
-            this.latitude = lat;
-            this.longitude = lng;
+    constructor(latitude?: number, longitude?: number, cordString?: string) {
+        if (latitude && longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
             return;
         }
         if (cordString) {
