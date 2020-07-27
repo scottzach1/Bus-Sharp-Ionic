@@ -2,7 +2,7 @@ import React from 'react';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar} from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import './StopsTab.css';
-import MetlinkStopMap from "../components/metlink/MetlinkStopsMap";
+import MetlinkStopMap from "../components/metlink/MetlinkStopMap";
 
 const StopsTab: React.FC = () => {
 
