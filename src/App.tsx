@@ -37,15 +37,16 @@ const App: React.FC = () => {
             <IonReactRouter>
                 <IonTabs>
                     <IonRouterOutlet>
-                        <Route path="/search/stop/:stopCode" component={StopPerspective}/>
+                        {/* Home */}
+                        <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
+
                         <Route path="/search" component={SearchTab}/>
-
-                        <Route path="/map/service/:serviceCode" component={StopPerspective}/>
                         <Route path="/map" component={MapTab}/>
-
                         <Route path="/saved" component={SavedTab}/>
                         <Route path="/settings" component={SettingsTab}/>
-                        <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
+
+                        <Route path="/service/:serviceCode" component={StopPerspective}/>
+                        <Route path="/stop/:stopCode" component={StopPerspective}/>
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
                         <IonTabButton tab="search" href="/search">
