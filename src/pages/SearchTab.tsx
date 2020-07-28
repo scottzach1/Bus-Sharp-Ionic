@@ -3,14 +3,13 @@ import {
     IonContent,
     IonHeader,
     IonPage,
-    IonTitle,
-    IonToolbar,
     IonSearchbar,
-    IonButton,
-    IonRouterOutlet, IonTabs, IonSegment, IonLabel, IonSegmentButton
+    IonSegment,
+    IonSegmentButton,
+    IonTitle,
+    IonToolbar
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
-import {IonReactRouter} from "@ionic/react-router";
 
 const SearchTab: FC = () => {
     const [searchText, setSearchText] = useState<string>('')
@@ -50,15 +49,15 @@ const SearchTab: FC = () => {
     if (!routeData) getRouteData()
 
 
-    function getStopLabels(){
+    function getStopLabels() {
 
     }
 
-    function getRouteLabels(){
+    function getRouteLabels() {
 
     }
 
-    function getAllLabels(){
+    function getAllLabels() {
 
         console.log()
         console.log(routeData)
@@ -82,10 +81,10 @@ const SearchTab: FC = () => {
 
                 <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} inputMode="numeric"/>
 
-                <IonSegment>
-                    <IonSegmentButton onClick={e=>setFilter("ALL")}>All</IonSegmentButton>
-                    <IonSegmentButton onClick={e=>setFilter("ROUTES")}>Routes</IonSegmentButton>
-                    <IonSegmentButton onClick={e=>setFilter("STOPS")}>Stops</IonSegmentButton>
+                <IonSegment value="ALL">
+                    <IonSegmentButton onClick={e => setFilter("ALL")} value="ALL">All</IonSegmentButton>
+                    <IonSegmentButton onClick={e => setFilter("ROUTES")} value="ROUTES">Routes</IonSegmentButton>
+                    <IonSegmentButton onClick={e => setFilter("STOPS")} value="STOPS">Stops</IonSegmentButton>
                 </IonSegment>
 
                 {
