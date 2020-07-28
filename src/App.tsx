@@ -25,6 +25,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import StopPerspective from "./pages/StopPerspective";
+import ServicePerspective from "./pages/ServicePerspective";
 
 const App: React.FC = () => {
     return (
@@ -42,7 +43,7 @@ const App: React.FC = () => {
                         <Route path="/settings" component={SettingsTab}/>
 
                         {/* Hidden Perspectives*/}
-                        <Route path="/service/:serviceCode" component={StopPerspective}/>
+                        <Route path="/service/:serviceCode" component={ServicePerspective}/>
                         <Route path="/stop/:stopCode" component={StopPerspective}/>
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
