@@ -3,17 +3,12 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {
-    saveOutline,
-    searchCircleSharp,
-    mapSharp, settingsSharp, saveSharp
-} from 'ionicons/icons';
+import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
 
 import SearchTab from './pages/SearchTab';
 import MapTab from './pages/MapTab';
 import SavedTab from './pages/SavedTab';
 import SettingsTab from './pages/SettingsTab';
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -40,11 +35,13 @@ const App: React.FC = () => {
                         {/* Home */}
                         <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
 
+                        {/* Tabs */}
                         <Route path="/search" component={SearchTab}/>
                         <Route path="/map" component={MapTab}/>
                         <Route path="/saved" component={SavedTab}/>
                         <Route path="/settings" component={SettingsTab}/>
 
+                        {/* Hidden Perspectives*/}
                         <Route path="/service/:serviceCode" component={StopPerspective}/>
                         <Route path="/stop/:stopCode" component={StopPerspective}/>
                     </IonRouterOutlet>
