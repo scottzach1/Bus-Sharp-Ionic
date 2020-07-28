@@ -3,10 +3,17 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
-import {bus, map, settings, stopCircleOutline} from 'ionicons/icons';
-import StopsTab from './pages/StopsTab';
-import ServicesTab from './pages/ServicesTab';
+import {
+    saveOutline,
+    searchCircleSharp,
+    mapSharp, settingsSharp, saveSharp
+} from 'ionicons/icons';
+
+import SearchTab from './pages/SearchTab';
 import MapTab from './pages/MapTab';
+import SavedTab from './pages/SavedTab';
+import SettingsTab from './pages/SettingsTab';
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -22,7 +29,6 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import DataTab from "./pages/DataTab";
 
 const App: React.FC = () => {
     return (
@@ -30,27 +36,27 @@ const App: React.FC = () => {
             <IonReactRouter>
                 <IonTabs>
                     <IonRouterOutlet>
-                        <Route path="/services" component={ServicesTab} exact={true}/>
-                        <Route path="/stops" component={StopsTab} exact={true}/>
+                        <Route path="/search" component={SearchTab}/>
                         <Route path="/map" component={MapTab}/>
-                        <Route path="/data" component={DataTab}/>
-                        <Route path="/" render={() => <Redirect to="/services"/>} exact={true}/>
+                        <Route path="/saved" component={SavedTab}/>
+                        <Route path="/settings" component={SettingsTab}/>
+                        <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
-                        <IonTabButton tab="services" href="/services">
-                            <IonIcon icon={bus}/>
-                            <IonLabel>Services</IonLabel>
-                        </IonTabButton>
-                        <IonTabButton tab="stops" href="/stops">
-                            <IonIcon icon={stopCircleOutline}/>
-                            <IonLabel>Stops</IonLabel>
+                        <IonTabButton tab="search" href="/services">
+                            <IonIcon icon={searchCircleSharp}/>
+                            <IonLabel>Search</IonLabel>
                         </IonTabButton>
                         <IonTabButton tab="map" href="/map">
-                            <IonIcon icon={map}/>
+                            <IonIcon icon={mapSharp}/>
                             <IonLabel>Map</IonLabel>
                         </IonTabButton>
-                        <IonTabButton tab="data" href="/data">
-                            <IonIcon icon={settings}/>
+                        <IonTabButton tab="saved" href="/saved">
+                            <IonIcon icon={saveSharp}/>
+                            <IonLabel>Saved</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="settings" href="/settings">
+                            <IonIcon icon={settingsSharp}/>
                             <IonLabel>Settings</IonLabel>
                         </IonTabButton>
                     </IonTabBar>
