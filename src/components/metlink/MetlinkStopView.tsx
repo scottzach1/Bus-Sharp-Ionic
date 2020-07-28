@@ -12,6 +12,7 @@ const MetlinkStopView: FC<Props> = ({stopCode}) => {
     const [errorMessage, setErrorMessage] = useState<string>()
 
     async function getStopData() {
+        console.log(stopCode)
         const proxy = "https://cors-anywhere.herokuapp.com/";
         const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
 
@@ -68,7 +69,6 @@ const MetlinkStopView: FC<Props> = ({stopCode}) => {
 
     return (
         <div>
-            <h3>Stop {stopCode}</h3>
             {stopData && (
                 // Generate the `IonList` for all upcoming times.
                 generateStopCards()

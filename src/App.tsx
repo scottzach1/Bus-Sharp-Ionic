@@ -29,6 +29,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
+import StopPerspective from "./pages/StopPerspective";
 
 const App: React.FC = () => {
     return (
@@ -36,14 +37,18 @@ const App: React.FC = () => {
             <IonReactRouter>
                 <IonTabs>
                     <IonRouterOutlet>
+                        <Route path="/search/stop/:stopCode" component={StopPerspective}/>
                         <Route path="/search" component={SearchTab}/>
+
+                        <Route path="/map/service/:serviceCode" component={StopPerspective}/>
                         <Route path="/map" component={MapTab}/>
+
                         <Route path="/saved" component={SavedTab}/>
                         <Route path="/settings" component={SettingsTab}/>
                         <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
-                        <IonTabButton tab="search" href="/services">
+                        <IonTabButton tab="search" href="/search">
                             <IonIcon icon={searchCircleSharp}/>
                             <IonLabel>Search</IonLabel>
                         </IonTabButton>
