@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
 import "./SearchTab.css";
+import {IonReactRouter} from "@ionic/react-router";
 
 const SearchTab: FC = () => {
     const [searchText, setSearchText] = useState<string>("")
@@ -92,7 +93,8 @@ const SearchTab: FC = () => {
 
                         <IonSegment value={filter}>
                             <IonSegmentButton onClick={() => setFilter("ALL")} value="ALL">All</IonSegmentButton>
-                            <IonSegmentButton onClick={() => setFilter("ROUTES")} value="ROUTES">Routes</IonSegmentButton>
+                            <IonSegmentButton onClick={() => setFilter("ROUTES")}
+                                              value="ROUTES">Routes</IonSegmentButton>
                             <IonSegmentButton onClick={() => setFilter("STOPS")} value="STOPS">Stops</IonSegmentButton>
                         </IonSegment>
                     </IonTitle>
@@ -106,7 +108,7 @@ const SearchTab: FC = () => {
                 </IonHeader>
 
                 {routeData?.filter(item => filterItem(item)).map(item => (
-                    <IonItem key={item.searchText}>
+                    <IonItem key={item.searchText}  href={item.url}>
                         <IonLabel>
                             {item.searchText}
                         </IonLabel>
@@ -114,7 +116,7 @@ const SearchTab: FC = () => {
                 ))}
 
                 {stopData?.filter(item => filterItem(item)).map(item => (
-                    <IonItem key={item.searchText}>
+                    <IonItem key={item.searchText}  href={item.url}>
                         <IonLabel>
                             {item.searchText}
                         </IonLabel>
@@ -133,7 +135,7 @@ class SearchItem {
 
     constructor(searchText: string, code: string, isStop: boolean) {
         this.searchText = searchText;
-        this.url = code;
+        this.url = ((isStop) ? "/stop/" : "/service/") + code;
         this.isStop = isStop;
     }
 }
