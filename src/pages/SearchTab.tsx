@@ -2,111 +2,78 @@ import React, {FC, useState} from "react";
 import {
     IonContent,
     IonHeader,
+    IonItem,
+    IonLabel,
     IonPage,
-    IonTitle,
-    IonToolbar,
     IonSearchbar,
-    IonButton,
-    IonRouterOutlet, IonTabs, IonSegment, IonLabel, IonSegmentButton, IonItem, IonList
+    IonSegment,
+    IonSegmentButton,
+    IonTitle,
+    IonToolbar
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
-import {IonReactRouter} from "@ionic/react-router";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
-
-class SearchItem {
-    text: string;
-    url: string;
-
-    constructor(text: string, url: string) {
-        this.text = text;
-        this.url = url;
-    }
-}
 
 const SearchTab: FC = () => {
-    const [searchText, setSearchText] = useState<string>('')
+    const [searchText, setSearchText] = useState<string>("")
     const [filter, setFilter] = useState<string>("ALL")
-    const [stopData, setStopData] = useState<any[]>()
-    const [routeData, setRouteData] = useState<any[]>();
-    const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
-    const cards: SearchItem[] = [];
+    const [stopData, setStopData] = useState<SearchItem[] | null>(null);
+    const [routeData, setRouteData] = useState<SearchItem[] | null>(null);
 
-    async function getStopData() {
+    const [stopDataLoading, setStopDataLoading] = useState<boolean>(false);
+    const [routeDataLoading, setRouteDataLoading] = useState<boolean>(false);
+
+    function getDataCSV(url: string, callback: Function) {
         const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
 
         // Read Remote CSV.
         readRemoteFile(proxy + url, {
             download: true,
             header: true,
             complete: (results: any) => {
-                setStopData(results.data)
+                callback(results.data);
             }
         })
     }
 
-    async function getRouteData() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
+    function parseStopData(dataCSV: any[]) {
+        let stopItems: SearchItem[] = [];
 
-        // Read Remote CSV.
-        readRemoteFile(proxy + url, {
-            download: true,
-            header: true,
-            complete: (results: any) => {
-                setRouteData(results.data)
-            }
-        })
-    }
+        for (const stopEntry of dataCSV) {
+            const code: string = stopEntry.stop_id;
+            const searchText: string = stopEntry.stop_id + ' - ' + stopEntry.stop_name;
 
-    async function generateCards() {
-        if (!stopData || !routeData) return
-
-        let count = 0;
-        for (const item of stopData) {
-            let id: string = item.stop_id;
-            let name: string = item.stop_name;
-            cards.push(
-                <IonItem key={count}>
-                    <IonLabel>
-                        <strong>{id} -</strong>{name}.
-                    </IonLabel>
-                </IonItem>
-            )
-            count++
+            stopItems.push(new SearchItem(searchText, code, true));
         }
-
-        for (const item of routeData) {
-            let agency: string = item.agency_id;
-            let id: string = item.route_id
-            let name: string = item.route_long_name;
-
-            if (!checkString(id) || !checkString(name) || !checkString(agency)) continue
-
-            if (id.includes(searchText) || agency.includes(searchText) || name.includes(searchText)) {
-                cards.push(
-                    <IonItem key={count}>
-                        <IonLabel>
-                            <strong>{agency} : {id} -</strong> {name}.
-                        </IonLabel>
-                    </IonItem>
-                )
-                count++
-            }
-
-            setIsLoaded(true)
-            return (
-                <IonList lines="full">
-                    {cards}
-                </IonList>
-            )
-        }
+        setStopData(stopItems);
     }
 
 
-    if (!stopData) getStopData()
-    if (!routeData) getRouteData()
+    async function parseRouteData(dataCSV: any[]) {
+        let routeItems: SearchItem[] = [];
+
+        for (const routeEntry of dataCSV) {
+            const code: string = routeEntry.route_id;
+            const searchText: string = routeEntry.route_short_name + ' - (' + routeEntry.agency_id + ') - ' + routeEntry.route_long_name;
+
+            routeItems.push(new SearchItem(searchText, code, false));
+        }
+        setRouteData(routeItems);
+    }
+
+    function filterItem(item: SearchItem) {
+        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL";
+        return searchText.length && filterCondition && item.searchText.toLowerCase().includes(searchText.toLowerCase())
+    }
+
+    if (!stopDataLoading) {
+        setStopDataLoading(true);
+        getDataCSV("http://transitfeeds.com/p/metlink/22/latest/download/stops.txt", parseStopData);
+    }
+    if (!routeDataLoading) {
+        setRouteDataLoading(true);
+        getDataCSV("http://transitfeeds.com/p/metlink/22/latest/download/routes.txt", parseRouteData);
+    }
 
     return (
         <IonPage>
@@ -129,16 +96,42 @@ const SearchTab: FC = () => {
                 }} inputMode="numeric"/>
 
                 <IonSegment>
-                    <IonSegmentButton onClick={e => setFilter("ALL")}>All</IonSegmentButton>
-                    <IonSegmentButton onClick={e => setFilter("ROUTES")}>Routes</IonSegmentButton>
-                    <IonSegmentButton onClick={e => setFilter("STOPS")}>Stops</IonSegmentButton>
+                    <IonSegmentButton onClick={() => setFilter("ALL")}>All</IonSegmentButton>
+                    <IonSegmentButton onClick={() => setFilter("ROUTES")}>Routes</IonSegmentButton>
+                    <IonSegmentButton onClick={() => setFilter("STOPS")}>Stops</IonSegmentButton>
                 </IonSegment>
 
-                {generateCards()}
+                {routeData?.filter(item => filterItem(item)).map(item => (
+                    <IonItem key={item.searchText}>
+                        <IonLabel>
+                            <strong>{item.searchText}</strong>
+                        </IonLabel>
+                    </IonItem>
+                ))}
+
+                {stopData?.filter(item => filterItem(item)).map(item => (
+                    <IonItem key={item.searchText}>
+                        <IonLabel>
+                            <strong>{item.searchText}</strong>
+                        </IonLabel>
+                    </IonItem>
+                ))}
 
             </IonContent>
         </IonPage>
-    )
+    );
+}
+
+class SearchItem {
+    searchText: string;
+    url: string;
+    isStop: boolean;
+
+    constructor(searchText: string, code: string, isStop: boolean) {
+        this.searchText = searchText;
+        this.url = code;
+        this.isStop = isStop;
+    }
 }
 
 export default SearchTab;
