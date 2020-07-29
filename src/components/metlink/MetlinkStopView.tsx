@@ -1,7 +1,6 @@
 import React, {FC, useState} from 'react';
 import {IonContent, IonItem, IonLabel, IonList, IonPage} from "@ionic/react";
 import LoadingSpinner from '../ui/LoadingSpinner';
-import {Simulate} from "react-dom/test-utils";
 
 interface Props {
     stopCode: string;

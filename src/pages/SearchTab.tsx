@@ -55,7 +55,8 @@ const SearchTab: FC = () => {
         let routeItems: SearchItem[] = [];
 
         for (const routeEntry of dataCSV) {
-            const code: string = routeEntry.route_id;
+            const code: string = routeEntry.route_short_name;
+            if (!code) continue;
             const searchText: string = routeEntry.route_short_name + ' - (' + routeEntry.agency_id + ') - ' + routeEntry.route_long_name;
 
             routeItems.push(new SearchItem(searchText, code, false));
@@ -119,7 +120,6 @@ const SearchTab: FC = () => {
                 {!cards && <LoadingSpinner/>}
                 {(cards && !searchText) && <p>Please enter your query.</p>}
                 {cards}
-
             </IonContent>
         </IonPage>
     );
@@ -132,7 +132,7 @@ class SearchItem {
 
     constructor(searchText: string, code: string, isStop: boolean) {
         this.searchText = searchText;
-        this.url = ((isStop) ? "/stop/" : "/service/") + code;
+        this.url = ((isStop) ? "/stop/" : "/service/") + code.toUpperCase();
         this.isStop = isStop;
     }
 }
