@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
 import "./SearchTab.css";
-import {IonReactRouter} from "@ionic/react-router";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const SearchTab: FC = () => {
     const [searchText, setSearchText] = useState<string>("")
@@ -38,7 +38,7 @@ const SearchTab: FC = () => {
         })
     }
 
-    function parseStopData(dataCSV: any[]) {
+    async function parseStopData(dataCSV: any[]) {
         let stopItems: SearchItem[] = [];
 
         for (const stopEntry of dataCSV) {
@@ -77,6 +77,18 @@ const SearchTab: FC = () => {
         getDataCSV("http://transitfeeds.com/p/metlink/22/latest/download/routes.txt", parseRouteData);
     }
 
+    function generateCards(items: SearchItem[]) {
+        return items.filter(item => filterItem(item)).map(item => (
+            <IonItem key={item.searchText} href={item.url}>
+                <IonLabel>
+                    {item.searchText}
+                </IonLabel>
+            </IonItem>
+        ));
+    }
+
+    let cards: any[] | undefined = (routeData && stopData) ? generateCards(stopData.concat(routeData)) : undefined;
+
     return (
         <IonPage>
             <IonHeader>
@@ -87,10 +99,7 @@ const SearchTab: FC = () => {
                 </IonToolbar>
                 <IonToolbar>
                     <IonTitle>
-                        <IonSearchbar value={searchText} onIonChange={e => {
-                            setSearchText(e.detail.value!)
-                        }} inputMode="numeric"/>
-
+                        <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)}/>
                         <IonSegment value={filter}>
                             <IonSegmentButton onClick={() => setFilter("ALL")} value="ALL">All</IonSegmentButton>
                             <IonSegmentButton onClick={() => setFilter("ROUTES")}
@@ -107,21 +116,9 @@ const SearchTab: FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
-                {routeData?.filter(item => filterItem(item)).map(item => (
-                    <IonItem key={item.searchText}  href={item.url}>
-                        <IonLabel>
-                            {item.searchText}
-                        </IonLabel>
-                    </IonItem>
-                ))}
-
-                {stopData?.filter(item => filterItem(item)).map(item => (
-                    <IonItem key={item.searchText}  href={item.url}>
-                        <IonLabel>
-                            {item.searchText}
-                        </IonLabel>
-                    </IonItem>
-                ))}
+                {!cards && <LoadingSpinner/>}
+                {(cards && !searchText) && <p>Please enter your query.</p>}
+                {cards}
 
             </IonContent>
         </IonPage>
