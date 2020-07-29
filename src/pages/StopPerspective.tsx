@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkStopView from "../components/metlink/MetlinkStopView";
+import MetlinkStopTable from "../components/metlink/MetlinkStopTable";
 
 const StopPerspective: FC<any> = ({match}) => {
     const {params: {stopCode}} = match
@@ -21,7 +21,7 @@ const StopPerspective: FC<any> = ({match}) => {
                         <IonTitle size="large">Map</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <MetlinkStopView stopCode={stopCode}/>
+                <MetlinkStopTable stopCode={stopCode}/>
             </IonContent>
         </IonPage>
     )
