@@ -91,7 +91,9 @@ const SearchTab: FC = () => {
             ));
     }
 
-    let cards: any[] | undefined = (routeData && stopData) ? generateCards(stopData.concat(routeData)) : undefined;
+    const stopCards: any[] | null = (stopData) ? generateCards(stopData) : null;
+    const routeCards: any[] | null = (routeData) ? generateCards(routeData) : null;
+    const results: boolean = Boolean(stopCards && routeCards);
 
     return (
         <IonPage>
@@ -120,9 +122,15 @@ const SearchTab: FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
-                {!cards && <LoadingSpinner/>}
-                {(cards && !searchText) && <p>Please enter your query.</p>}
-                {cards}
+                {!results && <LoadingSpinner/>}
+                {(results && !searchText) && <h4>Please enter your query.</h4>}
+
+                {(routeCards && routeCards.length > 0) && (<h4>Routes:</h4>)}
+                {routeCards}
+
+                {(stopCards && stopCards.length > 0) && (<h4>Stops:</h4>)}
+                {stopCards}
+
             </IonContent>
         </IonPage>
     );
