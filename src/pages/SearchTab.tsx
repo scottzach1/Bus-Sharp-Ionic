@@ -3,19 +3,34 @@ import {
     IonContent,
     IonHeader,
     IonPage,
-    IonSearchbar,
-    IonSegment,
-    IonSegmentButton,
     IonTitle,
-    IonToolbar
+    IonToolbar,
+    IonSearchbar,
+    IonButton,
+    IonRouterOutlet, IonTabs, IonSegment, IonLabel, IonSegmentButton, IonItem, IonList
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
+import {IonReactRouter} from "@ionic/react-router";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+
+class SearchItem {
+    text: string;
+    url: string;
+
+    constructor(text: string, url: string) {
+        this.text = text;
+        this.url = url;
+    }
+}
 
 const SearchTab: FC = () => {
     const [searchText, setSearchText] = useState<string>('')
     const [filter, setFilter] = useState<string>("ALL")
-    const [stopData, setStopData] = useState<any[] | null>(null);
-    const [routeData, setRouteData] = useState<any[] | null>(null);
+    const [stopData, setStopData] = useState<any[]>()
+    const [routeData, setRouteData] = useState<any[]>();
+    const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
+    const cards: SearchItem[] = [];
 
     async function getStopData() {
         const proxy = "https://cors-anywhere.herokuapp.com/";
@@ -26,8 +41,8 @@ const SearchTab: FC = () => {
             download: true,
             header: true,
             complete: (results: any) => {
-                setStopData(results)
-            },
+                setStopData(results.data)
+            }
         })
     }
 
@@ -40,28 +55,58 @@ const SearchTab: FC = () => {
             download: true,
             header: true,
             complete: (results: any) => {
-                setRouteData(results)
-            },
+                setRouteData(results.data)
+            }
         })
     }
 
+    async function generateCards() {
+        if (!stopData || !routeData) return
+
+        let count = 0;
+        for (const item of stopData) {
+            let id: string = item.stop_id;
+            let name: string = item.stop_name;
+            cards.push(
+                <IonItem key={count}>
+                    <IonLabel>
+                        <strong>{id} -</strong>{name}.
+                    </IonLabel>
+                </IonItem>
+            )
+            count++
+        }
+
+        for (const item of routeData) {
+            let agency: string = item.agency_id;
+            let id: string = item.route_id
+            let name: string = item.route_long_name;
+
+            if (!checkString(id) || !checkString(name) || !checkString(agency)) continue
+
+            if (id.includes(searchText) || agency.includes(searchText) || name.includes(searchText)) {
+                cards.push(
+                    <IonItem key={count}>
+                        <IonLabel>
+                            <strong>{agency} : {id} -</strong> {name}.
+                        </IonLabel>
+                    </IonItem>
+                )
+                count++
+            }
+
+            setIsLoaded(true)
+            return (
+                <IonList lines="full">
+                    {cards}
+                </IonList>
+            )
+        }
+    }
+
+
     if (!stopData) getStopData()
     if (!routeData) getRouteData()
-
-
-    function getStopLabels() {
-
-    }
-
-    function getRouteLabels() {
-
-    }
-
-    function getAllLabels() {
-
-        console.log()
-        console.log(routeData)
-    }
 
     return (
         <IonPage>
@@ -79,17 +124,17 @@ const SearchTab: FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
-                <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} inputMode="numeric"/>
+                <IonSearchbar value={searchText} onIonChange={e => {
+                    setSearchText(e.detail.value!)
+                }} inputMode="numeric"/>
 
-                <IonSegment value="ALL">
-                    <IonSegmentButton onClick={e => setFilter("ALL")} value="ALL">All</IonSegmentButton>
-                    <IonSegmentButton onClick={e => setFilter("ROUTES")} value="ROUTES">Routes</IonSegmentButton>
-                    <IonSegmentButton onClick={e => setFilter("STOPS")} value="STOPS">Stops</IonSegmentButton>
+                <IonSegment>
+                    <IonSegmentButton onClick={e => setFilter("ALL")}>All</IonSegmentButton>
+                    <IonSegmentButton onClick={e => setFilter("ROUTES")}>Routes</IonSegmentButton>
+                    <IonSegmentButton onClick={e => setFilter("STOPS")}>Stops</IonSegmentButton>
                 </IonSegment>
 
-                {
-                    getAllLabels()
-                }
+                {generateCards()}
 
             </IonContent>
         </IonPage>
