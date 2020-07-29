@@ -79,13 +79,16 @@ const SearchTab: FC = () => {
     }
 
     function generateCards(items: SearchItem[]) {
-        return items.filter(item => filterItem(item)).map(item => (
-            <IonItem key={item.searchText} href={item.url}>
-                <IonLabel>
-                    {item.searchText}
-                </IonLabel>
-            </IonItem>
-        ));
+        return items
+            .filter(item => filterItem(item))
+            .sort((a, b) => a.searchText.localeCompare(b.searchText))
+            .map(item => (
+                <IonItem key={item.searchText} href={item.url}>
+                    <IonLabel>
+                        {item.searchText}
+                    </IonLabel>
+                </IonItem>
+            ));
     }
 
     let cards: any[] | undefined = (routeData && stopData) ? generateCards(stopData.concat(routeData)) : undefined;
