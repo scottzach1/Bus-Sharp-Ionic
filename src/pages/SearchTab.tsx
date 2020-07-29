@@ -12,6 +12,7 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
+import "./SearchTab.css";
 
 const SearchTab: FC = () => {
     const [searchText, setSearchText] = useState<string>("")
@@ -83,28 +84,31 @@ const SearchTab: FC = () => {
                         Search for Buses and Stops
                     </IonTitle>
                 </IonToolbar>
+                <IonToolbar>
+                    <IonTitle>
+                        <IonSearchbar value={searchText} onIonChange={e => {
+                            setSearchText(e.detail.value!)
+                        }} inputMode="numeric"/>
+
+                        <IonSegment value={filter}>
+                            <IonSegmentButton onClick={() => setFilter("ALL")} value="ALL">All</IonSegmentButton>
+                            <IonSegmentButton onClick={() => setFilter("ROUTES")} value="ROUTES">Routes</IonSegmentButton>
+                            <IonSegmentButton onClick={() => setFilter("STOPS")} value="STOPS">Stops</IonSegmentButton>
+                        </IonSegment>
+                    </IonTitle>
+                </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">Map</IonTitle>
+                        <IonTitle size="large">Search</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-
-                <IonSearchbar value={searchText} onIonChange={e => {
-                    setSearchText(e.detail.value!)
-                }} inputMode="numeric"/>
-
-                <IonSegment>
-                    <IonSegmentButton onClick={() => setFilter("ALL")}>All</IonSegmentButton>
-                    <IonSegmentButton onClick={() => setFilter("ROUTES")}>Routes</IonSegmentButton>
-                    <IonSegmentButton onClick={() => setFilter("STOPS")}>Stops</IonSegmentButton>
-                </IonSegment>
 
                 {routeData?.filter(item => filterItem(item)).map(item => (
                     <IonItem key={item.searchText}>
                         <IonLabel>
-                            <strong>{item.searchText}</strong>
+                            {item.searchText}
                         </IonLabel>
                     </IonItem>
                 ))}
@@ -112,7 +116,7 @@ const SearchTab: FC = () => {
                 {stopData?.filter(item => filterItem(item)).map(item => (
                     <IonItem key={item.searchText}>
                         <IonLabel>
-                            <strong>{item.searchText}</strong>
+                            {item.searchText}
                         </IonLabel>
                     </IonItem>
                 ))}
