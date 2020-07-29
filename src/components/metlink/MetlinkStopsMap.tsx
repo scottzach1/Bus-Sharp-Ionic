@@ -1,32 +1,16 @@
 import React, {FC, useState} from "react";
 import {readRemoteFile} from "react-papaparse";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface Props {
 }
 
-const libraries = ["places"];
-const mapContainerStyle = {
-    width: '100vw',
-    height: '100vh', // Need to figure out how to get 100% of max container height - no zoom!
-};
-const center = {
-    lat: -41.286461,
-    lng: 174.776230,
-}
-const options = {
-    // disableDefaultUI: true, // Commented for street view.
-    zoomControl: true,
-    mapTypeControl: true,
-}
-
-const MetlinkStopMap: FC<Props> = () => {
+const MetlinkStopsMap: FC<Props> = () => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     async function getStopData() {
-        if (dataIsLoaded) return;
         const proxy = "https://cors-anywhere.herokuapp.com/";
         const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
 
@@ -35,8 +19,8 @@ const MetlinkStopMap: FC<Props> = () => {
             download: true,
             header: true,
             complete: (results: any) => {
-                setDataIsLoaded(true);
                 generateMapMarkers(results.data);
+                setDataIsLoaded(true);
             },
         })
 
@@ -63,16 +47,18 @@ const MetlinkStopMap: FC<Props> = () => {
         setStopMarkers(parsedMarkers);
     }
 
-    getStopData().then();
+    if (!dataIsLoaded) getStopData().then();
 
     return (
         <div className="metlink-stop-map">
-            {errorMessage && (
-                errorMessage
+            {!dataIsLoaded && (
+                <LoadingSpinner/>
             )}
-            <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null}/>
+            {dataIsLoaded && (
+                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null}/>)
+            }
         </div>
     );
 }
 
-export default MetlinkStopMap;
+export default MetlinkStopsMap;
