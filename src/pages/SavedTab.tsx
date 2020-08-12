@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkFavouritesList from "../components/metlink/MetlinkFavouritesList";
+import MetlinkSavedList from "../components/metlink/MetlinkSavedList";
 
 const SavedTab: FC = () => {
     return (
@@ -19,7 +19,7 @@ const SavedTab: FC = () => {
                         <IonTitle size="large">Saved</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <MetlinkFavouritesList/>
+                <MetlinkSavedList/>
             </IonContent>
         </IonPage>
     )

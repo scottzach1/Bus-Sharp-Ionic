@@ -1,13 +1,39 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import "./MetlinkStopInfo.css";
-import {IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList} from "@ionic/react";
+import {
+    IonBadge, IonButton,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonItem,
+    IonLabel,
+    IonList
+} from "@ionic/react";
 
 interface Props {
 }
 
-const MetlinkFavouritesList: FC<Props> = () => {
+const MetlinkSavedList: FC<Props> = () => {
+    // Can be true or false, flipping it causes the component to refresh.
+    const[triggerReload, setTriggerReload] = useState<boolean>(false);
 
-    function generateFavouritesCards() {
+    function clearSavedStops() {
+        let saved: any = JSON.parse(localStorage.saved);
+        saved.stops = []
+        localStorage.saved = JSON.stringify(saved);
+        setTriggerReload(!triggerReload);
+    }
+
+    function clearSavedServices() {
+        let saved: any = JSON.parse(localStorage.saved);
+        saved.services = []
+        localStorage.saved = JSON.stringify(saved);
+        setTriggerReload(!triggerReload);
+    }
+
+    function generateSavedCards() {
         let saved: any = JSON.parse(localStorage.saved);
 
         let stopCards: any[] = [];
@@ -38,6 +64,9 @@ const MetlinkFavouritesList: FC<Props> = () => {
                 <IonCard>
                     <IonCardHeader>
                         <IonCardTitle>Stops</IonCardTitle>
+                        <IonCardSubtitle>
+                            <IonButton onClick={() => clearSavedStops()}>Clear</IonButton>
+                        </IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <IonList lines="full">
@@ -48,6 +77,9 @@ const MetlinkFavouritesList: FC<Props> = () => {
                 <IonCard>
                     <IonCardHeader>
                         <IonCardTitle>Services</IonCardTitle>
+                        <IonCardSubtitle>
+                            <IonButton onClick={() => clearSavedServices()}>Clear</IonButton>
+                        </IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <IonList lines="full">
@@ -61,9 +93,9 @@ const MetlinkFavouritesList: FC<Props> = () => {
 
     return (
         <div>
-            {generateFavouritesCards()}
+            {generateSavedCards()}
         </div>
     )
 }
 
-export default MetlinkFavouritesList;
+export default MetlinkSavedList;
