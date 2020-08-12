@@ -28,6 +28,13 @@ import StopPerspective from "./pages/StopPerspective";
 import ServicePerspective from "./pages/ServicePerspective";
 
 const App: React.FC = () => {
+    if (!localStorage.saved) {
+        localStorage.saved = JSON.stringify({
+            stops: [],
+            services: [],
+        });
+    }
+
     return (
         <IonApp>
             <IonReactRouter>

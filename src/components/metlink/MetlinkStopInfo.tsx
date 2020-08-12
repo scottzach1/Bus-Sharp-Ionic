@@ -32,6 +32,17 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
             });
     }
 
+    function toggleFavouriteStop() {
+        let saved: any = JSON.parse(localStorage.saved);
+
+        if (saved.stops.includes(stopCode))
+            saved.stops.splice(saved.stops.indexOf(stopCode));
+        else
+            saved.stops.push(stopCode);
+
+        localStorage.saved = JSON.stringify(saved);
+    }
+
     getStopName().then();
 
     return (
@@ -62,7 +73,7 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
                             }, {
                                 text: 'Favorite',
                                 icon: heart,
-                                handler: () => console.log('Favorite clicked')
+                                handler: () => toggleFavouriteStop()
                             }, {
                                 text: 'Cancel',
                                 icon: close,
