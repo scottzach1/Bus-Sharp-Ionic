@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {IonBadge, IonItem, IonLabel, IonList} from "@ionic/react";
+import {IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList} from "@ionic/react";
 import LoadingSpinner from '../ui/LoadingSpinner';
 
 interface Props {
@@ -60,9 +60,16 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
 
         return (
             <div>
-                <IonList lines="full">
-                    {cards}
-                </IonList>
+                <IonCard>
+                    <IonCardHeader>
+                        <IonCardTitle>Upcoming Services</IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                        <IonList lines="full">
+                            {cards}
+                        </IonList>
+                    </IonCardContent>
+                </IonCard>
             </div>
         )
     }
