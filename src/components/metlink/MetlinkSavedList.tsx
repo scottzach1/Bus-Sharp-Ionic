@@ -37,7 +37,6 @@ const MetlinkSavedList: FC<Props> = () => {
         let saved: any = JSON.parse(localStorage.saved);
 
         let stopCards: any[] = [];
-
         for (const stopCode of saved.stops) {
             stopCards.push(
                 <IonItem key={stopCode} href={"/stop/" + stopCode}>
@@ -56,8 +55,6 @@ const MetlinkSavedList: FC<Props> = () => {
                 </IonItem>
             )
         }
-
-        if (!stopCards && !serviceCards) return (<p>No favourites have been saved yet!</p>)
 
         return (
             <div>
