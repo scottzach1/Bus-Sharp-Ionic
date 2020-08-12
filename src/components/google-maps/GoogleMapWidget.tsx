@@ -117,8 +117,10 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                         }}
                     >
                         <div id="selected-stop-popup">
-                            <span><IonIcon icon={locationSharp}/></span>
-                            <strong>{getStopName(selectedStop)}</strong>
+                            <a href={'/stop/' + selectedStop.code}>
+                                <span><IonIcon icon={locationSharp}/></span>
+                                <strong>{getStopName(selectedStop)}</strong>
+                            </a>
                         </div>
                     </InfoWindow>
                 )}

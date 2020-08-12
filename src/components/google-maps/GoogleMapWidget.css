@@ -1,3 +1,7 @@
-.gm-style .gm-style-iw {
-    color: #0d0d0d;
+.gm-style .gm-style-iw a {
+    text-decoration: none;
+}
+
+a {
+    color:inherit;
 }
