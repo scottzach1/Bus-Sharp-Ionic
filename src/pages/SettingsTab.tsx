@@ -1,5 +1,16 @@
 import React, {FC} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonLabel,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const SettingsTab: FC = () => {
     return (
@@ -18,7 +29,7 @@ const SettingsTab: FC = () => {
                         <IonTitle size="large">Settings</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonLabel>TO IMPLEMENT</IonLabel>
+                <IonButton expand="block" onClick={() => AsyncStorage.clear()}><IonLabel>Clear</IonLabel></IonButton>
             </IonContent>
         </IonPage>
     );

@@ -11,6 +11,7 @@ import {
     IonLabel,
     IonList
 } from "@ionic/react";
+import AsyncStorage from "@react-native-community/async-storage";
 
 interface Props {
 }
@@ -20,17 +21,27 @@ const MetlinkSavedList: FC<Props> = () => {
     const[triggerReload, setTriggerReload] = useState<boolean>(false);
 
     function clearSavedStops() {
-        let saved: any = JSON.parse(localStorage.saved);
-        saved.stops = []
-        localStorage.saved = JSON.stringify(saved);
-        setTriggerReload(!triggerReload);
+        AsyncStorage.getItem('saved').then(res => {
+            if (!res) return;
+
+            let saved: any = JSON.parse(res);
+            saved.stops = [];
+
+            AsyncStorage.setItem('saved', JSON.stringify(saved))
+                .then(() => setTriggerReload(!triggerReload));
+        })
     }
 
     function clearSavedServices() {
-        let saved: any = JSON.parse(localStorage.saved);
-        saved.services = []
-        localStorage.saved = JSON.stringify(saved);
-        setTriggerReload(!triggerReload);
+        AsyncStorage.getItem('saved').then(res => {
+            if (!res) return;
+
+            let saved: any = JSON.parse(res);
+            saved.services = [];
+
+            AsyncStorage.setItem('saved', JSON.stringify(saved))
+                .then(() => setTriggerReload(!triggerReload));
+        })
     }
 
     function generateSavedCards() {

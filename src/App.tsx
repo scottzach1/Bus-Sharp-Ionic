@@ -4,6 +4,7 @@ import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import SearchTab from './pages/SearchTab';
 import MapTab from './pages/MapTab';
@@ -26,14 +27,67 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import StopPerspective from "./pages/StopPerspective";
 import ServicePerspective from "./pages/ServicePerspective";
+import {readRemoteFile} from "react-papaparse";
 
 const App: React.FC = () => {
-    if (!localStorage.saved) {
-        localStorage.saved = JSON.stringify({
+
+    // Initialise Saved if not present.
+    AsyncStorage.getAllKeys().then(keys => {
+        if ('saved' in keys) return;
+
+        AsyncStorage.setItem('saved', JSON.stringify({
             stops: [],
             services: [],
+        })).catch(e => console.error(e));
+    });
+
+    // Download Stop Data
+    AsyncStorage.getAllKeys().then(keys => {
+        if ('stops' in keys) return;
+
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
+
+        // Read Remote CSV.
+        readRemoteFile(proxy + url, {
+            download: true,
+            header: true,
+            complete: async (results: any) => {
+                let stopData: any = {};
+
+                for (const stopEntry of results.data) {
+                    stopData[stopEntry.stop_id] = stopEntry;
+                }
+
+                AsyncStorage.setItem('stops', JSON.stringify(stopData))
+                    .catch(e => console.error(e))
+            }
         });
-    }
+    });
+
+    // Download Service Data
+    AsyncStorage.getAllKeys().then(keys => {
+        if ('services' in keys) return;
+
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
+
+        // Read Remote CSV.
+        readRemoteFile(proxy + url, {
+            download: true,
+            header: true,
+            complete: async (results: any) => {
+                let serviceData: any = {};
+
+                for (const serviceEntry of results.data) {
+                    serviceData[serviceEntry.route_short_name] = serviceEntry;
+                }
+
+                AsyncStorage.setItem('services', JSON.stringify(serviceData))
+                    .catch(e => console.error(e));
+            }
+        });
+    });
 
     return (
         <IonApp>
