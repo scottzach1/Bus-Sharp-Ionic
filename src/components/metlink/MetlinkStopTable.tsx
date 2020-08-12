@@ -50,7 +50,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
             let realTime: string = (service.IsRealtime) ? ' live' : '';
 
             cards.push(
-                <IonItem key={counter++ + '-' + timeRemaining}>
+                <IonItem key={counter++ + '-' + timeRemaining} href={"/service/" + service.ServiceID}>
                     <IonBadge slot="start">{service.ServiceID}</IonBadge>
                     <IonLabel>{serviceName[1]} - {timeRemaining}</IonLabel>
                     <IonBadge slot="end" color="success">{realTime}</IonBadge>
@@ -68,7 +68,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
     }
 
     // Call the async method to update the page when data arrives.
-    getStopData()
+    getStopData().then();
 
     return (
         <div>
