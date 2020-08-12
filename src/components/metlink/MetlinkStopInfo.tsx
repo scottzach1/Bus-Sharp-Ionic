@@ -10,7 +10,7 @@ import {
     IonCardTitle
 } from "@ionic/react";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import {heart, share, close, map} from "ionicons/icons";
+import {close, heart, heartOutline, map, share} from "ionicons/icons";
 
 interface Props {
     stopCode: string;
@@ -43,6 +43,36 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
         localStorage.saved = JSON.stringify(saved);
     }
 
+    function generateActionSheet() {
+        const saved: boolean = JSON.parse(localStorage.saved).stops.includes(stopCode);
+
+        return (
+            <IonActionSheet
+                isOpen={showActionSheet}
+                onDidDismiss={() => setShowActionSheet(false)}
+                cssClass='action-sheet'
+                buttons={[{
+                    text: 'Share',
+                    icon: share,
+                    handler: () => console.log('Share clicked')
+                }, {
+                    text: 'View on Map',
+                    icon: map,
+                    handler: () => console.log('Map clicked')
+                }, {
+                    text: saved ? 'Unfavourite' : 'Favourite',
+                    icon: saved ? heartOutline : heart,
+                    handler: () => toggleFavouriteStop()
+                }, {
+                    text: 'Cancel',
+                    icon: close,
+                    role: 'cancel',
+                    handler: () => console.log('Closed clicked')
+                }]}
+            />
+        )
+    }
+
     getStopName().then();
 
     return (
@@ -58,30 +88,7 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
                         <IonButton onClick={() => setShowActionSheet(true)} expand="block">
                             Actions
                         </IonButton>
-                        <IonActionSheet
-                            isOpen={showActionSheet}
-                            onDidDismiss={() => setShowActionSheet(false)}
-                            cssClass='action-sheet'
-                            buttons={[{
-                                text: 'Share',
-                                icon: share,
-                                handler: () => console.log('Share clicked')
-                            }, {
-                                text: 'View on Map',
-                                icon: map,
-                                handler: () => console.log('Map clicked')
-                            }, {
-                                text: 'Favorite',
-                                icon: heart,
-                                handler: () => toggleFavouriteStop()
-                            }, {
-                                text: 'Cancel',
-                                icon: close,
-                                role: 'cancel',
-                                handler: () => console.log('Closed clicked')
-                            }]}
-                        >
-                        </IonActionSheet>
+                        {generateActionSheet()}
                     </IonCardContent>
                 </IonCard>
             )}
