@@ -1,5 +1,6 @@
 import React, {FC, useState} from 'react';
 import GoogleMapWidget, {Position, ServiceRoute, StopMarker} from "../google-maps/GoogleMapWidget";
+import "./MetlinkServiceView.css";
 
 interface Props {
     serviceCode: string;

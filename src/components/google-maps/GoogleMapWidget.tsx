@@ -3,6 +3,7 @@ import {GoogleMap, InfoWindow, Marker, Polyline, useLoadScript} from "@react-goo
 import {IonIcon} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
 import {readRemoteFile} from "react-papaparse";
+import "./GoogleMapWidget.css";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -115,9 +116,11 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                             setSelectedStop(null);
                         }}
                     >
-                        <div itemID="selected-stop-popup">
-                            <span><IonIcon icon={locationSharp}/></span>
-                            <strong>{getStopName(selectedStop)}</strong>
+                        <div id="selected-stop-popup">
+                            <a href={'/stop/' + selectedStop.code}>
+                                <span><IonIcon icon={locationSharp}/></span>
+                                <strong>{getStopName(selectedStop)}</strong>
+                            </a>
                         </div>
                     </InfoWindow>
                 )}
