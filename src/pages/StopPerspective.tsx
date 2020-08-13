@@ -1,7 +1,7 @@
 import React, {FC, useState} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkStopTable from "../components/metlink/MetlinkStopTable";
-import MetlinkStopInfo from "../components/metlink/MetlinkStopInfo";
+import MetlinkStopTable from "../components/metlink/stop/MetlinkStopTable";
+import MetlinkStopInfo from "../components/metlink/stop/MetlinkStopInfo";
 
 const StopPerspective: FC<any> = ({match}) => {
     const {params: {stopCode}} = match

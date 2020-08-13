@@ -1,5 +1,4 @@
-import React, {FC, useState} from 'react';
-import "./MetlinkStopInfo.css";
+import React, {FC, useState} from "react"
 import {
     IonActionSheet,
     IonButton,
@@ -9,52 +8,52 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import LoadingSpinner from "../ui/LoadingSpinner";
-import {heart, share, close, map} from "ionicons/icons";
+import {close, heart, map, share} from "ionicons/icons";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 interface Props {
-    stopCode: string;
+    serviceCode: string
 }
 
-const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
-    const [stopData, setStopData] = useState<any>(null);
+const MetlinkServiceInfo: FC<Props> = ({serviceCode}) => {
+    const [serviceData, setServiceData] = useState<any>(null);
     const [showActionSheet, setShowActionSheet] = useState<boolean>(false);
 
-    async function getStopName() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = 'https://www.metlink.org.nz/api/v1/Stop/';
+    console.log(serviceData)
 
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
-        fetch(proxy + url + stopCode)
+    async function getServiceName() {
+        const proxy = "https://cors-anywhere.herokuapp.com/";
+        const url = "https://www.metlink.org.nz/api/v1/ServiceMap/";
+
+        fetch(proxy + url + serviceCode)
             .then(resp => {
                 if (resp.ok) Promise.resolve(resp.json())
-                    .then(data => setStopData(data));
-            });
+                    .then(data => setServiceData(data));
+            })
     }
 
-    function toggleFavouriteStop() {
+    function toggleFavouriteService() {
         let saved: any = JSON.parse(localStorage.saved);
 
-        if (saved.stops.includes(stopCode))
-            saved.stops.splice(saved.stops.indexOf(stopCode));
+        if (saved.services.includes(serviceCode))
+            saved.services.splice(saved.services.indexOf(serviceCode));
         else
-            saved.stops.push(stopCode);
+            saved.services.push(serviceCode);
 
         localStorage.saved = JSON.stringify(saved);
     }
 
-    getStopName().then();
+    getServiceName().then()
 
     return (
         <div>
-            {stopData && (
+            {serviceData && (
                 <IonCard>
                     <IonCardHeader>
-                        <IonCardTitle>{stopData.Name}</IonCardTitle>
-                        <IonCardSubtitle>Code: {stopData.Sms}</IonCardSubtitle>
+                        <IonCardTitle>{serviceData.Name}</IonCardTitle>
+                        <IonCardSubtitle>Code: {serviceData.TrimmedCode}</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        Fare zone: {stopData.Farezone}
                         <IonButton onClick={() => setShowActionSheet(true)} expand="block">
                             Actions
                         </IonButton>
@@ -67,13 +66,9 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
                                 icon: share,
                                 handler: () => console.log('Share clicked')
                             }, {
-                                text: 'View on Map',
-                                icon: map,
-                                handler: () => console.log('Map clicked')
-                            }, {
                                 text: 'Favorite',
                                 icon: heart,
-                                handler: () => toggleFavouriteStop()
+                                handler: () => toggleFavouriteService()
                             }, {
                                 text: 'Cancel',
                                 icon: close,
@@ -85,11 +80,11 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
                     </IonCardContent>
                 </IonCard>
             )}
-            {!stopData && (
+            {!serviceData && (
                 <LoadingSpinner/>
             )}
         </div>
     )
 }
 
-export default MetlinkStopInfo;
+export default MetlinkServiceInfo

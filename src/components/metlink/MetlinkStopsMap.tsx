@@ -2,7 +2,6 @@ import React, {FC, useState} from "react";
 import {readRemoteFile} from "react-papaparse";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import "./MetlinkStopsMap.css"
 
 interface Props {
 }

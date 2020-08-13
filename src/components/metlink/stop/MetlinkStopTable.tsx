@@ -1,7 +1,6 @@
 import React, {FC, useState} from 'react';
 import {IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList} from "@ionic/react";
-import LoadingSpinner from '../ui/LoadingSpinner';
-import "./MetlinkStopView.css";
+import LoadingSpinner from '../../ui/LoadingSpinner';
 
 interface Props {
     stopCode: string;
