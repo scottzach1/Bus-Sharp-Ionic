@@ -9,7 +9,8 @@ import {
     IonCardTitle
 } from "@ionic/react";
 import LoadingSpinner from "../../ui/LoadingSpinner";
-import {heart, share, close, map} from "ionicons/icons";
+import {close, heart, heartOutline, map, share} from "ionicons/icons";
+import AsyncStorage from "@react-native-community/async-storage";
 
 interface Props {
     stopCode: string;
@@ -19,17 +20,10 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
     const [stopData, setStopData] = useState<any>(null);
     const [showActionSheet, setShowActionSheet] = useState<boolean>(false);
 
-    async function getStopName() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = 'https://www.metlink.org.nz/api/v1/Stop/';
-
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
-        fetch(proxy + url + stopCode)
-            .then(resp => {
-                if (resp.ok) Promise.resolve(resp.json())
-                    .then(data => setStopData(data));
-            });
-    }
+    // Get Stop Data
+    if (!stopData) AsyncStorage.getItem('stops').then(stops => {
+        if (stops) setStopData(JSON.parse(stops)[stopCode]);
+    });
 
     function toggleFavouriteStop() {
         let saved: any = JSON.parse(localStorage.saved);
@@ -42,45 +36,50 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
         localStorage.saved = JSON.stringify(saved);
     }
 
-    getStopName().then();
+    function generateActionSheet() {
+        const saved: boolean = JSON.parse(localStorage.saved).stops.includes(stopCode);
+
+        return (
+            <IonActionSheet
+                isOpen={showActionSheet}
+                onDidDismiss={() => setShowActionSheet(false)}
+                cssClass='action-sheet'
+                buttons={[{
+                    text: 'Share',
+                    icon: share,
+                    handler: () => console.log('Share clicked')
+                }, {
+                    text: 'View on Map',
+                    icon: map,
+                    handler: () => console.log('Map clicked')
+                }, {
+                    text: saved ? 'Unfavourite' : 'Favourite',
+                    icon: saved ? heartOutline : heart,
+                    handler: () => toggleFavouriteStop()
+                }, {
+                    text: 'Cancel',
+                    icon: close,
+                    role: 'cancel',
+                    handler: () => console.log('Closed clicked')
+                }]}
+            />
+        )
+    }
 
     return (
         <div>
             {stopData && (
                 <IonCard>
                     <IonCardHeader>
-                        <IonCardTitle>{stopData.Name}</IonCardTitle>
-                        <IonCardSubtitle>Code: {stopData.Sms}</IonCardSubtitle>
+                        <IonCardTitle>{stopData.stop_name}</IonCardTitle>
+                        <IonCardSubtitle>Code: {stopData.stop_id}</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        Fare zone: {stopData.Farezone}
+                        Fare zone: {stopData.zone_id}
                         <IonButton onClick={() => setShowActionSheet(true)} expand="block">
                             Actions
                         </IonButton>
-                        <IonActionSheet
-                            isOpen={showActionSheet}
-                            onDidDismiss={() => setShowActionSheet(false)}
-                            cssClass='action-sheet'
-                            buttons={[{
-                                text: 'Share',
-                                icon: share,
-                                handler: () => console.log('Share clicked')
-                            }, {
-                                text: 'View on Map',
-                                icon: map,
-                                handler: () => console.log('Map clicked')
-                            }, {
-                                text: 'Favorite',
-                                icon: heart,
-                                handler: () => toggleFavouriteStop()
-                            }, {
-                                text: 'Cancel',
-                                icon: close,
-                                role: 'cancel',
-                                handler: () => console.log('Closed clicked')
-                            }]}
-                        >
-                        </IonActionSheet>
+                        {generateActionSheet()}
                     </IonCardContent>
                 </IonCard>
             )}

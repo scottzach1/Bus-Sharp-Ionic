@@ -12,7 +12,6 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {readRemoteFile} from "react-papaparse";
-import "./SearchTab.css";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const SearchTab: FC = () => {
