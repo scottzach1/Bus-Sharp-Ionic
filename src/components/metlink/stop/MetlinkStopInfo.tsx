@@ -1,5 +1,4 @@
 import React, {FC, useState} from 'react';
-import "./MetlinkStopInfo.css";
 import {
     IonActionSheet,
     IonButton,
@@ -9,7 +8,7 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 import {heart, share, close, map} from "ionicons/icons";
 
 interface Props {
