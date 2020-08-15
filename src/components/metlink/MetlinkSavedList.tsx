@@ -1,7 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {Component} from 'react';
 import "./MetlinkStopInfo.css";
 import {
-    IonBadge, IonButton,
+    IonBadge,
+    IonButton,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -11,74 +12,98 @@ import {
     IonLabel,
     IonList
 } from "@ionic/react";
-import AsyncStorage from "@react-native-community/async-storage";
+import {Plugins} from '@capacitor/core';
 
-interface Props {
+const {Storage} = Plugins;
+
+interface State {
+    savedStopCards: any[] | null,
+    savedServiceCards: any[] | null,
 }
 
-const MetlinkSavedList: FC<Props> = () => {
+class MetlinkSavedList extends Component<{}, State> {
     // Can be true or false, flipping it causes the component to refresh.
-    const[triggerReload, setTriggerReload] = useState<boolean>(false);
+    constructor(props: Readonly<{}>) {
+        super(props);
 
-    function clearSavedStops() {
-        AsyncStorage.getItem('saved').then(res => {
-            if (!res) return;
-
-            let saved: any = JSON.parse(res);
-            saved.stops = [];
-
-            AsyncStorage.setItem('saved', JSON.stringify(saved))
-                .then(() => setTriggerReload(!triggerReload));
-        })
+        this.state = {
+            savedStopCards: null,
+            savedServiceCards: null,
+        }
     }
 
-    function clearSavedServices() {
-        AsyncStorage.getItem('saved').then(res => {
-            if (!res) return;
-
-            let saved: any = JSON.parse(res);
-            saved.services = [];
-
-            AsyncStorage.setItem('saved', JSON.stringify(saved))
-                .then(() => setTriggerReload(!triggerReload));
-        })
+    componentDidMount() {
+        this.updateSavedCards();
     }
 
-    function generateSavedCards() {
-        let saved: any = JSON.parse(localStorage.saved);
+    clearSavedStops() {
+        Storage.set({key: 'savedStops', value: JSON.stringify([])})
+            .then(() => this.updateSavedCards())
+            .catch(e => console.error(e));
+    }
 
-        let stopCards: any[] = [];
-        for (const stopCode of saved.stops) {
-            stopCards.push(
-                <IonItem key={stopCode} href={"/stop/" + stopCode}>
-                    <IonBadge slot="start">{"stop"}</IonBadge>
-                    <IonLabel>{stopCode}</IonLabel>
+    clearSavedServices() {
+        Storage.set({key: 'savedServices', value: JSON.stringify([])})
+            .then(() => this.updateSavedCards())
+            .catch(e => console.error(e));
+    }
+
+    updateSavedCards() {
+        Storage.get({key: 'savedStops'}).then(res => {
+            if (!res.value) return;
+
+            let stopCards: any[] = [];
+            for (const stopCode of JSON.parse(res.value)) {
+                stopCards.push(
+                    <IonItem key={stopCode} href={"/stop/" + stopCode}>
+                        <IonBadge slot="start">{"stop"}</IonBadge>
+                        <IonLabel>{stopCode}</IonLabel>
+                    </IonItem>
+                );
+            }
+            if (stopCards.length === 0) stopCards.push(
+                <IonItem key='empty-services'>
+                    <IonLabel>Empty</IonLabel>
                 </IonItem>
             )
-        }
+            this.setState({savedStopCards: stopCards});
+        });
 
-        let serviceCards: any[] = [];
-        for (const serviceCode of saved.services) {
-            serviceCards.push(
-                <IonItem key={serviceCode} href={"/service/" + serviceCode}>
-                    <IonBadge slot="start" color="warning">{"service"}</IonBadge>
-                    <IonLabel>{serviceCode}</IonLabel>
+        Storage.get({key: 'savedServices'}).then(res => {
+            if (!res.value) return;
+
+            let serviceCards: any[] = [];
+            for (const serviceCode of JSON.parse(res.value)) {
+                serviceCards.push(
+                    <IonItem key={serviceCode} href={"/service/" + serviceCode}>
+                        <IonBadge slot="start" color="warning">{"service"}</IonBadge>
+                        <IonLabel>{serviceCode}</IonLabel>
+                    </IonItem>
+                )
+            }
+            if (serviceCards.length === 0) serviceCards.push(
+                <IonItem key='empty-services'>
+                    <IonLabel>Empty</IonLabel>
                 </IonItem>
             )
-        }
+            this.setState({savedServiceCards: serviceCards});
+        });
+    }
 
+    render() {
         return (
             <div>
                 <IonCard>
                     <IonCardHeader>
                         <IonCardTitle>Stops</IonCardTitle>
                         <IonCardSubtitle>
-                            <IonButton onClick={() => clearSavedStops()}>Clear</IonButton>
+                            <IonButton onClick={() => this.clearSavedStops()}>Clear</IonButton>
                         </IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <IonList lines="full">
-                            {stopCards}
+                            {this.state.savedStopCards ? this.state.savedStopCards :
+                                <IonItem><IonLabel>Failed to load!</IonLabel></IonItem>}
                         </IonList>
                     </IonCardContent>
                 </IonCard>
@@ -86,24 +111,19 @@ const MetlinkSavedList: FC<Props> = () => {
                     <IonCardHeader>
                         <IonCardTitle>Services</IonCardTitle>
                         <IonCardSubtitle>
-                            <IonButton onClick={() => clearSavedServices()}>Clear</IonButton>
+                            <IonButton onClick={() => this.clearSavedServices()}>Clear</IonButton>
                         </IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <IonList lines="full">
-                            {serviceCards}
+                            {this.state.savedServiceCards ? this.state.savedServiceCards :
+                                <IonItem><IonLabel>Failed to load!</IonLabel></IonItem>}
                         </IonList>
                     </IonCardContent>
                 </IonCard>
             </div>
         )
     }
-
-    return (
-        <div>
-            {generateSavedCards()}
-        </div>
-    )
 }
 
 export default MetlinkSavedList;

@@ -10,7 +10,10 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import AsyncStorage from "@react-native-community/async-storage";
+import {Plugins} from '@capacitor/core';
+
+const {Storage} = Plugins;
+
 
 const SettingsTab: FC = () => {
     return (
@@ -29,7 +32,7 @@ const SettingsTab: FC = () => {
                         <IonTitle size="large">Settings</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonButton expand="block" onClick={() => AsyncStorage.clear()}><IonLabel>Clear</IonLabel></IonButton>
+                <IonButton expand="block" onClick={() => Storage.clear()}><IonLabel>Clear</IonLabel></IonButton>
             </IonContent>
         </IonPage>
     );

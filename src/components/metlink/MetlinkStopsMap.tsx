@@ -2,7 +2,9 @@ import React, {FC, useState} from "react";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import "./MetlinkStopsMap.css"
-import AsyncStorage from "@react-native-community/async-storage";
+import {Plugins} from '@capacitor/core';
+
+const {Storage} = Plugins;
 
 interface Props {
 }
@@ -11,19 +13,13 @@ const MetlinkStopsMap: FC<Props> = () => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
 
-    async function getStopData() {
-        try {
-            let string: string | null = await AsyncStorage.getItem('stops');
-            if (string) {
-                let stopData: any = JSON.parse(string);
-                generateMapMarkers(stopData);
-                setDataIsLoaded(true);
-            } else console.error('no stop data!');
-        } catch (e) {
-            console.log('Failed to find stop information!');
-            console.log(e);
+    if (!dataIsLoaded) Storage.get({key: 'stops'}).then(res => {
+        if (res.value) {
+            let stopData: any = JSON.parse(res.value);
+            generateMapMarkers(stopData);
+            setDataIsLoaded(true);
         }
-    }
+    }).catch(e => console.error(e));
 
     function generateMapMarkers(data: any) {
         let parsedMarkers: StopMarker[] = [];
@@ -50,8 +46,6 @@ const MetlinkStopsMap: FC<Props> = () => {
 
         setStopMarkers(parsedMarkers);
     }
-
-    if (!dataIsLoaded) getStopData().then();
 
     return (
         <div className="metlink-stop-map">

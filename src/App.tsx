@@ -2,10 +2,8 @@ import 'fetch';
 import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
-import {IonReactRouter} from '@ionic/react-router';
 import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
-import AsyncStorage from '@react-native-community/async-storage';
-
+import {Plugins} from '@capacitor/core';
 import SearchTab from './pages/SearchTab';
 import MapTab from './pages/MapTab';
 import SavedTab from './pages/SavedTab';
@@ -28,107 +26,112 @@ import './theme/variables.css';
 import StopPerspective from "./pages/StopPerspective";
 import ServicePerspective from "./pages/ServicePerspective";
 import {readRemoteFile} from "react-papaparse";
+import {IonReactRouter} from "@ionic/react-router";
 
-const App: React.FC = () => {
+const {Storage} = Plugins;
 
-    // Initialise Saved if not present.
-    AsyncStorage.getAllKeys().then(keys => {
-        if ('saved' in keys) return;
+interface AppState {
+    stops: any[];
+    services: any[];
+}
 
-        AsyncStorage.setItem('saved', JSON.stringify({
+class App extends React.Component<{}, AppState> {
+
+    constructor(props: Readonly<{}>) {
+        super(props);
+        this.state = {
             stops: [],
             services: [],
-        })).catch(e => console.error(e));
-    });
+        };
+    }
 
-    // Download Stop Data
-    AsyncStorage.getAllKeys().then(keys => {
-        if ('stops' in keys) return;
+    async componentDidMount() {
+        Storage.get({key: 'savedStops'}).then((res) => {
+            if (!res.value) Storage.set({key: 'savedStops', value: JSON.stringify([])}).then()
+        }).catch(e => console.error(e));
 
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
-
-        // Read Remote CSV.
-        readRemoteFile(proxy + url, {
-            download: true,
-            header: true,
-            complete: async (results: any) => {
-                let stopData: any = {};
-
-                for (const stopEntry of results.data) {
-                    stopData[stopEntry.stop_id] = stopEntry;
-                }
-
-                AsyncStorage.setItem('stops', JSON.stringify(stopData))
-                    .catch(e => console.error(e))
-            }
-        });
-    });
-
-    // Download Service Data
-    AsyncStorage.getAllKeys().then(keys => {
-        if ('services' in keys) return;
+        Storage.get({key: 'savedServices'}).then((res) => {
+            if (!res.value) Storage.set({key: 'savedServices', value: JSON.stringify([])}).then()
+        }).catch((e) => console.error(e));
 
         const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
 
-        // Read Remote CSV.
-        readRemoteFile(proxy + url, {
-            download: true,
-            header: true,
-            complete: async (results: any) => {
-                let serviceData: any = {};
+        Storage.get({key: 'stops'}).then((res) => {
+            const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
+            if (!res.value) readRemoteFile(proxy + url, {
+                download: true, header: true,
+                complete: async (results: any) => {
+                    let stopData: any = {};
 
-                for (const serviceEntry of results.data) {
-                    serviceData[serviceEntry.route_short_name] = serviceEntry;
+                    for (const stopEntry of results.data)
+                        stopData[stopEntry.stop_id] = stopEntry;
+
+                    Storage.set({key: 'stops', value: JSON.stringify(stopData)})
+                        .catch((e) => console.error(e));
                 }
+            })
+        }).catch(e => console.error(e));
 
-                AsyncStorage.setItem('services', JSON.stringify(serviceData))
-                    .catch(e => console.error(e));
-            }
-        });
-    });
+        Storage.get({key: 'services'}).then((res) => {
+            const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
+            if (!res.value) readRemoteFile(proxy + url, {
+                download: true, header: true,
+                complete: async (results: any) => {
+                    let serviceData: any = {};
 
-    return (
-        <IonApp>
-            <IonReactRouter>
-                <IonTabs>
-                    <IonRouterOutlet>
-                        {/* Home */}
-                        <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
+                    for (const serviceEntry of results.data)
+                        serviceData[serviceEntry.route_short_name] = serviceEntry;
 
-                        {/* Tabs */}
-                        <Route path="/search" component={SearchTab}/>
-                        <Route path="/map" component={MapTab}/>
-                        <Route path="/saved" component={SavedTab}/>
-                        <Route path="/settings" component={SettingsTab}/>
+                    Storage.set({key: 'services', value: JSON.stringify(serviceData)})
+                        .catch((e) => console.error(e));
+                }
+            })
+        }).catch(e => console.error(e));
+    }
 
-                        {/* Hidden Perspectives*/}
-                        <Route path="/service/:serviceCode" component={ServicePerspective}/>
-                        <Route path="/stop/:stopCode" component={StopPerspective}/>
-                    </IonRouterOutlet>
-                    <IonTabBar slot="bottom">
-                        <IonTabButton tab="search" href="/search">
-                            <IonIcon icon={searchCircleSharp}/>
-                            <IonLabel>Search</IonLabel>
-                        </IonTabButton>
-                        <IonTabButton tab="map" href="/map">
-                            <IonIcon icon={mapSharp}/>
-                            <IonLabel>Map</IonLabel>
-                        </IonTabButton>
-                        <IonTabButton tab="saved" href="/saved">
-                            <IonIcon icon={saveSharp}/>
-                            <IonLabel>Saved</IonLabel>
-                        </IonTabButton>
-                        <IonTabButton tab="settings" href="/settings">
-                            <IonIcon icon={settingsSharp}/>
-                            <IonLabel>Settings</IonLabel>
-                        </IonTabButton>
-                    </IonTabBar>
-                </IonTabs>
-            </IonReactRouter>
-        </IonApp>
-    )
-};
+
+    render() {
+        return (
+            <IonApp>
+                <IonReactRouter>
+                    <IonTabs>
+                        <IonRouterOutlet>
+                            {/* Home */}
+                            <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
+
+                            {/* Tabs */}
+                            <Route path="/search" component={SearchTab}/>
+                            <Route path="/map" component={MapTab}/>
+                            <Route path="/saved" component={SavedTab}/>
+                            <Route path="/settings" component={SettingsTab}/>
+
+                            {/* Hidden Perspectives*/}
+                            <Route path="/service/:serviceCode" component={ServicePerspective}/>
+                            <Route path="/stop/:stopCode" component={StopPerspective}/>
+                        </IonRouterOutlet>
+                        <IonTabBar slot="bottom">
+                            <IonTabButton tab="search" href="/search">
+                                <IonIcon icon={searchCircleSharp}/>
+                                <IonLabel>Search</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="map" href="/map">
+                                <IonIcon icon={mapSharp}/>
+                                <IonLabel>Map</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="saved" href="/saved">
+                                <IonIcon icon={saveSharp}/>
+                                <IonLabel>Saved</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="settings" href="/settings">
+                                <IonIcon icon={settingsSharp}/>
+                                <IonLabel>Settings</IonLabel>
+                            </IonTabButton>
+                        </IonTabBar>
+                    </IonTabs>
+                </IonReactRouter>
+            </IonApp>
+        )
+    }
+}
 
 export default App;
