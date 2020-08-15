@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {Component} from "react";
 import {
     IonContent,
     IonHeader,
@@ -11,76 +11,86 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {readRemoteFile} from "react-papaparse";
 import "./SearchTab.css";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import {Plugins} from '@capacitor/core';
 
-const SearchTab: FC = () => {
-    const [searchText, setSearchText] = useState<string>("")
-    const [filter, setFilter] = useState<string>("ALL")
+const {Storage} = Plugins;
 
-    const [stopData, setStopData] = useState<SearchItem[] | null>(null);
-    const [routeData, setRouteData] = useState<SearchItem[] | null>(null);
 
-    const [stopDataLoading, setStopDataLoading] = useState<boolean>(false);
-    const [routeDataLoading, setRouteDataLoading] = useState<boolean>(false);
+interface State {
+    stopData: SearchItem[] | null,
+    serviceData: SearchItem[] | null,
+    searchText: string,
+    filter: string,
+}
 
-    function getDataCSV(url: string, callback: Function) {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
+class SearchTab extends Component<{}, State> {
 
-        // Read Remote CSV.
-        readRemoteFile(proxy + url, {
-            download: true,
-            header: true,
-            complete: (results: any) => {
-                callback(results.data);
-            }
-        })
+    constructor(props: Readonly<{}>) {
+        super(props);
+
+        this.state = {
+            stopData: null,
+            serviceData: null,
+            searchText: "",
+            filter: "ALL",
+        }
     }
 
-    async function parseStopData(dataCSV: any[]) {
+    componentDidMount() {
+        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
+            if (res.value) this.setState({
+                stopData: this.parseStopData(JSON.parse(res.value))
+            });
+        }).catch(e => console.log(e));
+
+        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
+            if (res.value) this.setState({
+                serviceData: this.parseServiceData(JSON.parse(res.value))
+            });
+        }).catch(e => console.log(e));
+    }
+
+    parseStopData(stopData: any[]) {
         let stopItems: SearchItem[] = [];
 
-        for (const stopEntry of dataCSV) {
+        for (const attribute in stopData) {
+            const stopEntry: any = stopData[attribute];
+
             const code: string = stopEntry.stop_id;
             const searchText: string = stopEntry.stop_id + ' - ' + stopEntry.stop_name;
 
             stopItems.push(new SearchItem(searchText, code, true));
         }
-        setStopData(stopItems);
+        return stopItems;
     }
 
+    parseServiceData(serviceData: any[]) {
+        let serviceItems: SearchItem[] = [];
 
-    async function parseRouteData(dataCSV: any[]) {
-        let routeItems: SearchItem[] = [];
-
-        for (const routeEntry of dataCSV) {
-            const code: string = routeEntry.route_short_name;
+        for (const attribute in serviceData) {
+            const serviceEntry: any = serviceData[attribute];
+            const code: string = serviceEntry.route_short_name;
             if (!code) continue;
-            const searchText: string = routeEntry.route_short_name + ' - (' + routeEntry.agency_id + ') - ' + routeEntry.route_long_name;
+            const searchText: string = serviceEntry.route_short_name + ' - (' + serviceEntry.agency_id + ') - ' + serviceEntry.route_long_name;
 
-            routeItems.push(new SearchItem(searchText, code, false));
+            serviceItems.push(new SearchItem(searchText, code, false));
         }
-        setRouteData(routeItems);
+        return serviceItems;
     }
 
-    function filterItem(item: SearchItem) {
+    filterItem(item: SearchItem) {
+        const filter: string = this.state.filter
+        const searchText: string = this.state.searchText;
         const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL";
         return searchText.length && filterCondition && item.searchText.toLowerCase().includes(searchText.toLowerCase())
     }
 
-    if (!stopDataLoading) {
-        setStopDataLoading(true);
-        getDataCSV("http://transitfeeds.com/p/metlink/22/latest/download/stops.txt", parseStopData);
-    }
-    if (!routeDataLoading) {
-        setRouteDataLoading(true);
-        getDataCSV("http://transitfeeds.com/p/metlink/22/latest/download/routes.txt", parseRouteData);
-    }
 
-    function generateCards(items: SearchItem[]) {
+    generateCards(items: SearchItem[]) {
         return items
-            .filter(item => filterItem(item))
+            .filter(item => this.filterItem(item))
             .sort((a, b) => a.searchText.localeCompare(b.searchText))
             .map(item => (
                 <IonItem key={item.searchText} href={item.url}>
@@ -91,49 +101,54 @@ const SearchTab: FC = () => {
             ));
     }
 
-    const stopCards: any[] | null = (stopData) ? generateCards(stopData) : null;
-    const routeCards: any[] | null = (routeData) ? generateCards(routeData) : null;
-    const results: boolean = Boolean(stopCards && routeCards);
+    render() {
+        const stopCards: any[] | null = (this.state.stopData) ? this.generateCards(this.state.stopData) : null;
+        const routeCards: any[] | null = (this.state.serviceData) ? this.generateCards(this.state.serviceData) : null;
+        const results: boolean = Boolean(stopCards && routeCards);
 
-    return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>
-                        Search for Buses and Stops
-                    </IonTitle>
-                </IonToolbar>
-                <IonToolbar>
-                    <IonTitle>
-                        <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)}/>
-                        <IonSegment value={filter}>
-                            <IonSegmentButton onClick={() => setFilter("ALL")} value="ALL">All</IonSegmentButton>
-                            <IonSegmentButton onClick={() => setFilter("ROUTES")}
-                                              value="ROUTES">Routes</IonSegmentButton>
-                            <IonSegmentButton onClick={() => setFilter("STOPS")} value="STOPS">Stops</IonSegmentButton>
-                        </IonSegment>
-                    </IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent>
-                <IonHeader collapse="condense">
+        return (
+            <IonPage>
+                <IonHeader>
                     <IonToolbar>
-                        <IonTitle size="large">Search</IonTitle>
+                        <IonTitle>
+                            Search for Buses and Stops
+                        </IonTitle>
+                    </IonToolbar>
+                    <IonToolbar>
+                        <IonTitle>
+                            <IonSearchbar value={this.state.searchText}
+                                          onIonChange={e => this.setState({searchText: e.detail.value!})}/>
+                            <IonSegment value={this.state.filter}>
+                                <IonSegmentButton onClick={() => this.setState({filter: "ALL"})}
+                                                  value="ALL">All</IonSegmentButton>
+                                <IonSegmentButton onClick={() => this.setState({filter: "ROUTES"})}
+                                                  value="ROUTES">Routes</IonSegmentButton>
+                                <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
+                                                  value="STOPS">Stops</IonSegmentButton>
+                            </IonSegment>
+                        </IonTitle>
                     </IonToolbar>
                 </IonHeader>
+                <IonContent>
+                    <IonHeader collapse="condense">
+                        <IonToolbar>
+                            <IonTitle size="large">Search</IonTitle>
+                        </IonToolbar>
+                    </IonHeader>
 
-                {!results && <LoadingSpinner/>}
-                {(results && !searchText) && <h4>Please enter your query.</h4>}
+                    {!results && <LoadingSpinner/>}
+                    {(results && !this.state.searchText) && <h4>Please enter your query.</h4>}
 
-                {(routeCards && routeCards.length > 0) && (<h4>Routes:</h4>)}
-                {routeCards}
+                    {(routeCards && routeCards.length > 0) && (<h4>Routes:</h4>)}
+                    {routeCards}
 
-                {(stopCards && stopCards.length > 0) && (<h4>Stops:</h4>)}
-                {stopCards}
+                    {(stopCards && stopCards.length > 0) && (<h4>Stops:</h4>)}
+                    {stopCards}
 
-            </IonContent>
-        </IonPage>
-    );
+                </IonContent>
+            </IonPage>
+        );
+    }
 }
 
 class SearchItem {
