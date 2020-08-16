@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {Component} from 'react';
 import "./MetlinkStopInfo.css";
 import {
     IonActionSheet,
@@ -11,45 +11,72 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import {close, heart, heartOutline, map, share} from "ionicons/icons";
+import {Plugins} from '@capacitor/core';
+
+const {Storage} = Plugins;
+
 
 interface Props {
     stopCode: string;
 }
 
-const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
-    const [stopData, setStopData] = useState<any>(null);
-    const [showActionSheet, setShowActionSheet] = useState<boolean>(false);
+interface State {
+    stopData: any | null,
+    showActionSheet: boolean,
+    saved: boolean,
+}
 
-    async function getStopName() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = 'https://www.metlink.org.nz/api/v1/Stop/';
+class MetlinkStopInfo extends Component<Props, State> {
 
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
-        fetch(proxy + url + stopCode)
-            .then(resp => {
-                if (resp.ok) Promise.resolve(resp.json())
-                    .then(data => setStopData(data));
+    constructor(props: Readonly<Props>) {
+        super(props);
+        this.state = {
+            stopData: null,
+            showActionSheet: false,
+            saved: false,
+        };
+    };
+
+    componentDidMount() {
+        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
+            if (res.value) this.setState({
+                stopData: JSON.parse(res.value)[this.props.stopCode],
             });
+        }).catch(e => console.log(e));
+
+        Storage.get({key: 'savedStops'}).then(res => {
+            if (res.value) {
+                let saved: boolean = JSON.parse(res.value).includes(this.props.stopCode)
+                if (this.state.saved !== saved) this.setState({
+                    saved: saved,
+                })
+            }
+        }).catch(e => console.log(e));
     }
 
-    function toggleFavouriteStop() {
-        let saved: any = JSON.parse(localStorage.saved);
-
-        if (saved.stops.includes(stopCode))
-            saved.stops.splice(saved.stops.indexOf(stopCode));
-        else
-            saved.stops.push(stopCode);
-
-        localStorage.saved = JSON.stringify(saved);
+    toggleFavouriteStop() {
+        Storage.get({key: 'savedStops'}).then(res => {
+            if (res.value) {
+                let savedStops: any[] = JSON.parse(res.value);
+                if (savedStops.includes(this.props.stopCode))
+                    savedStops.splice(savedStops.indexOf(this.props.stopCode));
+                else
+                    savedStops.push(this.props.stopCode);
+                Storage.set({
+                    key: 'savedStops',
+                    value: JSON.stringify(savedStops)
+                }).then(() => this.setState({
+                    saved: savedStops.includes(this.props.stopCode)
+                })).catch(e => console.log(e));
+            }
+        });
     }
 
-    function generateActionSheet() {
-        const saved: boolean = JSON.parse(localStorage.saved).stops.includes(stopCode);
-
+    generateActionSheet() {
         return (
             <IonActionSheet
-                isOpen={showActionSheet}
-                onDidDismiss={() => setShowActionSheet(false)}
+                isOpen={this.state.showActionSheet}
+                onDidDismiss={() => this.setState({showActionSheet: false})}
                 cssClass='action-sheet'
                 buttons={[{
                     text: 'Share',
@@ -60,9 +87,9 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
                     icon: map,
                     handler: () => console.log('Map clicked')
                 }, {
-                    text: saved ? 'Unfavourite' : 'Favourite',
-                    icon: saved ? heartOutline : heart,
-                    handler: () => toggleFavouriteStop()
+                    text: this.state.saved ? 'Unfavourite' : 'Favourite',
+                    icon: this.state.saved ? heartOutline : heart,
+                    handler: () => this.toggleFavouriteStop()
                 }, {
                     text: 'Cancel',
                     icon: close,
@@ -73,30 +100,30 @@ const MetlinkStopInfo: FC<Props> = ({stopCode}) => {
         )
     }
 
-    getStopName().then();
-
-    return (
-        <div>
-            {stopData && (
-                <IonCard>
-                    <IonCardHeader>
-                        <IonCardTitle>{stopData.Name}</IonCardTitle>
-                        <IonCardSubtitle>Code: {stopData.Sms}</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>
-                        Fare zone: {stopData.Farezone}
-                        <IonButton onClick={() => setShowActionSheet(true)} expand="block">
-                            Actions
-                        </IonButton>
-                        {generateActionSheet()}
-                    </IonCardContent>
-                </IonCard>
-            )}
-            {!stopData && (
-                <LoadingSpinner/>
-            )}
-        </div>
-    )
+    render() {
+        return (
+            <div>
+                {(this.state && this.state.stopData) && (
+                    <IonCard>
+                        <IonCardHeader>
+                            <IonCardTitle>{this.state.stopData.stop_name}</IonCardTitle>
+                            <IonCardSubtitle>Code: {this.state.stopData.stop_id}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>
+                            Fare zone: {this.state.stopData.zone_id}
+                            <IonButton onClick={() => this.setState({showActionSheet: true})} expand="block">
+                                Actions
+                            </IonButton>
+                            {this.generateActionSheet()}
+                        </IonCardContent>
+                    </IonCard>
+                )}
+                {!this.state.stopData && (
+                    <LoadingSpinner/>
+                )}
+            </div>
+        )
+    }
 }
 
 export default MetlinkStopInfo;

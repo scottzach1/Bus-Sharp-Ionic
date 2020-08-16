@@ -1,5 +1,19 @@
 import React, {FC} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonLabel,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
+import {Plugins} from '@capacitor/core';
+
+const {Storage} = Plugins;
+
 
 const SettingsTab: FC = () => {
     return (
@@ -18,7 +32,7 @@ const SettingsTab: FC = () => {
                         <IonTitle size="large">Settings</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <IonLabel>TO IMPLEMENT</IonLabel>
+                <IonButton expand="block" onClick={() => Storage.clear()}><IonLabel>Clear</IonLabel></IonButton>
             </IonContent>
         </IonPage>
     );

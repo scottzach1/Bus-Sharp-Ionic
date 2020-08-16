@@ -11,18 +11,14 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
     const [stopData, setStopData] = useState<any>()
     const [errorMessage, setErrorMessage] = useState<string>()
 
-    async function getStopData() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
+    const proxy = "https://cors-anywhere.herokuapp.com/";
+    const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
 
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
-        fetch(proxy + url + stopCode)
-            .then(resp => {
-                if (!resp.ok) setErrorMessage(resp.statusText);
-                else Promise.resolve(resp.json())
-                    .then(data => setStopData(data));
-            });
-    }
+    // Download Stop Timetable
+    if (!stopData) fetch(proxy + url + stopCode).then(resp => {
+        if (!resp.ok) setErrorMessage(resp.statusText);
+        else Promise.resolve(resp.json()).then(data => setStopData(data));
+    });
 
     function getTimeRemaining(arrivalTime: string) {
         const arrivalDate: Date = new Date(arrivalTime);
@@ -60,36 +56,30 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
         }
 
         return (
-            <div>
-                <IonCard>
-                    <IonCardHeader>
-                        <IonCardTitle>Upcoming Services</IonCardTitle>
-                    </IonCardHeader>
-                    <IonCardContent>
-                        <IonList lines="full">
-                            {cards}
-                        </IonList>
-                    </IonCardContent>
-                </IonCard>
-            </div>
+            <IonList lines="full">
+                {cards}
+            </IonList>
         )
     }
 
-    // Call the async method to update the page when data arrives.
-    getStopData().then();
-
     return (
         <div>
-            {stopData && (
-                // Generate the `IonList` for all upcoming times.
-                generateStopCards()
-            )}
-            {errorMessage && (
-                <p>Failed: {errorMessage}</p>
-            )}
-            {(!stopData && !errorMessage) && (
-                <LoadingSpinner/>
-            )}
+            <IonCard>
+                <IonCardHeader>
+                    <IonCardTitle>Upcoming Services</IonCardTitle>
+                </IonCardHeader>
+                <IonCardContent>
+                    {stopData && (
+                        generateStopCards()
+                    )}
+                    {errorMessage && (
+                        <p>Failed: {errorMessage}</p>
+                    )}
+                    {(!stopData && !errorMessage) && (
+                        <LoadingSpinner/>
+                    )}
+                </IonCardContent>
+            </IonCard>
         </div>
     );
 }
