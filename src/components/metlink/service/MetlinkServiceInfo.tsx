@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react"
+import React, {Component, FC, useState} from "react"
 import {
     IonActionSheet,
     IonButton,
@@ -8,83 +8,118 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import {close, heart, share} from "ionicons/icons";
+import {close, heart, heartOutline, map, share} from "ionicons/icons";
+import {Plugins} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
+
+const {Storage} = Plugins;
+
 
 interface Props {
     serviceCode: string
 }
 
-const MetlinkServiceInfo: FC<Props> = ({serviceCode}) => {
-    const [serviceData, setServiceData] = useState<any>(null);
-    const [showActionSheet, setShowActionSheet] = useState<boolean>(false);
+interface State {
+    serviceData: any | null,
+    showActionSheet: boolean,
+    saved: boolean
+}
 
-    console.log(serviceData)
+class MetlinkServiceInfo extends Component<Props, State> {
 
-    async function getServiceName() {
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "https://www.metlink.org.nz/api/v1/ServiceMap/";
-
-        fetch(proxy + url + serviceCode)
-            .then(resp => {
-                if (resp.ok) Promise.resolve(resp.json())
-                    .then(data => setServiceData(data));
-            })
+    constructor(props: Readonly<Props>) {
+        super(props);
+        this.state = {
+            serviceData: null,
+            showActionSheet: false,
+            saved: false
+        }
     }
 
-    function toggleFavouriteService() {
-        let saved: any = JSON.parse(localStorage.saved);
 
-        if (saved.services.includes(serviceCode))
-            saved.services.splice(saved.services.indexOf(serviceCode));
-        else
-            saved.services.push(serviceCode);
+    componentDidMount() {
+        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
+            if (res.value) this.setState({
+                serviceData: JSON.parse(res.value)[this.props.serviceCode],
+            });
+        }).catch(e => console.log(e));
 
-        localStorage.saved = JSON.stringify(saved);
+        Storage.get({key: 'savedStops'}).then(res => {
+            if (res.value) {
+                let saved: boolean = JSON.parse(res.value).includes(this.props.serviceCode)
+                if (this.state.saved !== saved) this.setState({
+                    saved: saved,
+                })
+            }
+        }).catch(e => console.log(e));
     }
 
-    getServiceName().then()
+    toggleFavouriteStop() {
+        Storage.get({key: 'savedServices'}).then(res => {
+            if (res.value) {
+                let savedServices: any[] = JSON.parse(res.value);
+                if (savedServices.includes(this.props.serviceCode))
+                    savedServices.splice(savedServices.indexOf(this.props.serviceCode));
+                else
+                    savedServices.push(this.props.serviceCode);
+                Storage.set({
+                    key: 'savedServices',
+                    value: JSON.stringify(savedServices)
+                }).then(() => this.setState({
+                    saved: savedServices.includes(this.props.serviceCode)
+                })).catch(e => console.log(e));
+            }
+        });
+    }
 
-    return (
-        <div>
-            {serviceData && (
-                <IonCard>
-                    <IonCardHeader>
-                        <IonCardTitle>{serviceData.Name}</IonCardTitle>
-                        <IonCardSubtitle>Code: {serviceData.TrimmedCode}</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>
-                        <IonButton onClick={() => setShowActionSheet(true)} expand="block">
-                            Actions
-                        </IonButton>
-                        <IonActionSheet
-                            isOpen={showActionSheet}
-                            onDidDismiss={() => setShowActionSheet(false)}
-                            cssClass='action-sheet'
-                            buttons={[{
-                                text: 'Share',
-                                icon: share,
-                                handler: () => console.log('Share clicked')
-                            }, {
-                                text: 'Favorite',
-                                icon: heart,
-                                handler: () => toggleFavouriteService()
-                            }, {
-                                text: 'Cancel',
-                                icon: close,
-                                role: 'cancel',
-                                handler: () => console.log('Closed clicked')
-                            }]}
-                        >
-                        </IonActionSheet>
-                    </IonCardContent>
-                </IonCard>
-            )}
-            {!serviceData && (
-                <LoadingSpinner/>
-            )}
-        </div>
-    )
+    generateActionSheet() {
+        return (
+            <IonActionSheet
+                isOpen={this.state.showActionSheet}
+                onDidDismiss={() => this.setState({showActionSheet: false})}
+                cssClass='action-sheet'
+                buttons={[{
+                    text: 'Share',
+                    icon: share,
+                    handler: () => console.log('Share clicked')
+                }, {
+                    text: this.state.saved ? 'Unfavourite' : 'Favourite',
+                    icon: this.state.saved ? heartOutline : heart,
+                    handler: () => this.toggleFavouriteStop()
+                }, {
+                    text: 'Cancel',
+                    icon: close,
+                    role: 'cancel',
+                    handler: () => console.log('Closed clicked')
+                }]}
+            />
+        )
+    }
+
+    render() {
+        return (
+            <div>
+                {(this.state && this.state.serviceData) && (
+                    <IonCard>
+                        <IonCardHeader>
+                            <IonCardTitle>{this.state.serviceData.route_long_name}</IonCardTitle>
+                            <IonCardSubtitle>Code: {this.state.serviceData.route_short_name}</IonCardSubtitle>
+                            <IonCardSubtitle>Agency: {this.state.serviceData.agency_id}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>
+                            <IonButton onClick={() => this.setState({showActionSheet: true})} expand="block">
+                                Actions
+                            </IonButton>
+                            {this.generateActionSheet()}
+                        </IonCardContent>
+                    </IonCard>
+                )}
+                {!this.state.serviceData && (
+                    <LoadingSpinner/>
+                )}
+            </div>
+        )
+    }
 }
 
 export default MetlinkServiceInfo

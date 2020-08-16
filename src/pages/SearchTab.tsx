@@ -157,7 +157,7 @@ class SearchItem {
 
     constructor(searchText: string, code: string, isStop: boolean) {
         this.searchText = searchText;
-        this.url = ((isStop) ? "/stop/" : "/service/") + code.toUpperCase();
+        this.url = ((isStop) ? "/stop/" : "/service/") + code.toLowerCase();
         this.isStop = isStop;
     }
 }

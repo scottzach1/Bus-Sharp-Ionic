@@ -107,9 +107,9 @@ class MetlinkStopInfo extends Component<Props, State> {
                         <IonCardHeader>
                             <IonCardTitle>{this.state.stopData.stop_name}</IonCardTitle>
                             <IonCardSubtitle>Code: {this.state.stopData.stop_id}</IonCardSubtitle>
+                            <IonCardSubtitle>Fare zone: {this.state.stopData.zone_id}</IonCardSubtitle>
                         </IonCardHeader>
                         <IonCardContent>
-                            Fare zone: {this.state.stopData.zone_id}
                             <IonButton onClick={() => this.setState({showActionSheet: true})} expand="block">
                                 Actions
                             </IonButton>
