@@ -1,4 +1,4 @@
-import React, {Component, FC, useState} from "react"
+import React, {Component} from "react"
 import {
     IonActionSheet,
     IonButton,
@@ -8,7 +8,7 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import {close, heart, heartOutline, map, share} from "ionicons/icons";
+import {close, heart, heartOutline, share} from "ionicons/icons";
 import {Plugins} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
@@ -36,7 +36,6 @@ class MetlinkServiceInfo extends Component<Props, State> {
         }
     }
 
-
     componentDidMount() {
         if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
             if (res.value) this.setState({
@@ -49,7 +48,7 @@ class MetlinkServiceInfo extends Component<Props, State> {
                 let saved: boolean = JSON.parse(res.value).includes(this.props.serviceCode)
                 if (this.state.saved !== saved) this.setState({
                     saved: saved,
-                })
+                });
             }
         }).catch(e => console.log(e));
     }
@@ -93,7 +92,7 @@ class MetlinkServiceInfo extends Component<Props, State> {
                     handler: () => console.log('Closed clicked')
                 }]}
             />
-        )
+        );
     }
 
     render() {
@@ -122,4 +121,4 @@ class MetlinkServiceInfo extends Component<Props, State> {
     }
 }
 
-export default MetlinkServiceInfo
+export default MetlinkServiceInfo;
