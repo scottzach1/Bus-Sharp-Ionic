@@ -8,7 +8,7 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import {close, heart, map, share} from "ionicons/icons";
+import {close, heart, share} from "ionicons/icons";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 interface Props {

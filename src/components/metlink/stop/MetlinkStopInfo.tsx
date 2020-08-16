@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import "./MetlinkStopInfo.css";
 import {
     IonActionSheet,
     IonButton,
@@ -9,9 +8,9 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import LoadingSpinner from "../ui/LoadingSpinner";
 import {close, heart, heartOutline, map, share} from "ionicons/icons";
 import {Plugins} from '@capacitor/core';
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 const {Storage} = Plugins;
 

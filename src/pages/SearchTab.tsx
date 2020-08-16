@@ -11,7 +11,6 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import "./SearchTab.css";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import {Plugins} from '@capacitor/core';
 

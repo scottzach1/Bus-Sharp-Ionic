@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import "./MetlinkStopInfo.css";
 import {
     IonBadge,
     IonButton,

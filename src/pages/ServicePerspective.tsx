@@ -25,7 +25,7 @@ const ServicePerspective: FC<any> = ({match}) => {
                 <MetlinkServiceInfo serviceCode={serviceCode}/>
                 <MetlinkServiceView serviceCode={serviceCode}/>
             </IonContent>
-        </IonPage>    )
+        </IonPage>)
 }
 
 export default ServicePerspective
