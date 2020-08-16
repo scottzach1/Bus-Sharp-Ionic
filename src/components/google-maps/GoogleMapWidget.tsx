@@ -14,6 +14,7 @@ const libraries = ["places"];
 const mapContainerStyle = {
     width: '100vw',
     height: '100vh', // Need to figure out how to get 100% of max container height - no zoom!
+    
 };
 const center = {
     lat: -41.286461,
