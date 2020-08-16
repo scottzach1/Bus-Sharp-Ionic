@@ -11,7 +11,6 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import "./SearchTab.css";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import {Plugins} from '@capacitor/core';
 
@@ -158,7 +157,7 @@ class SearchItem {
 
     constructor(searchText: string, code: string, isStop: boolean) {
         this.searchText = searchText;
-        this.url = ((isStop) ? "/stop/" : "/service/") + code.toUpperCase();
+        this.url = ((isStop) ? "/stop/" : "/service/") + code.toLowerCase();
         this.isStop = isStop;
     }
 }

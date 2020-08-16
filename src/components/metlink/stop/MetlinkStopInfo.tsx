@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import "./MetlinkStopInfo.css";
 import {
     IonActionSheet,
     IonButton,
@@ -9,9 +8,9 @@ import {
     IonCardSubtitle,
     IonCardTitle
 } from "@ionic/react";
-import LoadingSpinner from "../ui/LoadingSpinner";
 import {close, heart, heartOutline, map, share} from "ionicons/icons";
 import {Plugins} from '@capacitor/core';
+import LoadingSpinner from "../../ui/LoadingSpinner";
 
 const {Storage} = Plugins;
 
@@ -108,9 +107,9 @@ class MetlinkStopInfo extends Component<Props, State> {
                         <IonCardHeader>
                             <IonCardTitle>{this.state.stopData.stop_name}</IonCardTitle>
                             <IonCardSubtitle>Code: {this.state.stopData.stop_id}</IonCardSubtitle>
+                            <IonCardSubtitle>Fare zone: {this.state.stopData.zone_id}</IonCardSubtitle>
                         </IonCardHeader>
                         <IonCardContent>
-                            Fare zone: {this.state.stopData.zone_id}
                             <IonButton onClick={() => this.setState({showActionSheet: true})} expand="block">
                                 Actions
                             </IonButton>

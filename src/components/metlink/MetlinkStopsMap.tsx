@@ -1,7 +1,6 @@
 import React, {FC, useState} from "react";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import "./MetlinkStopsMap.css"
 import {Plugins} from '@capacitor/core';
 
 const {Storage} = Plugins;

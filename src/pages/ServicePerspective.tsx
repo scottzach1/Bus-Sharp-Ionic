@@ -1,6 +1,7 @@
 import React, {FC} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkServiceView from "../components/metlink/MetlinkServiceView";
+import MetlinkServiceView from "../components/metlink/service/MetlinkServiceView";
+import MetlinkServiceInfo from "../components/metlink/service/MetlinkServiceInfo";
 
 const ServicePerspective: FC<any> = ({match}) => {
     const {params: {serviceCode}} = match
@@ -15,17 +16,16 @@ const ServicePerspective: FC<any> = ({match}) => {
                     <IonTitle>Service: {serviceCode}</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent>
+            <IonContent scrollX={false} scrollY={false}>
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Map</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-
+                <MetlinkServiceInfo serviceCode={serviceCode}/>
                 <MetlinkServiceView serviceCode={serviceCode}/>
             </IonContent>
-        </IonPage>
-    )
+        </IonPage>)
 }
 
 export default ServicePerspective

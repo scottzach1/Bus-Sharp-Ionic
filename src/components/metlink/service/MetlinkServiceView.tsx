@@ -1,6 +1,5 @@
 import React, {FC, useState} from 'react';
-import GoogleMapWidget, {Position, ServiceRoute, StopMarker} from "../google-maps/GoogleMapWidget";
-import "./MetlinkServiceView.css";
+import GoogleMapWidget, {Position, ServiceRoute, StopMarker} from "../../google-maps/GoogleMapWidget";
 
 interface Props {
     serviceCode: string;
@@ -78,11 +77,9 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
 
     return (
         <div className={"metlink-service-view"}>
-            <p>Service: {serviceCode} {serviceName && ("(" + serviceName + ")")}</p>
-            {errorMessage && (
-                errorMessage
+            {dataIsLoaded && (
+                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={serviceRoutes}/>
             )}
-            <GoogleMapWidget stopMarkers={stopMarkers} routePaths={serviceRoutes}/>
         </div>
     );
 }
