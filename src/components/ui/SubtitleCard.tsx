@@ -42,7 +42,7 @@ const SubtitleCard: FC<Props> = ({title, contents}) => {
                             let bolds = content.replace(":", ":\n").split("\n")
                             return (
                                 <div id={"div: " + paraIndex}>
-                                    {(!content.toLowerCase().includes("e.g.") && paraIndex != 0) && (<br/>)}
+                                    {(!content.toLowerCase().startsWith("e.g.") && paraIndex != 0) && (<br/>)}
                                     {bolds.map(s => {
                                         paraIndex++;
                                         if (s.includes(":")) return (<br/> && <strong>{s}</strong>)
