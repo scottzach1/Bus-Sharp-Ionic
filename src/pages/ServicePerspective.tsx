@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
 import MetlinkServiceView from "../components/metlink/service/MetlinkServiceView";
 import MetlinkServiceInfo from "../components/metlink/service/MetlinkServiceInfo";
 import BackButton from "../components/ui/BackButton";

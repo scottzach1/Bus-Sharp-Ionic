@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import {Plugins} from '@capacitor/core';
+import SubtitleCard from "../components/ui/SubtitleCard";
 
 const {Storage} = Plugins;
 
@@ -136,12 +137,25 @@ class SearchTab extends Component<{}, State> {
                     </IonHeader>
 
                     {!results && <LoadingSpinner/>}
-                    {(results && !this.state.searchText) && <h4>Please enter your query.</h4>}
+                    {(results && !this.state.searchText) && <SubtitleCard key={"SearchBar-Card"}
+                                                                          title={"SearchBar:"}
+                                                                          contents={["Using the searchbar above, you can search for Stops and Bus Routes.",
+                                                                              "Stops: Stops are defined by their Stop ID",
+                                                                              "E.g. '5008'",
+                                                                              "Routes: Bus Routes are defined by their Bus ID",
+                                                                              "E.g. '2'"]}/>}
+                    {(results && !this.state.searchText) && <SubtitleCard key={"Tab-Card"}
+                                                                          title={"Tabs:"}
+                                                                          contents={["The tabs underneath the search bar allow you to define what search results are represent to you.",
+                                                                              "All: Show both Stops and Bus Routes/Services",
+                                                                              "Routes: Show just Bus Routes/Services.",
+                                                                              "Stops: Show just Stops",
+                                                                              "Exact: Show anything that starts with the search query."]}/>}
 
-                    {(routeCards && routeCards.length > 0) && (<h4>Routes:</h4>)}
+                    {(routeCards && routeCards.length > 0) && (<SubtitleCard key={"Route-Cards"} title={"Routes"} contents={null}/>)}
                     {routeCards}
 
-                    {(stopCards && stopCards.length > 0) && (<h4>Stops:</h4>)}
+                    {(stopCards && stopCards.length > 0) && (<SubtitleCard key={"Stop-Cards"} title={"Stops"} contents={null}/>)}
                     {stopCards}
 
                 </IonContent>
