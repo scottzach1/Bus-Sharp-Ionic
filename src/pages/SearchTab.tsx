@@ -83,8 +83,11 @@ class SearchTab extends Component<{}, State> {
     filterItem(item: SearchItem) {
         const filter: string = this.state.filter
         const searchText: string = this.state.searchText;
-        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL";
-        return searchText.length && filterCondition && item.searchText.toLowerCase().includes(searchText.toLowerCase())
+        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL" || filter === "EXACT";
+        return searchText.length
+            && filterCondition
+            && ((filter === "ALL" && item.searchText.toLowerCase().includes(searchText.toLowerCase()))
+                || (filter === "EXACT" && item.searchText.toLowerCase().startsWith(searchText.toLowerCase())))
     }
 
 
@@ -125,6 +128,8 @@ class SearchTab extends Component<{}, State> {
                                                   value="ROUTES">Routes</IonSegmentButton>
                                 <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
                                                   value="STOPS">Stops</IonSegmentButton>
+                                <IonSegmentButton onClick={() => this.setState({filter: "EXACT"})}
+                                                  value="EXACT">Exact</IonSegmentButton>
                             </IonSegment>
                         </IonTitle>
                     </IonToolbar>
@@ -150,12 +155,14 @@ class SearchTab extends Component<{}, State> {
                                                                               "All: Show both Stops and Bus Routes/Services",
                                                                               "Routes: Show just Bus Routes/Services.",
                                                                               "Stops: Show just Stops",
-                                                                              "Exact: Show anything that starts with the search query."]}/>}
+                                                                              "Exact: Show all Stop and Bus Routes/Services that start with the search query."]}/>}
 
-                    {(routeCards && routeCards.length > 0) && (<SubtitleCard key={"Route-Cards"} title={"Routes"} contents={null}/>)}
+                    {(routeCards && routeCards.length > 0) && (
+                        <SubtitleCard key={"Route-Cards"} title={"Routes"} contents={null}/>)}
                     {routeCards}
 
-                    {(stopCards && stopCards.length > 0) && (<SubtitleCard key={"Stop-Cards"} title={"Stops"} contents={null}/>)}
+                    {(stopCards && stopCards.length > 0) && (
+                        <SubtitleCard key={"Stop-Cards"} title={"Stops"} contents={null}/>)}
                     {stopCards}
 
                 </IonContent>
