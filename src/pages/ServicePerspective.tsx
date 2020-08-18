@@ -15,14 +15,14 @@ const ServicePerspective: FC<any> = ({match}) => {
                 <IonToolbar>
                     <BackButton/>
                     <IonTitle>Service: {serviceCode}</IonTitle>
+                    <IonFab horizontal="end" slot="start">
+                        <IonFabButton onClick={e => setShowCard(!showCard)} size={"small"} activated={showCard}>
+                            <IonIcon icon={informationOutline}/>
+                        </IonFabButton>
+                    </IonFab>
                 </IonToolbar>
             </IonHeader>
             <IonContent scrollX={false} scrollY={false}>
-                <IonFab vertical="bottom" horizontal={"start"} slot="fixed">
-                    <IonFabButton onClick={e => setShowCard(!showCard)} size={"small"}>
-                        <IonIcon icon={showCard ? removeOutline : informationOutline}/>
-                    </IonFabButton>
-                </IonFab>
                 <IonHeader collapse="condense">
                     <IonToolbar>
                         <IonTitle size="large">Map</IonTitle>
