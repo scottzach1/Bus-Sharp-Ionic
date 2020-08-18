@@ -43,9 +43,22 @@ class App extends React.Component<{}, AppState> {
             stops: [],
             services: [],
         };
+        document.body.setAttribute('color-scheme', 'light');
     }
 
     async componentDidMount() {
+        Storage.get({key: 'theme'}).then((res) => {
+            if (!res.value) Storage.set({key: 'theme', value: JSON.stringify("auto")}).then()
+            else if (res.value !== 'auto') {
+                // document.body.classList.toggle('dark', (res.value === 'dark'));
+                // document.body.classList.replace('prefers-color-scheme', res.value);
+                // document.body.setAttribute('data-theme', 'light')
+                document.body.setAttribute('prefers-color-scheme', res.value);
+                document.body.setAttribute('color-scheme', 'light');
+            }
+            // window.matchMedia('(prefers-color-scheme: dark)')
+        })
+
         Storage.get({key: 'savedStops'}).then((res) => {
             if (!res.value) Storage.set({key: 'savedStops', value: JSON.stringify([])}).then()
         }).catch(e => console.error(e));

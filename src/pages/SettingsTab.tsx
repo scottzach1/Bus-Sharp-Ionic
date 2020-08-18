@@ -11,6 +11,7 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {Plugins} from '@capacitor/core';
+import ThemeSelector from "../components/ui/ThemeSelector";
 
 const {Storage} = Plugins;
 
@@ -33,6 +34,7 @@ const SettingsTab: FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <IonButton expand="block" onClick={() => Storage.clear()}><IonLabel>Clear</IonLabel></IonButton>
+                <ThemeSelector/>
             </IonContent>
         </IonPage>
     );
