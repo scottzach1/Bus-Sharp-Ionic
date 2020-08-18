@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
 
-const MapTab: React.FC = () => {
+const MapTab: FC = () => {
     return (
         <IonPage>
             <IonHeader>

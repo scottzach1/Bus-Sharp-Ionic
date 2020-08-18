@@ -1,7 +1,8 @@
 import React, {FC} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
 import MetlinkStopTable from "../components/metlink/stop/MetlinkStopTable";
 import MetlinkStopInfo from "../components/metlink/stop/MetlinkStopInfo";
+import BackButton from "../components/ui/BackButton";
 
 const StopPerspective: FC<any> = ({match}) => {
     const {params: {stopCode}} = match
@@ -10,9 +11,7 @@ const StopPerspective: FC<any> = ({match}) => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonBackButton/>
-                    </IonButtons>
+                    <BackButton/>
                     <IonTitle>Stop: {stopCode}</IonTitle>
                 </IonToolbar>
             </IonHeader>
