@@ -6,10 +6,11 @@ import {
     IonCardContent,
     IonCardHeader,
     IonCardSubtitle,
-    IonCardTitle
+    IonCardTitle,
+    IonToast
 } from "@ionic/react";
 import {close, heart, heartOutline, share} from "ionicons/icons";
-import {Plugins} from '@capacitor/core';
+import {Plugins, Share} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 const {Storage} = Plugins;
@@ -22,6 +23,7 @@ interface Props {
 interface State {
     serviceData: any | null,
     showActionSheet: boolean,
+    showToast: boolean,
     saved: boolean
 }
 
@@ -32,6 +34,7 @@ class MetlinkServiceInfo extends Component<Props, State> {
         this.state = {
             serviceData: null,
             showActionSheet: false,
+            showToast: false,
             saved: false
         }
     }
@@ -80,7 +83,17 @@ class MetlinkServiceInfo extends Component<Props, State> {
                 buttons={[{
                     text: 'Share',
                     icon: share,
-                    handler: () => console.log('Share clicked')
+                    handler: () => Share.share({
+                        title: 'Metlink Stop: ' + this.props.serviceCode,
+                        text: this.state.serviceData.stop_name,
+                        url: window.location.toString(),
+                        dialogTitle: 'Share with your buddies'
+                    }).catch(err => {
+                        // Failed to open share API, resort to clipboard share.
+                        navigator.clipboard.writeText(window.location.toString())
+                            .then(() => this.setState({showToast: true}))
+                            .catch(() => console.log('Failed to copy to clipboard'));
+                    })
                 }, {
                     text: this.state.saved ? 'Unfavourite' : 'Favourite',
                     icon: this.state.saved ? heartOutline : heart,
@@ -116,6 +129,12 @@ class MetlinkServiceInfo extends Component<Props, State> {
                 {!this.state.serviceData && (
                     <LoadingSpinner/>
                 )}
+                <IonToast
+                    isOpen={this.state.showToast}
+                    onDidDismiss={() => this.setState({showToast: false})}
+                    message="Copied to clipboard!"
+                    duration={1200}
+                />
             </div>
         )
     }
