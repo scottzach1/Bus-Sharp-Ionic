@@ -1,5 +1,9 @@
 import React, {Component} from "react";
 import {
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
     IonContent,
     IonHeader,
     IonItem,
@@ -136,13 +140,83 @@ class SearchTab extends Component<{}, State> {
                     </IonHeader>
 
                     {!results && <LoadingSpinner/>}
-                    {(results && !this.state.searchText) && <h4>Please enter your query.</h4>}
 
-                    {(routeCards && routeCards.length > 0) && (<h4>Routes:</h4>)}
-                    {routeCards}
+                    {(results && !this.state.searchText) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Searching:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                Using the searchbar above, enter Stop numbers of Bus Route/Service
+                                numbers. <br/><br/>
+                                You will be presented with everything related to your search query (depending on
+                                the filters you have in place). <br/><br/>
+                                Clicking on one of the links presented to you will take you to a page with all the
+                                information you will need about the Stop or Route/Service.
+                            </IonCardContent>
+                        </IonCard>
+                    )}
 
-                    {(stopCards && stopCards.length > 0) && (<h4>Stops:</h4>)}
-                    {stopCards}
+                    {(results && !this.state.searchText) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Tabs:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                Below the searchbar is four tabs. These tabs act as filters for your search.<br/>
+                                <ul>
+                                    <li>
+                                        <strong>All:</strong> The All tab will present you with everything remotely
+                                        related to your search. Don't remember the entire Stop number? Type into the
+                                        searchbar what you do remember and scroll through the contents presented to you
+                                        to find the related Stop or Route/Service.
+                                    </li>
+                                    <br/>
+                                    <li>
+                                        <strong>Routes:</strong> The Routes tab will present you with every bus route
+                                        remotely related to your search. For example, typing in "2" will present you
+                                        with bus routes 112, 12, 120, 121, 12e, 2, 20...
+                                    </li>
+                                    <br/>
+                                    <li>
+                                        <strong>Stops:</strong> The Stops tab will present you with every Stop remotely
+                                        related to your search. For example, typing in "500" will present you with bus
+                                        stops 1500, 2500, 3500, 4500, 5000, 5002...
+                                    </li>
+                                    <br/>
+                                    <li>
+                                        <strong>Exact:</strong> The exact tab will present you with everything that
+                                        starts with your search query. For example, typing in "500" will present you
+                                        with bus stops 5000, 5002, 5006, 5008. No bus routes start with "500" so none
+                                        will be presented in the search. This is a faster, more precise method of
+                                        finding a stop or bus service that you want.
+                                    </li>
+                                </ul>
+                            </IonCardContent>
+                        </IonCard>
+                    )}
+
+                    {(routeCards && routeCards.length > 0) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Routes:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                {routeCards}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
+
+                    {(stopCards && stopCards.length > 0) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Stops:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                {stopCards}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
 
                 </IonContent>
             </IonPage>
