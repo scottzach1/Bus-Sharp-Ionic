@@ -4,7 +4,6 @@ import {IonIcon} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
 import {readRemoteFile} from "react-papaparse";
 import "./GoogleMapWidget.css";
-import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -34,9 +33,6 @@ let center = {
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
     const [stopData, setStopData] = useState<any | null>(null);
-    const [locationFound, setLocationFound] = useState<boolean>(false);
-
-    const [isReady, setIsReady] = useState<boolean>(false)
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
