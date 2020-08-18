@@ -6,7 +6,7 @@ import BackButton from "../components/ui/BackButton";
 import {add, informationOutline, removeOutline} from "ionicons/icons";
 
 const StopPerspective: FC<any> = ({match}) => {
-    const [showCard, setShowCard] = useState<boolean>(false)
+    const [showCard, setShowCard] = useState<boolean>(true)
 
     const {params: {stopCode}} = match
 
