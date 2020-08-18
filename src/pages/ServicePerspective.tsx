@@ -21,8 +21,8 @@ const ServicePerspective: FC<any> = ({match}) => {
                         <IonTitle size="large">Map</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <MetlinkServiceInfo serviceCode={serviceCode}/>
                 <MetlinkServiceView serviceCode={serviceCode}/>
+                <MetlinkServiceInfo serviceCode={serviceCode}/>
             </IonContent>
         </IonPage>)
 }

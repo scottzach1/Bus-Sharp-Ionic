@@ -35,6 +35,7 @@ let center = {
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
     const [stopData, setStopData] = useState<any | null>(null);
+    const [locationLoaded, setLocationLoaded] = useState<boolean>(false)
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -77,8 +78,11 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
      * of the map to this location.
      */
     function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(successfulPosition);
+        if (!locationLoaded) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(successfulPosition);
+            }
+            setLocationLoaded(true)
         }
         return center
     }
