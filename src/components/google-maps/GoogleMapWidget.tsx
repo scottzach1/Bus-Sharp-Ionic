@@ -16,15 +16,34 @@ const mapContainerStyle = {
     height: '100vh', // Need to figure out how to get 100% of max container height - no zoom!
 
 };
-const center = {
-    lat: -41.286461,
-    lng: 174.776230,
-}
+
 const options = {
     // disableDefaultUI: true, // Commented for street view.
     zoomControl: true,
     mapTypeControl: true,
 }
+
+let center = {
+    lat: -41.286461,
+    lng: 174.776230,
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successfulPosition);
+    }
+    return center
+}
+
+function successfulPosition(position: any) {
+    console.log(position)
+    center = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+    }
+}
+
+
 
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
@@ -76,7 +95,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 zoom={16}
-                center={center}
+                center={getLocation()}
                 options={options}
                 onClick={event => {
                     console.log(event);
