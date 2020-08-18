@@ -17,8 +17,8 @@ const StopPerspective: FC<any> = ({match}) => {
                     <BackButton/>
                     <IonTitle>Stop: {stopCode}</IonTitle>
                     <IonFab horizontal="end" slot="start">
-                        <IonFabButton onClick={e => setShowCard(!showCard)} size={"small"}>
-                            <IonIcon icon={showCard ? removeOutline : informationOutline}/>
+                        <IonFabButton onClick={e => setShowCard(!showCard)} size={"small"} activated={showCard}>
+                            <IonIcon icon={informationOutline}/>
                         </IonFabButton>
                     </IonFab>
                 </IonToolbar>
