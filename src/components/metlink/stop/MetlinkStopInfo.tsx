@@ -88,7 +88,7 @@ class MetlinkStopInfo extends Component<Props, State> {
                         text: this.state.stopData.stop_name,
                         url: window.location.toString(),
                         dialogTitle: 'Share with your buddies'
-                    }).catch(err => {
+                    }).catch(() => {
                         // Failed to open share API, resort to clipboard share.
                         navigator.clipboard.writeText(window.location.toString())
                             .then(() => this.setState({showToast: true}))
