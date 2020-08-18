@@ -18,6 +18,8 @@ const {Storage} = Plugins;
 interface State {
     savedStopCards: any[] | null,
     savedServiceCards: any[] | null,
+    stopData: any[] | null,
+    serviceData: any[] | null,
 }
 
 class MetlinkSavedList extends Component<{}, State> {
@@ -28,10 +30,20 @@ class MetlinkSavedList extends Component<{}, State> {
         this.state = {
             savedStopCards: null,
             savedServiceCards: null,
+            stopData: null,
+            serviceData: null,
         }
     }
 
     componentDidMount() {
+        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
+            if (res.value) this.setState({stopData: JSON.parse(res.value)});
+        })
+
+        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
+            if (res.value) this.setState({serviceData: JSON.parse(res.value)});
+        })
+
         this.updateSavedCards();
     }
 
@@ -53,10 +65,14 @@ class MetlinkSavedList extends Component<{}, State> {
 
             let stopCards: any[] = [];
             for (const stopCode of JSON.parse(res.value)) {
+
+                let stopName: string | null = (this.state.stopData) ? this.state.stopData[stopCode].stop_name : null;
+                let entryName = stopCode + (stopName ? (' - ' + stopName) : '');
+
                 stopCards.push(
                     <IonItem key={stopCode} href={"/stop/" + stopCode}>
                         <IonBadge slot="start">{"stop"}</IonBadge>
-                        <IonLabel>{stopCode}</IonLabel>
+                        <IonLabel>{entryName}</IonLabel>
                     </IonItem>
                 );
             }
@@ -73,10 +89,13 @@ class MetlinkSavedList extends Component<{}, State> {
 
             let serviceCards: any[] = [];
             for (const serviceCode of JSON.parse(res.value)) {
+                let serviceName: string | null = (this.state.serviceData) ? this.state.serviceData[serviceCode].route_long_name : null;
+                let entryName = serviceCode + (serviceName ? (' - ' + serviceName) : '');
+
                 serviceCards.push(
                     <IonItem key={serviceCode} href={"/service/" + serviceCode}>
                         <IonBadge slot="start" color="warning">{"service"}</IonBadge>
-                        <IonLabel>{serviceCode}</IonLabel>
+                        <IonLabel>{entryName}</IonLabel>
                     </IonItem>
                 )
             }

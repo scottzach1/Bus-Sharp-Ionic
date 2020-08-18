@@ -7,16 +7,16 @@ interface Props {
 }
 
 const MetlinkStopTable: FC<Props> = ({stopCode}) => {
-    const [stopData, setStopData] = useState<any>()
+    const [stopTimetableData, setStopTimetableData] = useState<any>()
     const [errorMessage, setErrorMessage] = useState<string>()
 
     const proxy = "https://cors-anywhere.herokuapp.com/";
     const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
 
     // Download Stop Timetable
-    if (!stopData) fetch(proxy + url + stopCode).then(resp => {
+    if (!stopTimetableData) fetch(proxy + url + stopCode).then(resp => {
         if (!resp.ok) setErrorMessage(resp.statusText);
-        else Promise.resolve(resp.json()).then(data => setStopData(data));
+        else Promise.resolve(resp.json()).then(data => setStopTimetableData(data));
     });
 
     function getTimeRemaining(arrivalTime: string) {
@@ -31,7 +31,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
         // This will contain `IonItem`s which will be entries in the `IonList` returned by this function.
         const cards = [];
 
-        let services = stopData.Services;
+        let services = stopTimetableData.Services;
         services.sort(function (a: { AimedArrival: number; }, b: { AimedArrival: number; }) {
             return a.AimedArrival - b.AimedArrival;
         })
@@ -68,13 +68,13 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
                     <IonCardTitle>Upcoming Services</IonCardTitle>
                 </IonCardHeader>
                 <IonCardContent>
-                    {stopData && (
+                    {stopTimetableData && (
                         generateStopCards()
                     )}
                     {errorMessage && (
                         <p>Failed: {errorMessage}</p>
                     )}
-                    {(!stopData && !errorMessage) && (
+                    {(!stopTimetableData && !errorMessage) && (
                         <LoadingSpinner/>
                     )}
                 </IonCardContent>
