@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {
+    IonCard, IonCardContent, IonCardHeader, IonCardTitle,
     IonContent,
     IonHeader,
     IonItem,
@@ -13,7 +14,6 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import {Plugins} from '@capacitor/core';
-import SubtitleCard from "../components/ui/SubtitleCard";
 
 const {Storage} = Plugins;
 
@@ -83,11 +83,8 @@ class SearchTab extends Component<{}, State> {
     filterItem(item: SearchItem) {
         const filter: string = this.state.filter
         const searchText: string = this.state.searchText;
-        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL" || filter === "EXACT";
-        return searchText.length
-            && filterCondition
-            && ((filter === "ALL" && item.searchText.toLowerCase().includes(searchText.toLowerCase()))
-                || (filter === "EXACT" && item.searchText.toLowerCase().startsWith(searchText.toLowerCase())))
+        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL";
+        return searchText.length && filterCondition && item.searchText.toLowerCase().includes(searchText.toLowerCase())
     }
 
 
@@ -128,8 +125,6 @@ class SearchTab extends Component<{}, State> {
                                                   value="ROUTES">Routes</IonSegmentButton>
                                 <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
                                                   value="STOPS">Stops</IonSegmentButton>
-                                <IonSegmentButton onClick={() => this.setState({filter: "EXACT"})}
-                                                  value="EXACT">Exact</IonSegmentButton>
                             </IonSegment>
                         </IonTitle>
                     </IonToolbar>
@@ -142,28 +137,74 @@ class SearchTab extends Component<{}, State> {
                     </IonHeader>
 
                     {!results && <LoadingSpinner/>}
-                    {(results && !this.state.searchText) && <SubtitleCard key={"SearchBar-Card"}
-                                                                          title={"SearchBar:"}
-                                                                          contents={["Using the searchbar above, you can search for Stops and Bus Routes.",
-                                                                              "Stops: Stops are defined by their Stop ID",
-                                                                              "E.g. '5008'",
-                                                                              "Routes: Bus Routes are defined by their Bus ID",
-                                                                              "E.g. '2'"]}/>}
-                    {(results && !this.state.searchText) && <SubtitleCard key={"Tab-Card"}
-                                                                          title={"Tabs:"}
-                                                                          contents={["The tabs underneath the search bar allow you to define what search results are represent to you.",
-                                                                              "All: Show both Stops and Bus Routes/Services",
-                                                                              "Routes: Show just Bus Routes/Services.",
-                                                                              "Stops: Show just Stops",
-                                                                              "Exact: Show all Stop and Bus Routes/Services that start with the search query."]}/>}
+
+                    {(results && !this.state.searchText) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Searching:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                Using the searchbar above, enter Stop numbers of Bus Route/Service
+                                numbers. <br/><br/>
+                                You will be presented with everything related to your search query (depending on
+                                the filters you have in place). <br/><br/>
+                                Clicking on one of the links presented to you will take you to a page with all the
+                                information you will need about the Stop or Route/Service.
+                            </IonCardContent>
+                        </IonCard>
+                    )}
+
+                    {(results && !this.state.searchText) && (
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Tabs:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                Below the searchbar is four tabs. These tabs act as filters for your search.<br/>
+                                <br/>
+                                <strong>All:</strong> The All tab will present you with everything remotely related to
+                                your search. Don't remember the entire Stop number? Type into the searchbar what you do
+                                remember and scroll through the contents presented to you to find the related Stop or
+                                Route/Service.<br/>
+                                <br/>
+                                <strong>Routes:</strong> The Routes tab will present you with every bus route remotely
+                                related to your search. For example, typing in "2" will present you with bus routes 112,
+                                12, 120, 121, 12e, 2, 20...<br/>
+                                <br/>
+                                <strong>Stops:</strong> The Stops tab will present you with every Stop remotely related
+                                to your search. For example, typing in "500" will present you with bus stops 1500, 2500,
+                                3500, 4500, 5000, 5002...<br/>
+                                <br/>
+                                <strong>Exact:</strong> The exact tab will present you with everything that starts with
+                                your search query. For example, typing in "500" will present you with bus stops 5000,
+                                5002, 5006, 5008. No bus routes start with "500" so none will be presented in the
+                                search. This is a faster, more precise method of finding a stop or bus service that you
+                                want.
+                            </IonCardContent>
+                        </IonCard>
+                    )}
 
                     {(routeCards && routeCards.length > 0) && (
-                        <SubtitleCard key={"Route-Cards"} title={"Routes"} contents={null}/>)}
-                    {routeCards}
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Routes:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                {routeCards}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
 
                     {(stopCards && stopCards.length > 0) && (
-                        <SubtitleCard key={"Stop-Cards"} title={"Stops"} contents={null}/>)}
-                    {stopCards}
+                        <IonCard>
+                            <IonCardHeader>
+                                <IonCardTitle>Stops:</IonCardTitle>
+                            </IonCardHeader>
+                            <IonCardContent>
+                                {stopCards}
+                            </IonCardContent>
+                        </IonCard>
+                    )}
 
                 </IonContent>
             </IonPage>
