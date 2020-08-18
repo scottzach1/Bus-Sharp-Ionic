@@ -15,15 +15,6 @@ const libraries = ["places"];
 
 
 /**
- * Width and height of the google map.
- */
-let mapContainerStyle = {
-    width: '100vw',
-    height: '100vh', // Need to figure out how to get 100% of max container height - no zoom!
-
-};
-
-/**
  * Options for the map to allow for zoom and movement on the map.
  */
 const options = {
