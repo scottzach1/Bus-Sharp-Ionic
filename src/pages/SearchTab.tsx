@@ -86,8 +86,10 @@ class SearchTab extends Component<{}, State> {
     filterItem(item: SearchItem) {
         const filter: string = this.state.filter
         const searchText: string = this.state.searchText;
-        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || filter === "ALL";
-        return searchText.length && filterCondition && item.searchText.toLowerCase().includes(searchText.toLowerCase())
+        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || (filter === "ALL" || filter === "EXACT");
+        return searchText.length && filterCondition
+            && ((filter != "EXACT" && item.searchText.toLowerCase().includes(searchText.toLowerCase()))
+                || (filter === "EXACT" && item.searchText.toLowerCase().startsWith(searchText.toLowerCase())))
     }
 
 
@@ -128,6 +130,8 @@ class SearchTab extends Component<{}, State> {
                                                   value="ROUTES">Routes</IonSegmentButton>
                                 <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
                                                   value="STOPS">Stops</IonSegmentButton>
+                                <IonSegmentButton onClick={() => this.setState({filter: "EXACT"})}
+                                                  value="EXACT">Exact</IonSegmentButton>
                             </IonSegment>
                         </IonTitle>
                     </IonToolbar>
