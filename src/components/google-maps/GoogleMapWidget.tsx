@@ -4,6 +4,7 @@ import {IonIcon} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
 import {readRemoteFile} from "react-papaparse";
 import "./GoogleMapWidget.css";
+import {mapStyles} from "./GoogleMapWidgetStyles";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -22,6 +23,7 @@ const center = {
 }
 const options = {
     // disableDefaultUI: true, // Commented for street view.
+    styles: mapStyles,
     zoomControl: true,
     mapTypeControl: true,
 }
