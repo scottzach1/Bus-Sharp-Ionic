@@ -45,7 +45,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
 
             cards.push(
                 <ListComponent
-                    isStop={true}
+                    isStop={false}
                     code={service.ServiceID}
                     key={counter++ + ' - ' + serviceName[0]}
                     title={serviceName[0] + ' - ' + timeRemaining}
