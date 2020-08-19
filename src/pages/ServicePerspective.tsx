@@ -1,12 +1,23 @@
 import React, {FC, useState} from "react";
-import {IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {
+    IonCard,
+    IonContent,
+    IonFab,
+    IonFabButton,
+    IonHeader,
+    IonIcon,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
 import MetlinkServiceView from "../components/metlink/service/MetlinkServiceView";
 import MetlinkServiceInfo from "../components/metlink/service/MetlinkServiceInfo";
 import BackButton from "../components/ui/BackButton";
-import {add, informationOutline, removeOutline} from "ionicons/icons";
+import {ellipsisVerticalSharp} from "ionicons/icons";
+import "./ServicePerspective.css";
 
 const ServicePerspective: FC<any> = ({match}) => {
-    const [showCard, setShowCard] = useState<boolean>(true)
+    const [showCard, setShowCard] = useState<boolean>(false)
     const {params: {serviceCode}} = match
 
     return (
@@ -15,11 +26,6 @@ const ServicePerspective: FC<any> = ({match}) => {
                 <IonToolbar>
                     <BackButton/>
                     <IonTitle>Service: {serviceCode}</IonTitle>
-                    <IonFab horizontal="end" slot="start">
-                        <IonFabButton onClick={e => setShowCard(!showCard)} size={"small"} activated={showCard}>
-                            <IonIcon icon={informationOutline}/>
-                        </IonFabButton>
-                    </IonFab>
                 </IonToolbar>
             </IonHeader>
             <IonContent scrollX={false} scrollY={false}>
@@ -29,7 +35,15 @@ const ServicePerspective: FC<any> = ({match}) => {
                     </IonToolbar>
                 </IonHeader>
                 <MetlinkServiceView serviceCode={serviceCode}/>
-                {showCard && (<MetlinkServiceInfo serviceCode={serviceCode}/>)}
+                <div>
+                    <IonFab horizontal={"end"} itemID={"service-info-fab"}>
+                        <IonFabButton onClick={() => setShowCard(!showCard)} size={"small"} activated={showCard}>
+                            <IonIcon icon={ellipsisVerticalSharp}/>
+                        </IonFabButton>
+                    </IonFab>
+                    {!showCard && <IonCard/>} {/* Fore the Fab into a fixed location. */}
+                    {showCard && (<MetlinkServiceInfo serviceCode={serviceCode}/>)}
+                </div>
             </IonContent>
         </IonPage>)
 }
