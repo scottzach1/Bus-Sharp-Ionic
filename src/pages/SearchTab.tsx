@@ -6,8 +6,6 @@ import {
     IonCardTitle,
     IonContent,
     IonHeader,
-    IonItem,
-    IonLabel,
     IonPage,
     IonSearchbar,
     IonSegment,
@@ -17,6 +15,7 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import {Plugins} from '@capacitor/core';
+import ListComponent from "../components/ui/ListComponent";
 
 const {Storage} = Plugins;
 
@@ -62,10 +61,11 @@ class SearchTab extends Component<{}, State> {
             const stopEntry: any = stopData[attribute];
 
             const code: string = stopEntry.stop_id;
-            const searchText: string = stopEntry.stop_id + ' - ' + stopEntry.stop_name;
-
-            stopItems.push(new SearchItem(searchText, code, true));
+            const name: string = stopEntry.stop_name;
+            if (!name) continue;
+            stopItems.push(new SearchItem(code, name, true));
         }
+
         return stopItems;
     }
 
@@ -76,33 +76,43 @@ class SearchTab extends Component<{}, State> {
             const serviceEntry: any = serviceData[attribute];
             const code: string = serviceEntry.route_short_name;
             if (!code) continue;
-            const searchText: string = serviceEntry.route_short_name + ' - (' + serviceEntry.agency_id + ') - ' + serviceEntry.route_long_name;
+            const name: string = '(' + serviceEntry.agency_id + ') - ' + serviceEntry.route_long_name;
 
-            serviceItems.push(new SearchItem(searchText, code, false));
+            serviceItems.push(new SearchItem(code, name, false));
         }
+
         return serviceItems;
     }
 
     filterItem(item: SearchItem) {
         const filter: string = this.state.filter
-        const searchText: string = this.state.searchText;
-        const filterCondition: boolean = (filter === "STOPS" && item.isStop) || (filter === "ROUTES" && !item.isStop) || (filter === "ALL" || filter === "EXACT");
-        return searchText.length && filterCondition
-            && ((filter != "EXACT" && item.searchText.toLowerCase().includes(searchText.toLowerCase()))
-                || (filter === "EXACT" && item.searchText.toLowerCase().startsWith(searchText.toLowerCase())))
+        const searchText: string = this.state.searchText.toLowerCase();
+
+        if ((filter === "STOPS" && !item.isStop) || (filter === "ROUTES" && item.isStop))
+            return false
+
+        if (filter && searchText.length) {
+            for (const key of item.searchText) {
+                if ((filter !== "EXACT") ? key.includes(searchText) : key.startsWith(searchText))
+                    return true;
+            }
+        }
+        return false;
     }
 
 
     generateCards(items: SearchItem[]) {
+        let counter: number = 0;
         return items
             .filter(item => this.filterItem(item))
-            .sort((a, b) => a.searchText.localeCompare(b.searchText))
+            // .sort((a, b) => a.searchText[0].localeCompare(b.searchText[0]))
             .map(item => (
-                <IonItem key={item.searchText} href={item.url}>
-                    <IonLabel>
-                        {item.searchText}
-                    </IonLabel>
-                </IonItem>
+                <ListComponent
+                    isStop={item.isStop}
+                    code={item.code}
+                    title={item.name}
+                    key={counter++ + ' - ' + item.name}
+                />
             ));
     }
 
@@ -229,14 +239,16 @@ class SearchTab extends Component<{}, State> {
 }
 
 class SearchItem {
-    searchText: string;
-    url: string;
+    searchText: string[];
+    code: string;
+    name: string;
     isStop: boolean;
 
-    constructor(searchText: string, code: string, isStop: boolean) {
-        this.searchText = searchText;
-        this.url = ((isStop) ? "/stop/" : "/service/") + code.toLowerCase();
+    constructor(code: string, name: string, isStop: boolean) {
+        this.searchText = [code.toLowerCase(), name.toLowerCase()];
         this.isStop = isStop;
+        this.name = name;
+        this.code = code;
     }
 }
 

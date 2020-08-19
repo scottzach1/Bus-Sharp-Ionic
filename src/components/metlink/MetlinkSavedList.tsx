@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-    IonBadge,
     IonButton,
     IonCard,
     IonCardContent,
@@ -12,6 +11,7 @@ import {
     IonList
 } from "@ionic/react";
 import {Plugins} from '@capacitor/core';
+import ListComponent from "../ui/ListComponent";
 
 const {Storage} = Plugins;
 
@@ -62,18 +62,20 @@ class MetlinkSavedList extends Component<{}, State> {
     updateSavedCards() {
         Storage.get({key: 'savedStops'}).then(res => {
             if (!res.value) return;
-
             let stopCards: any[] = [];
+
+            let counter: number = 0;
             for (const stopCode of JSON.parse(res.value)) {
 
-                let stopName: string | null = (this.state.stopData) ? this.state.stopData[stopCode].stop_name : null;
-                let entryName = stopCode + (stopName ? (' - ' + stopName) : '');
+                let stopName: string = (this.state.stopData) ? this.state.stopData[stopCode].stop_name : '';
 
                 stopCards.push(
-                    <IonItem key={stopCode} href={"/stop/" + stopCode}>
-                        <IonBadge slot="start">{"stop"}</IonBadge>
-                        <IonLabel>{entryName}</IonLabel>
-                    </IonItem>
+                    <ListComponent
+                        isStop={true}
+                        code={stopCode}
+                        title={stopName}
+                        key={counter++ + ' - ' + stopCode}
+                    />
                 );
             }
             if (stopCards.length === 0) stopCards.push(
@@ -86,17 +88,19 @@ class MetlinkSavedList extends Component<{}, State> {
 
         Storage.get({key: 'savedServices'}).then(res => {
             if (!res.value) return;
-
             let serviceCards: any[] = [];
+
+            let counter: number = 0;
             for (const serviceCode of JSON.parse(res.value)) {
-                let serviceName: string | null = (this.state.serviceData) ? this.state.serviceData[serviceCode].route_long_name : null;
-                let entryName = serviceCode + (serviceName ? (' - ' + serviceName) : '');
+                let serviceName: string = (this.state.serviceData) ? this.state.serviceData[serviceCode].route_long_name : '';
 
                 serviceCards.push(
-                    <IonItem key={serviceCode} href={"/service/" + serviceCode}>
-                        <IonBadge slot="start" color="warning">{"service"}</IonBadge>
-                        <IonLabel>{entryName}</IonLabel>
-                    </IonItem>
+                    <ListComponent
+                        isStop={false}
+                        code={serviceCode}
+                        title={serviceName}
+                        key={counter++ + ' - ' + serviceCode}
+                    />
                 )
             }
             if (serviceCards.length === 0) serviceCards.push(

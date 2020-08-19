@@ -1,6 +1,7 @@
 import React, {FC, useState} from 'react';
-import {IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel, IonList} from "@ionic/react";
+import {IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonList} from "@ionic/react";
 import LoadingSpinner from '../../ui/LoadingSpinner';
+import ListComponent from "../../ui/ListComponent";
 
 interface Props {
     stopCode: string;
@@ -42,15 +43,14 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
             const timeRemaining: string = getTimeRemaining(service.AimedArrival);
             const serviceName: string[] = service.Service.Name.split("-");
 
-            // Check whether the data from the feed was live.
-            let realTime: string = (service.IsRealtime) ? ' live' : '';
-
             cards.push(
-                <IonItem key={counter++ + '-' + timeRemaining} href={"/service/" + service.ServiceID}>
-                    <IonBadge slot="start">{service.ServiceID}</IonBadge>
-                    <IonLabel>{serviceName[1]} - {timeRemaining}</IonLabel>
-                    <IonBadge slot="end" color="success">{realTime}</IonBadge>
-                </IonItem>
+                <ListComponent
+                    isStop={false}
+                    code={service.ServiceID}
+                    key={counter++ + ' - ' + serviceName[0]}
+                    title={serviceName[0] + ' - ' + timeRemaining}
+                    isLive={service.IsRealtime}
+                />
             )
         }
 
