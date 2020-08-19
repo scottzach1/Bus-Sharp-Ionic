@@ -9,6 +9,7 @@ interface Props {
     code: string,
     title: string,
     key: string,
+    remaining?: string,
     isLive?: boolean,
 }
 
@@ -32,6 +33,7 @@ class ListComponent extends Component<Props, State> {
                 </IonBadge>
                 <IonLabel>
                     {this.props.title}
+                    {this.props.remaining ? <p>{this.props.remaining}</p> : null}
                 </IonLabel>
                 {!this.props.isLive ? null :
                     <IonBadge slot={"end"} color={"success"}>
