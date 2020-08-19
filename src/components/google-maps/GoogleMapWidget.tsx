@@ -18,10 +18,23 @@ const libraries = ["places"];
  * Options for the map to allow for zoom and movement on the map.
  */
 const options = {
-    // disableDefaultUI: true, // Commented for street view.
+    disableDefaultUI: true, // Commented for street view.
     styles: mapStyles,
-    zoomControl: true,
+    zoomControl: false,
+    streetViewControl: true,
+    fullscreenControl: true,
+    fullscreenControlOptions: {
+        // Haven't a clue why Webstorm recognises these definitions, TypeScript can't?
+        // https://developers.google.com/maps/documentation/javascript/controls
+        position: 9, // 'google.maps.ControlPosition.RIGHT_BOTTOM'
+    },
     mapTypeControl: true,
+    mapTypeControlOptions: {
+        // Haven't a clue why Webstorm recognises these definitions, TypeScript can't?
+        // https://developers.google.com/maps/documentation/javascript/controls
+        style: 1, // google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: 6, // 'google.maps.ControlPosition.LEFT_BOTTOM'
+    },
 }
 
 /**
