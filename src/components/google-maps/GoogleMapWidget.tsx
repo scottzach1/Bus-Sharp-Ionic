@@ -27,10 +27,19 @@ const options = {
 /**
  * Location where the map is centered
  */
-let center = {
+const center = {
     lat: -41.286461,
     lng: 174.776230,
 }
+
+const sensibleBoundaries = {
+    minLat: 252.2360253050326,
+    maxLat: 252.943423695868,
+    minLng: 159.5259895143898,
+    maxLng: 160.36044408459253,
+}
+
+let userLocation = center;
 
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
     const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
@@ -84,7 +93,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
             }
             setLocationLoaded(true)
         }
-        return center
+        return sensibleLocation()
     }
 
     /**
@@ -92,9 +101,20 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
      * @param position - An object the holds the coordinates of the user.
      */
     function successfulPosition(position: any) {
-        center = {
+        userLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
+        }
+    }
+
+    /**
+     * Returns a sensible location if the users location is too far away.
+     */
+    function sensibleLocation() {
+        if (!locationLoaded
+            || (userLocation.lat < sensibleBoundaries.minLat || userLocation.lat > sensibleBoundaries.maxLat)
+            || (userLocation.lng < sensibleBoundaries.minLng || userLocation.lng > sensibleBoundaries.maxLng)) {
+            return center;
         }
     }
 
