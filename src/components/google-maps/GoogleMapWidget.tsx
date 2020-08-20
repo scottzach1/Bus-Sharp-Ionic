@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import {GoogleMap, InfoWindow, Marker, Polyline, useLoadScript} from "@react-google-maps/api";
-import {IonIcon} from "@ionic/react";
+import {IonIcon, IonToast} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
 import {readRemoteFile} from "react-papaparse";
 import "./GoogleMapWidget.css";
@@ -18,24 +18,42 @@ const libraries = ["places"];
  * Options for the map to allow for zoom and movement on the map.
  */
 const options = {
-    // disableDefaultUI: true, // Commented for street view.
+    disableDefaultUI: true, // Commented for street view.
     styles: mapStyles,
-    zoomControl: true,
+    zoomControl: false,
+    streetViewControl: true,
+    fullscreenControl: true,
+    fullscreenControlOptions: {
+        // I believe this isn't recognised by TypeScript as it needs to be in the Maps component.
+        // I don't know why, but video I saw said this needed to be outside to stop the page
+        // refreshing.
+        // https://developers.google.com/maps/documentation/javascript/controls
+        position: 9, // 'google.maps.ControlPosition.RIGHT_BOTTOM'
+    },
     mapTypeControl: true,
+    mapTypeControlOptions: {
+        // https://developers.google.com/maps/documentation/javascript/controls
+        style: 1, // google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+        position: 6, // 'google.maps.ControlPosition.LEFT_BOTTOM'
+    },
 }
 
 /**
  * Location where the map is centered
  */
-let center = {
+const center = {
     lat: -41.286461,
     lng: 174.776230,
 }
 
 const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
-    const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
     const [stopData, setStopData] = useState<any | null>(null);
-    const [locationLoaded, setLocationLoaded] = useState<boolean>(false)
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [userLocSelected, setUserLocSelected] = useState<boolean>(false);
+
+    const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
+    const [mapLocation, setMapLocation] = useState<{ lat: number, lng: number }>(center)
+    const [userLocation, setUserLocation] = useState<StopMarker | undefined>(undefined);
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -78,13 +96,9 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
      * of the map to this location.
      */
     function getLocation() {
-        if (!locationLoaded) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(successfulPosition);
-            }
-            setLocationLoaded(true)
+        if (userLocation == null && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successfulPosition);
         }
-        return center
     }
 
     /**
@@ -92,10 +106,13 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
      * @param position - An object the holds the coordinates of the user.
      */
     function successfulPosition(position: any) {
-        center = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        }
+        setUserLocation(new StopMarker(
+            "User Location",
+            "USR_LOC",
+            "USR_LOC",
+            undefined,
+            new Position(parseFloat(position.coords.latitude), parseFloat(position.coords.longitude), undefined)))
+        setShowToast(true)
     }
 
     /**
@@ -112,62 +129,123 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
      * Get all the stop data asap.
      */
     getStopData().then();
+    getLocation()
 
     return (
-        <GoogleMap
-            mapContainerClassName={"map"}
-            zoom={16}
-            center={getLocation()}
-            options={options}
-            onClick={event => {
-                console.log(event);
-            }}
-        >
-            {stopMarkers?.map((marker) => (
-                <Marker
-                    key={marker.key}
-                    position={{
-                        lat: marker.location.latitude,
-                        lng: marker.location.longitude,
-                    }}
-                    onClick={() => {
-                        setSelectedStop(marker);
-                    }}
-                />
-            ))}
+        <div>
+            <GoogleMap
+                mapContainerClassName={"map"}
+                zoom={16}
+                center={mapLocation}
+                options={options}
+                onClick={event => {
+                    console.log(event);
+                }}
+            >
 
-            {routePaths?.map((route) => (
-                <Polyline
-                    key={route.key}
-                    path={route.path.map(position => ({
-                        lat: position.latitude,
-                        lng: position.longitude,
-                    }))}
-                    options={{strokeColor: route.color}}
-                />
-            ))}
+                {(userLocation?.location) && (
+                    <Marker
+                        key={userLocation.name}
+                        position={{
+                            lat: userLocation.location.latitude,
+                            lng: userLocation.location.longitude,
+                        }}
+                        onClick={() => setUserLocSelected(true)}
+                        icon={{
+                            url: "assets/icon/current-location.png",
+                            scaledSize: new google.maps.Size(30, 30),
+                        }}
+                    />
+                )}
 
-            {selectedStop && (
-                <InfoWindow
-                    key={selectedStop.key + "-selected"}
-                    position={{
-                        lat: selectedStop.location.latitude,
-                        lng: selectedStop.location.longitude,
-                    }}
-                    onCloseClick={() => {
-                        setSelectedStop(null);
-                    }}
-                >
-                    <div id="selected-stop-popup">
-                        <a href={'/stop/' + selectedStop.code}>
+                {stopMarkers?.map((marker) => (
+                    <Marker
+                        key={marker.key}
+                        position={{
+                            lat: marker.location.latitude,
+                            lng: marker.location.longitude,
+                        }}
+                        onClick={() => {
+                            setSelectedStop(marker);
+                            setMapLocation({lat: marker.location.latitude, lng: marker.location.longitude})
+                        }}
+                    />
+                ))}
+
+                {routePaths?.map((route) => (
+                    <Polyline
+                        key={route.key}
+                        path={route.path.map(position => ({
+                            lat: position.latitude,
+                            lng: position.longitude,
+                        }))}
+                        options={{strokeColor: route.color}}
+                    />
+                ))}
+
+                {selectedStop && (
+                    <InfoWindow
+                        key={selectedStop.key + "-selected"}
+                        position={{
+                            lat: selectedStop.location.latitude,
+                            lng: selectedStop.location.longitude,
+                        }}
+                        onCloseClick={() => {
+                            setSelectedStop(null);
+                        }}
+                    >
+                        <div id="selected-stop-popup">
+                            <a href={'/stop/' + selectedStop.code}>
+                                <span><IonIcon icon={locationSharp}/></span>
+                                <strong>{getStopName(selectedStop)}</strong>
+                            </a>
+                        </div>
+                    </InfoWindow>
+                )}
+
+                {(userLocSelected && userLocation) && (
+                    <InfoWindow
+                        key={userLocation.name}
+                        position={{
+                            lat: userLocation.location.latitude,
+                            lng: userLocation.location.longitude,
+                        }}
+                        onCloseClick={() => {
+                            setUserLocSelected(false);
+                        }}
+                    >
+                        <div id="selected-stop-popup">
                             <span><IonIcon icon={locationSharp}/></span>
-                            <strong>{getStopName(selectedStop)}</strong>
-                        </a>
-                    </div>
-                </InfoWindow>
-            )}
+                            <strong>{getStopName(userLocation)}</strong>
+                        </div>
+                    </InfoWindow>
+                )}
 
-        </GoogleMap>
+            </GoogleMap>
+
+            {(userLocation && showToast) && (
+                <IonToast
+                    isOpen={true}
+                    message={"Your location was found"}
+                    buttons={[{
+                        text: "Go To",
+                        handler: () => {
+                            setMapLocation({
+                                lat: userLocation?.location.latitude,
+                                lng: userLocation?.location.longitude
+                            })
+                            setShowToast(false)
+                        }
+                    }, {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        handler: () => {
+                            setShowToast(false)
+                        }
+                    }]}
+                />
+            )}
+        </div>
     )
 }
 
