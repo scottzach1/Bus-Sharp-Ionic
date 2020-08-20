@@ -12,7 +12,7 @@ const MapTab: FC = () => {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
-    const [searchLocation, setSearchLocation] = useState<{ lat: number, lng: number } | undefined>(undefined)
+    const [searchLocation, setSearchLocation] = useState<google.maps.GeocoderResult | undefined>(undefined)
 
     function handleChange(address: any) {
         setAddress(address);
@@ -20,11 +20,7 @@ const MapTab: FC = () => {
 
     function handleSelect(address: any) {
         geocodeByAddress(address)
-            .then(results => getLatLng(results[0]))
-            .then(latLng => {
-                // console.log('Success', latLng)
-                setSearchLocation(latLng);
-            })
+            .then(results => setSearchLocation(results[0]))
             .catch(error => console.error('Error', error));
     }
 
@@ -38,7 +34,7 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <MetlinkStopsMap selectedLatLng={searchLocation}/>
+                <MetlinkStopsMap geoCoderResult={searchLocation}/>
                 {isLoaded && (
                     <PlacesAutocomplete
                         value={address}

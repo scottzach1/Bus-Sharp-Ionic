@@ -6,7 +6,7 @@ import {Plugins} from '@capacitor/core';
 const {Storage} = Plugins;
 
 interface Props {
-    selectedLatLng?: { lat: number, lng: number }
+    geoCoderResult?: google.maps.GeocoderResult
 }
 
 const MetlinkStopsMap: FC<Props> = (props) => {
@@ -53,7 +53,7 @@ const MetlinkStopsMap: FC<Props> = (props) => {
                 <LoadingSpinner/>
             )}
             {dataIsLoaded && (
-                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} selectedLatLng={props.selectedLatLng}/>)
+                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} geoCoderResult={props.geoCoderResult}/>)
             }
         </div>
     );

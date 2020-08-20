@@ -5,11 +5,12 @@ import {locationSharp} from "ionicons/icons";
 import {readRemoteFile} from "react-papaparse";
 import "./GoogleMapWidget.css";
 import {mapStyles} from "./GoogleMapWidgetStyles";
+import {getLatLng} from "react-places-autocomplete";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
     routePaths: ServiceRoute[] | null,
-    selectedLatLng?: { lat: number, lng: number },
+    geoCoderResult?: google.maps.GeocoderResult,
 }
 
 const libraries = ["places"];
@@ -47,25 +48,32 @@ const center = {
     lng: 174.776230,
 }
 
-const GoogleMapWidget: FC<Props> = (props) => {
-    const [stopData, setStopData] = useState<any | null>(null);
-    const [showToast, setShowToast] = useState<boolean>(false);
-    const [userLocSelected, setUserLocSelected] = useState<boolean>(false);
+// Global variables that allow for changing state without re-rendering the object
+let showToast = false;
+let selectedId = "";
 
-    const [selectedStop, setSelectedStop] = useState<StopMarker | null>();
+// STICK AROUND LOCATION TO ENSURE THEY DON'T RE-RENDER
+let userLocation: StopMarker | null = null
+
+const GoogleMapWidget: FC<Props> = (props) => {
+    // ALL STOP DATA
+    const [stopData, setStopData] = useState<any | null>(null);
+
+    // MAP CENTER
     const [mapLocation, setMapLocation] = useState<{ lat: number, lng: number }>(center)
-    const [userLocation, setUserLocation] = useState<StopMarker | undefined>(undefined);
+
+    // NEEDED to trigger re-render
+    const [searchLocation, setSearchLocation] = useState<StopMarker | null>(null);
+
+    // SELECTED ITEM
+    // A StopMarker used to represent the item, maintains information about the selected item.
+    const [newSelection, setNewSelection] = useState<boolean>(false)
+    const [selectedItem, setSelectedItem] = useState<StopMarker | null>(null);
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
-
-    if (props.selectedLatLng) {
-        if (mapLocation.lat !== props.selectedLatLng.lat || mapLocation.lng !== props.selectedLatLng.lng) {
-            setMapLocation(props.selectedLatLng)
-        }
-    }
 
     // Separate returns here to stop 'too many reloads' error.
     if (loadError) return (<p>"Error: load error"</p>)
@@ -99,27 +107,80 @@ const GoogleMapWidget: FC<Props> = (props) => {
     }
 
     /**
-     * Attempt to get the geo-location of the device accessing the map, and set the current position of the center
-     * of the map to this location.
+     * A series of if statements to determine where the map should be placed. For each of the elements, something sets
+     * the "selectedId". This string will determine where the map will jump to. By setting the "selectedId", because it
+     * is a state, this hook will re-render, thus this if statement will be hit.
+     *
+     * // TODO, pan the map rather than just setting a map location.
      */
-    function getLocation() {
-        if (userLocation == null && navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(successfulPosition);
+
+    if (newSelection && selectedItem) {
+        setNewSelection(false)
+        setMapLocation({lat: selectedItem.location.latitude, lng: selectedItem.location.longitude})
+    }
+
+    if (props.geoCoderResult && !isSameSearchLocation()) {
+        selectedId = "Search"
+        // Set the new location
+        mapToSearchLocation();
+        console.log(searchLocation)
+        if (searchLocation) {
+            selectItem(searchLocation)
         }
     }
 
     /**
-     * Upon successfully getting the position of the user, set the center location of the map to this location.
-     * @param position - An object the holds the coordinates of the user.
+     * Check that the parsed in search location is different to the currently stored location.
+     * Returning TRUE means that the search location will be avoided. In this case, returning true is the fail safe
+     * method.
+     */
+    function isSameSearchLocation() {
+        if (searchLocation === null) return false
+
+        if (props.geoCoderResult) {
+            getLatLng(props.geoCoderResult).then(latLng => {
+                return (latLng.lat === searchLocation?.location.latitude && latLng.lng === searchLocation.location.longitude);
+            }).catch(e => {
+                return true
+            })
+        }
+        return true;
+    }
+
+    /**
+     * If the user's location can be identified and has not been set yet, create a marker for it.
+     */
+    if (!userLocation && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successfulPosition);
+    }
+
+    /**
+     * A function to create a user location if the geoLocation is successful in getting the current position.
+     * @param position - The geoLocation of the user.
      */
     function successfulPosition(position: any) {
-        setUserLocation(new StopMarker(
+        showToast = true;
+        userLocation = new StopMarker(
             "User Location",
             "USR_LOC",
             "USR_LOC",
             undefined,
-            new Position(parseFloat(position.coords.latitude), parseFloat(position.coords.longitude), undefined)))
-        setShowToast(true)
+            new Position(parseFloat(position.coords.latitude), parseFloat(position.coords.longitude), undefined))
+    }
+
+    /**
+     * Create a new Stop Marker for the search location
+     */
+    function mapToSearchLocation() {
+        if (!props.geoCoderResult) return;
+        getLatLng(props.geoCoderResult).then(latLng => {
+            setSearchLocation(new StopMarker(
+                null,
+                "SearchLocation",
+                props.geoCoderResult?.formatted_address ? props.geoCoderResult.formatted_address : "",
+                "",
+                new Position(latLng.lat, latLng.lng)))
+        })
     }
 
     /**
@@ -132,11 +193,33 @@ const GoogleMapWidget: FC<Props> = (props) => {
         else return stop.code + " - unknown";
     }
 
+    function selectItem(marker: StopMarker) {
+        // If no selected item, set the marker to the selected item
+        if (!selectedItem) {
+            setSelectedItem(marker)
+            setNewSelection(true)
+        }
+        // If the selected item is the same, then remove the selected item.
+        else if (selectedItem.location.latitude === marker.location.latitude && selectedItem.location.longitude == marker.location.longitude) {
+            selectedId = ""
+            setSelectedItem(null)
+        }
+        // select the new item
+        else {
+            setSelectedItem(marker);
+            setNewSelection(true)
+        }
+    }
+
+    function deselectItem() {
+        selectedId = "";
+        setSelectedItem(null)
+    }
+
     /**
      * Get all the stop data asap.
      */
     getStopData().then();
-    getLocation()
 
     return (
         <div>
@@ -150,14 +233,19 @@ const GoogleMapWidget: FC<Props> = (props) => {
                 }}
             >
 
-                {(userLocation?.location) && (
+                {userLocation && (
                     <Marker
                         key={userLocation.name}
                         position={{
                             lat: userLocation.location.latitude,
                             lng: userLocation.location.longitude,
                         }}
-                        onClick={() => setUserLocSelected(true)}
+                        onClick={() => {
+                            if (userLocation) {
+                                selectedId = "User"
+                                selectItem(userLocation);
+                            }
+                        }}
                         icon={{
                             url: "assets/icon/current-location.png",
                             scaledSize: new google.maps.Size(30, 30),
@@ -173,8 +261,8 @@ const GoogleMapWidget: FC<Props> = (props) => {
                             lng: marker.location.longitude,
                         }}
                         onClick={() => {
-                            setSelectedStop(marker);
-                            setMapLocation({lat: marker.location.latitude, lng: marker.location.longitude})
+                            selectedId = "Stop"
+                            selectItem(marker)
                         }}
                     />
                 ))}
@@ -190,27 +278,27 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     />
                 ))}
 
-                {selectedStop && (
+                {(selectedId === "Stop" && selectedItem) && (
                     <InfoWindow
-                        key={selectedStop.key + "-selected"}
+                        key={selectedItem.key + "-selected"}
                         position={{
-                            lat: selectedStop.location.latitude,
-                            lng: selectedStop.location.longitude,
+                            lat: selectedItem.location.latitude,
+                            lng: selectedItem.location.longitude,
                         }}
                         onCloseClick={() => {
-                            setSelectedStop(null);
+                            deselectItem()
                         }}
                     >
                         <div id="selected-stop-popup">
-                            <a href={'/stop/' + selectedStop.code}>
+                            <a href={'/stop/' + selectedItem.code}>
                                 <span><IonIcon icon={locationSharp}/></span>
-                                <strong>{getStopName(selectedStop)}</strong>
+                                <strong>{getStopName(selectedItem)}</strong>
                             </a>
                         </div>
                     </InfoWindow>
                 )}
 
-                {(userLocSelected && userLocation) && (
+                {(selectedId === "User" && userLocation) && (
                     <InfoWindow
                         key={userLocation.name}
                         position={{
@@ -218,7 +306,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                             lng: userLocation.location.longitude,
                         }}
                         onCloseClick={() => {
-                            setUserLocSelected(false);
+                            deselectItem()
                         }}
                     >
                         <div id="selected-stop-popup">
@@ -228,26 +316,44 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     </InfoWindow>
                 )}
 
+                {(searchLocation && !isSameSearchLocation) && (
+                    <InfoWindow
+                        key={searchLocation.key}
+                        position={{
+                            lat: searchLocation.location.latitude,
+                            lng: searchLocation.location.longitude,
+                        }}
+                        onCloseClick={() => {
+                            deselectItem()
+                        }}
+                    >
+                        <div id="selected-stop-popup">
+                            <span><IonIcon icon={locationSharp}/></span>
+                            <strong>{searchLocation.key}</strong>
+                        </div>
+                    </InfoWindow>
+                )}
+
             </GoogleMap>
 
-            {(userLocation && showToast) && (
+            {(showToast && userLocation) && (
                 <IonToast
                     isOpen={true}
                     message={"Your location was found"}
                     buttons={[{
                         text: "Go To",
                         handler: () => {
-                            setMapLocation({
-                                lat: userLocation?.location.latitude,
-                                lng: userLocation?.location.longitude
-                            })
-                            setShowToast(false)
+                            if (userLocation) {
+                                selectedId = "User"
+                                showToast = false
+                                selectItem(userLocation)
+                            }
                         }
                     }, {
                         text: 'Cancel',
                         role: 'cancel',
                         handler: () => {
-                            setShowToast(false)
+                            showToast = false
                         }
                     }]}
                 />
