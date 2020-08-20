@@ -46,7 +46,7 @@ class MetlinkServiceInfo extends Component<Props, State> {
             });
         }).catch(e => console.log(e));
 
-        Storage.get({key: 'savedStops'}).then(res => {
+        Storage.get({key: 'savedServices'}).then(res => {
             if (res.value) {
                 let saved: boolean = JSON.parse(res.value).includes(this.props.serviceCode)
                 if (this.state.saved !== saved) this.setState({
