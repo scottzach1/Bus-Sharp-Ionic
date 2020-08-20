@@ -129,7 +129,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                 }}
             >
 
-                {(userLocation && userLocation.location) && (
+                {(userLocation?.location) && (
                     <Marker
                         key={userLocation.name}
                         position={{
@@ -138,7 +138,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                         }}
                         onClick={() => setUserLocSelected(true)}
                         icon={{
-                            url:"https://img.icons8.com/nolan/64/user-male--v1.png"
+                            url: "https://img.icons8.com/ultraviolet/40/000000/final-state.png"
                         }}
                     />
                 )}
@@ -212,27 +212,22 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                 <IonToast
                     isOpen={true}
                     message={"Your location was found"}
-                    buttons={[
-                        {
-                            text: "Go To",
-                            handler: () => {
-                                setMapLocation({
-                                    lat: userLocation?.location.latitude,
-                                    lng: userLocation?.location.longitude
-                                })
-                                setShowToast(false)
-                            }
-
-                        },
-                        {
-                            text: 'Cancel',
-                            role: 'cancel',
-                            handler: () => {
-                                setShowToast(false)
-                            }
+                    buttons={[{
+                        text: "Go To",
+                        handler: () => {
+                            setMapLocation({
+                                lat: userLocation?.location.latitude,
+                                lng: userLocation?.location.longitude
+                            })
+                            setShowToast(false)
                         }
-                    ]
-                    }
+                    }, {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        handler: () => {
+                            setShowToast(false)
+                        }
+                    }]}
                 />
             )}
         </div>
