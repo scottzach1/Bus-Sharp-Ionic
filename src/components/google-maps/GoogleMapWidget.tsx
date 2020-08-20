@@ -138,7 +138,8 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                         }}
                         onClick={() => setUserLocSelected(true)}
                         icon={{
-                            url: "assets/icon/current-location.png"
+                            url: "assets/icon/current-location.png",
+                            scaledSize: new google.maps.Size(30, 30),
                         }}
                     />
                 )}
