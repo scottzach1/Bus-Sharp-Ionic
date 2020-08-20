@@ -8,7 +8,6 @@ const libraries = ["places"];
 
 const MapTab: FC = () => {
     const [address, setAddress] = useState<string>('');
-
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
@@ -35,19 +34,24 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-            <MetlinkStopsMap/>
-            {isLoaded && (
+                {isLoaded && (
                     <PlacesAutocomplete
                         value={address}
                         onChange={handleChange}
                         onSelect={handleSelect}
+                        searchOptions={{
+                            location: new google.maps.LatLng(-40.702633, 174.515182), // Wellington
+                            radius: 1000000, // 1000km
+                            types: ['address']
+                        }}
+                        debounce={1000 /* Quick delay to stop search until user temp stopped typing. */}
                     >
                         {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
                             <div className={"location-search-component"}>
                                 <IonSearchbar
                                     value={address}
                                     onIonChange={(e) => {
-                                        setAddress(e.detail.value!);
+                                        // Small hack to replace the expected <input/> with an <IonSearchBar/>
                                         getInputProps().onChange({target: {value: e.detail.value!}});
                                     }}
                                     className={"location-search-input"}
@@ -57,7 +61,7 @@ const MapTab: FC = () => {
                                 <div className="autocomplete-dropdown-container">
                                     <IonCard>
                                         {loading && <IonItem>Loading...</IonItem>}
-                                        {suggestions.map((suggestion) => {
+                                        {(document.querySelector('input')?.value === address) && suggestions.map((suggestion) => {
                                             const className = suggestion.active
                                                 ? 'suggestion-item--active'
                                                 : 'suggestion-item';
@@ -76,8 +80,7 @@ const MapTab: FC = () => {
                                                     key={key + ' - container'}
                                                     onSelect={() => handleSelect(suggestion.placeId)}
                                                 >
-                                                        <span
-                                                            key={key + ' - entry'}>
+                                                        <span key={key + ' - entry'}>
                                                         {suggestion.description}
                                                         </span>
                                                 </IonItem>
@@ -88,7 +91,8 @@ const MapTab: FC = () => {
                             </div>
                         )}
                     </PlacesAutocomplete>
-            )}
+                )}
+                <MetlinkStopsMap/>
             </IonContent>
         </IonPage>
     );
