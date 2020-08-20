@@ -9,6 +9,7 @@ import {mapStyles} from "./GoogleMapWidgetStyles";
 interface Props {
     stopMarkers: StopMarker[] | null,
     routePaths: ServiceRoute[] | null,
+    selectedLatLng?: { lat: number, lng: number },
 }
 
 const libraries = ["places"];
@@ -46,7 +47,7 @@ const center = {
     lng: 174.776230,
 }
 
-const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
+const GoogleMapWidget: FC<Props> = (props) => {
     const [stopData, setStopData] = useState<any | null>(null);
     const [showToast, setShowToast] = useState<boolean>(false);
     const [userLocSelected, setUserLocSelected] = useState<boolean>(false);
@@ -59,6 +60,12 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
+
+    if (props.selectedLatLng) {
+        if (mapLocation.lat !== props.selectedLatLng.lat || mapLocation.lng !== props.selectedLatLng.lng) {
+            setMapLocation(props.selectedLatLng)
+        }
+    }
 
     // Separate returns here to stop 'too many reloads' error.
     if (loadError) return (<p>"Error: load error"</p>)
@@ -158,7 +165,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                     />
                 )}
 
-                {stopMarkers?.map((marker) => (
+                {props.stopMarkers?.map((marker) => (
                     <Marker
                         key={marker.key}
                         position={{
@@ -172,7 +179,7 @@ const GoogleMapWidget: FC<Props> = ({stopMarkers, routePaths}) => {
                     />
                 ))}
 
-                {routePaths?.map((route) => (
+                {props.routePaths?.map((route) => (
                     <Polyline
                         key={route.key}
                         path={route.path.map(position => ({

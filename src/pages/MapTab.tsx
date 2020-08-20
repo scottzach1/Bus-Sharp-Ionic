@@ -12,6 +12,7 @@ const MapTab: FC = () => {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
+    const [searchLocation, setSearchLocation] = useState<{ lat: number, lng: number } | undefined>(undefined)
 
     function handleChange(address: any) {
         setAddress(address);
@@ -20,7 +21,10 @@ const MapTab: FC = () => {
     function handleSelect(address: any) {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
-            .then(latLng => console.log('Success', latLng))
+            .then(latLng => {
+                // console.log('Success', latLng)
+                setSearchLocation(latLng);
+            })
             .catch(error => console.error('Error', error));
     }
 
@@ -34,7 +38,7 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <MetlinkStopsMap/>
+                <MetlinkStopsMap selectedLatLng={searchLocation}/>
                 {isLoaded && (
                     <PlacesAutocomplete
                         value={address}
@@ -42,8 +46,8 @@ const MapTab: FC = () => {
                         onSelect={handleSelect}
                         searchOptions={{
                             location: new google.maps.LatLng(-40.702633, 174.515182), // Wellington
-                            radius: 1000000, // 1000km
-                            types: ['address']
+                            radius: 100000, // 1000km
+                            // types: ['address']
                         }}
                         debounce={1000 /* Quick delay to stop search until user temp stopped typing. */}
                     >

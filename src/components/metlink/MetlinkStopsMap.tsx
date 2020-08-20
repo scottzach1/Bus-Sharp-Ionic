@@ -6,9 +6,10 @@ import {Plugins} from '@capacitor/core';
 const {Storage} = Plugins;
 
 interface Props {
+    selectedLatLng?: { lat: number, lng: number }
 }
 
-const MetlinkStopsMap: FC<Props> = () => {
+const MetlinkStopsMap: FC<Props> = (props) => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
 
@@ -52,7 +53,7 @@ const MetlinkStopsMap: FC<Props> = () => {
                 <LoadingSpinner/>
             )}
             {dataIsLoaded && (
-                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null}/>)
+                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} selectedLatLng={props.selectedLatLng}/>)
             }
         </div>
     );
