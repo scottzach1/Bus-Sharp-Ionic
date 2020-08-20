@@ -47,7 +47,7 @@ const MapTab: FC = () => {
                         searchOptions={{
                             location: new google.maps.LatLng(-40.702633, 174.515182), // Wellington
                             radius: 100000, // 1000km
-                            // types: ['address']
+                            types: ['address']
                         }}
                         debounce={1000 /* Quick delay to stop search until user temp stopped typing. */}
                     >
