@@ -34,6 +34,7 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
+                <MetlinkStopsMap/>
                 {isLoaded && (
                     <PlacesAutocomplete
                         value={address}
@@ -92,7 +93,6 @@ const MapTab: FC = () => {
                         )}
                     </PlacesAutocomplete>
                 )}
-                <MetlinkStopsMap/>
             </IonContent>
         </IonPage>
     );
