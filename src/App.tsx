@@ -46,6 +46,10 @@ class App extends React.Component<{}, AppState> {
     }
 
     async componentDidMount() {
+        Storage.get({key: 'theme'}).then((res) => {
+            if (!res.value) Storage.set({key: 'theme', value: JSON.stringify("auto")}).then()
+        });
+
         Storage.get({key: 'savedStops'}).then((res) => {
             if (!res.value) Storage.set({key: 'savedStops', value: JSON.stringify([])}).then()
         }).catch(e => console.error(e));
