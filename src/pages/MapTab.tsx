@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {IonHeader, IonItem, IonPage, IonSearchbar, IonTitle, IonToolbar} from '@ionic/react';
+import {IonCard, IonContent, IonHeader, IonItem, IonPage, IonSearchbar, IonTitle, IonToolbar} from '@ionic/react';
 import {useLoadScript} from "@react-google-maps/api";
 import PlacesAutocomplete, {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
@@ -33,73 +33,65 @@ const MapTab: FC = () => {
                 <IonToolbar>
                     <IonTitle>Map</IonTitle>
                 </IonToolbar>
-                <IonToolbar>
-                    <IonTitle>
-                        {isLoaded && (
-                            <PlacesAutocomplete
-                                value={address}
-                                onChange={handleChange}
-                                onSelect={handleSelect}
-                            >
-                                {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
-                                    <div>
-                                        <IonSearchbar
-                                            value={address}
-                                            onIonChange={(e) => {
-                                                setAddress(e.detail.value!);
-                                                getInputProps().onChange({target: {value: e.detail.value!}});
-                                            }}
-                                            className={"location-search-input"}
-                                            autocomplete={"off"}
-                                        />
+            </IonHeader>
+            <IonContent>
+            <MetlinkStopsMap/>
+            {isLoaded && (
+                    <PlacesAutocomplete
+                        value={address}
+                        onChange={handleChange}
+                        onSelect={handleSelect}
+                    >
+                        {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
+                            <div className={"location-search-component"}>
+                                <IonSearchbar
+                                    value={address}
+                                    onIonChange={(e) => {
+                                        setAddress(e.detail.value!);
+                                        getInputProps().onChange({target: {value: e.detail.value!}});
+                                    }}
+                                    className={"location-search-input"}
+                                    autocomplete={"off"}
+                                />
 
-                                        <div className="autocomplete-dropdown-container">
-                                            {suggestions.map((suggestion) => {
-                                                const className = suggestion.active
-                                                    ? 'suggestion-item--active'
-                                                    : 'suggestion-item';
-                                                // inline style for demonstration purpose
-                                                const style = suggestion.active
-                                                    ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                                                    : {backgroundColor: '#ffffff', cursor: 'pointer'};
+                                <div className="autocomplete-dropdown-container">
+                                    <IonCard>
+                                        {loading && <IonItem>Loading...</IonItem>}
+                                        {suggestions.map((suggestion) => {
+                                            const className = suggestion.active
+                                                ? 'suggestion-item--active'
+                                                : 'suggestion-item';
+                                            // inline style for demonstration purpose
+                                            const style = suggestion.active
+                                                ? {backgroundColor: '#fafafa', cursor: 'pointer'}
+                                                : {backgroundColor: '#ffffff', cursor: 'pointer'};
 
-                                                const key: string = suggestion.index + ' - ' + suggestion.id;
-                                                return (
-                                                    <IonItem
-                                                        {...getSuggestionItemProps(suggestion, {
-                                                            className,
-                                                            style,
-                                                        })}
-                                                        key={key + ' - container'}
-                                                    >
+                                            const key: string = suggestion.index + ' - ' + suggestion.id;
+                                            return (
+                                                <IonItem
+                                                    {...getSuggestionItemProps(suggestion, {
+                                                        className,
+                                                        style,
+                                                    })}
+                                                    key={key + ' - container'}
+                                                    onSelect={() => handleSelect(suggestion.placeId)}
+                                                >
                                                         <span
                                                             key={key + ' - entry'}>
                                                         {suggestion.description}
                                                         </span>
-                                                    </IonItem>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-                            </PlacesAutocomplete>
+                                                </IonItem>
+                                            )
+                                        })}
+                                    </IonCard>
+                                </div>
+                            </div>
                         )}
-                    </IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <MetlinkStopsMap/>
+                    </PlacesAutocomplete>
+            )}
+            </IonContent>
         </IonPage>
     );
-}
-
-class Coordinates {
-    public lon: number;
-    public lat: number;
-
-    constructor(lon: number, lat: number) {
-        this.lon = lon;
-        this.lat = lat;
-    }
 }
 
 export default MapTab;
