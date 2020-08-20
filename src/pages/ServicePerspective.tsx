@@ -17,7 +17,7 @@ import {ellipsisVerticalSharp} from "ionicons/icons";
 import "./ServicePerspective.css";
 
 const ServicePerspective: FC<any> = ({match}) => {
-    const [showCard, setShowCard] = useState<boolean>(false)
+    const [showCard, setShowCard] = useState<boolean>(true)
     const {params: {serviceCode}} = match
 
     return (
