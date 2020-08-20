@@ -24,13 +24,14 @@ const options = {
     streetViewControl: true,
     fullscreenControl: true,
     fullscreenControlOptions: {
-        // Haven't a clue why Webstorm recognises these definitions, TypeScript can't?
+        // I believe this isn't recognised by TypeScript as it needs to be in the Maps component.
+        // I don't know why, but video I saw said this needed to be outside to stop the page
+        // refreshing.
         // https://developers.google.com/maps/documentation/javascript/controls
         position: 9, // 'google.maps.ControlPosition.RIGHT_BOTTOM'
     },
     mapTypeControl: true,
     mapTypeControlOptions: {
-        // Haven't a clue why Webstorm recognises these definitions, TypeScript can't?
         // https://developers.google.com/maps/documentation/javascript/controls
         style: 1, // google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
         position: 6, // 'google.maps.ControlPosition.LEFT_BOTTOM'
