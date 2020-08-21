@@ -2,6 +2,12 @@
     text-decoration: none;
 }
 
+@media (prefers-color-scheme: dark) {
+    #selected-stop-popup {
+        color: black;
+    }
+}
+
 a {
     color: inherit;
 }

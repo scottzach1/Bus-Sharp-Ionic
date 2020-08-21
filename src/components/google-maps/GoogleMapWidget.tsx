@@ -200,7 +200,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
             setNewSelection(true)
         }
         // If the selected item is the same, then remove the selected item.
-        else if (selectedItem.location.latitude === marker.location.latitude && selectedItem.location.longitude == marker.location.longitude) {
+        else if (selectedItem.location.latitude === marker.location.latitude && selectedItem.location.longitude === marker.location.longitude) {
             selectedId = ""
             setSelectedItem(null)
         }
