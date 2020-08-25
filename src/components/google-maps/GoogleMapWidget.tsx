@@ -49,7 +49,6 @@ const center = {
 }
 
 // Global variables that allow for changing state without re-rendering the object
-let showToast = false;
 let selectedId = "";
 
 // STICK AROUND LOCATION TO ENSURE THEY DON'T RE-RENDER
@@ -59,6 +58,9 @@ let searchLocation: StopMarker | null = null
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
     const [stopData, setStopData] = useState<any | null>(null);
+
+    // TOAST
+    const [showToast, setShowToast] = useState<boolean>(false)
 
     // MAP CENTER
     const [mapLocation, setMapLocation] = useState<{ lat: number, lng: number }>(center)
@@ -131,6 +133,16 @@ const GoogleMapWidget: FC<Props> = (props) => {
     }
 
     /**
+     * Get the name of a marker on the map. Used when a marker has been clicked on.
+     * @param stop - A StopMarker
+     */
+    function getStopName(stop: StopMarker) {
+        if (stop.name) return stop.name;
+        else if (stopData[stop.code]) return stopData[stop.code];
+        else return stop.code + " - unknown";
+    }
+
+    /**
      * Check that the parsed in search location is different to the currently stored location.
      * Returning TRUE means that the search location will be avoided. In this case, returning true is the fail safe
      * method.
@@ -139,7 +151,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
         if (searchLocation === null) return false
 
         if (props.geoCoderResult) {
-            getLatLng(props.geoCoderResult).then(latLng => {
+            return getLatLng(props.geoCoderResult).then(latLng => {
                 return (latLng.lat === searchLocation?.location.latitude && latLng.lng === searchLocation.location.longitude);
             }).catch(e => {
                 return true
@@ -153,13 +165,13 @@ const GoogleMapWidget: FC<Props> = (props) => {
      * @param position - The geoLocation of the user.
      */
     function successfulPosition(position: any) {
-        showToast = true;
         userLocation = new StopMarker(
             "User Location",
             "USR_LOC",
             "USR_LOC",
             undefined,
             new Position(parseFloat(position.coords.latitude), parseFloat(position.coords.longitude), undefined))
+        setShowToast(true)
     }
 
     /**
@@ -179,16 +191,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
                 selectItem(searchLocation)
             }
         })
-    }
-
-    /**
-     * Get the name of a marker on the map. Used when a marker has been clicked on.
-     * @param stop - A StopMarker
-     */
-    function getStopName(stop: StopMarker) {
-        if (stop.name) return stop.name;
-        else if (stopData[stop.code]) return stopData[stop.code];
-        else return stop.code + " - unknown";
     }
 
     function selectItem(marker: StopMarker) {
@@ -318,7 +320,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     </InfoWindow>
                 )}
 
-                {(searchLocation && selectedId === "Search") && (
+                {(selectedId === "Search" && searchLocation) && (
                     <InfoWindow
                         key={searchLocation.key}
                         position={{
@@ -347,7 +349,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                         handler: () => {
                             if (userLocation) {
                                 selectedId = "User"
-                                showToast = false
+                                setShowToast(false)
                                 selectItem(userLocation)
                             }
                         }
@@ -355,7 +357,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                         text: 'Cancel',
                         role: 'cancel',
                         handler: () => {
-                            showToast = false
+                            setShowToast(false)
                         }
                     }]}
                 />
