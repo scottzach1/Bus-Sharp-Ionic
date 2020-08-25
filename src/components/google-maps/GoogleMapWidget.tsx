@@ -54,6 +54,7 @@ let selectedId = "";
 
 // STICK AROUND LOCATION TO ENSURE THEY DON'T RE-RENDER
 let userLocation: StopMarker | null = null
+let searchLocation: StopMarker | null = null
 
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
@@ -62,22 +63,45 @@ const GoogleMapWidget: FC<Props> = (props) => {
     // MAP CENTER
     const [mapLocation, setMapLocation] = useState<{ lat: number, lng: number }>(center)
 
-    // NEEDED to trigger re-render
-    const [searchLocation, setSearchLocation] = useState<StopMarker | null>(null);
-
     // SELECTED ITEM
     // A StopMarker used to represent the item, maintains information about the selected item.
     const [newSelection, setNewSelection] = useState<boolean>(false)
-    const [selectedItem, setSelectedItem] = useState<StopMarker | null>(null);
+    const [selectedItem, setSelectedItem] = useState<StopMarker | null>(null)
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
 
-    // Separate returns here to stop 'too many reloads' error.
-    if (loadError) return (<p>"Error: load error"</p>)
-    if (!isLoaded) return (<p>"Error: not loaded"</p>)
+    // -------------------------------------------------------------------------------------------------------------
+    // CHECKS RUN EVERY RENDER
+    // -------------------------------------------------------------------------------------------------------------
+
+    // If the user has a new selection, center the map on that location
+    if (newSelection && selectedItem) {
+        setNewSelection(false)
+        setMapLocation({lat: selectedItem.location.latitude, lng: selectedItem.location.longitude})
+    }
+
+    // If a new geolocation has been sent through, set that new geolocation to the center
+    if (props.geoCoderResult && !isSameSearchLocation()) {
+        selectedId = "Search"
+        // Set the new location
+        mapToSearchLocation();
+    }
+
+    // If the device allows for geolocation, attempt to find the users location
+    if (!userLocation && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successfulPosition);
+    }
+
+    // Get all the stop data
+    getStopData().then();
+
+
+    // -------------------------------------------------------------------------------------------------------------
+    // FUNCTIONS
+    // -------------------------------------------------------------------------------------------------------------
 
     /**
      * Asynchronously get the stop data currently available.
@@ -107,29 +131,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
     }
 
     /**
-     * A series of if statements to determine where the map should be placed. For each of the elements, something sets
-     * the "selectedId". This string will determine where the map will jump to. By setting the "selectedId", because it
-     * is a state, this hook will re-render, thus this if statement will be hit.
-     *
-     * // TODO, pan the map rather than just setting a map location.
-     */
-
-    if (newSelection && selectedItem) {
-        setNewSelection(false)
-        setMapLocation({lat: selectedItem.location.latitude, lng: selectedItem.location.longitude})
-    }
-
-    if (props.geoCoderResult && !isSameSearchLocation()) {
-        selectedId = "Search"
-        // Set the new location
-        mapToSearchLocation();
-        console.log(searchLocation)
-        if (searchLocation) {
-            selectItem(searchLocation)
-        }
-    }
-
-    /**
      * Check that the parsed in search location is different to the currently stored location.
      * Returning TRUE means that the search location will be avoided. In this case, returning true is the fail safe
      * method.
@@ -145,13 +146,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
             })
         }
         return true;
-    }
-
-    /**
-     * If the user's location can be identified and has not been set yet, create a marker for it.
-     */
-    if (!userLocation && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(successfulPosition);
     }
 
     /**
@@ -174,12 +168,16 @@ const GoogleMapWidget: FC<Props> = (props) => {
     function mapToSearchLocation() {
         if (!props.geoCoderResult) return;
         getLatLng(props.geoCoderResult).then(latLng => {
-            setSearchLocation(new StopMarker(
+            searchLocation = new StopMarker(
                 null,
                 "SearchLocation",
                 props.geoCoderResult?.formatted_address ? props.geoCoderResult.formatted_address : "",
                 "",
-                new Position(latLng.lat, latLng.lng)))
+                new Position(latLng.lat, latLng.lng))
+            if (searchLocation) {
+                selectedId = "Search"
+                selectItem(searchLocation)
+            }
         })
     }
 
@@ -216,10 +214,14 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setSelectedItem(null)
     }
 
-    /**
-     * Get all the stop data asap.
-     */
-    getStopData().then();
+    // Separate returns here to stop 'too many reloads' error.
+    if (loadError) return (<p>"Error: load error"</p>)
+    if (!isLoaded) return (<p>"Error: not loaded"</p>)
+
+
+    // -------------------------------------------------------------------------------------------------------------
+    // RETURNING MAP
+    // -------------------------------------------------------------------------------------------------------------
 
     return (
         <div>
@@ -316,7 +318,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     </InfoWindow>
                 )}
 
-                {(searchLocation && !isSameSearchLocation) && (
+                {(searchLocation && selectedId === "Search") && (
                     <InfoWindow
                         key={searchLocation.key}
                         position={{
