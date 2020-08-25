@@ -1,20 +1,24 @@
 import React, {Component} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {
+    IonBackButton,
+    IonButtons,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonContent,
+    IonHeader,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
 import {UserContext} from "../providers/UserProvider";
-
-interface Props {
-
-}
-
-interface State {
-
-}
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import LogoutButton from "../components/account/LogoutButton";
 
 class AccountInfoPerspective extends Component {
     static contextType = UserContext;
-
-    componentDidMount() {
-    }
 
     render() {
         return (
@@ -33,12 +37,24 @@ class AccountInfoPerspective extends Component {
                             <IonTitle size="large">Account Info</IonTitle>
                         </IonToolbar>
                     </IonHeader>
-                    {this.context && <IonLabel>{this.context.displayName}</IonLabel>}
+                    <IonCard>
+                        <IonCardHeader>
+                            <IonCardTitle>
+                                {this.context && this.context.displayName}
+                            </IonCardTitle>
+                            <IonCardSubtitle>
+                                {this.context && this.context.email}
+                            </IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>
+                            {!this.context?.uid && <LoadingSpinner/>}
+                            <LogoutButton/>
+                        </IonCardContent>
+                    </IonCard>
                 </IonContent>
             </IonPage>
         );
     }
 }
-// AccountInfoPerspective.contextType = UserContext;
 
 export default AccountInfoPerspective;

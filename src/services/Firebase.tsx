@@ -13,6 +13,8 @@ import '@firebase/firestore';
 //     measurementId: process.env.FIREBASE_APP_MEASUREMENT_ID
 // };
 
+require('dotenv').config()
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQmHKMWJjeGz5kJuC_NgZmLzUBah_aLU4",
     authDomain: "bus-sharp.firebaseapp.com",
@@ -30,10 +32,10 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-// const provider = new firebase.auth.GoogleAuthProvider();
-// export const signInWithGoogle = () => {
-//     auth.signInWithPopup(provider).catch(e => console.error("Failed to sign in with pop up", e));
-// };
+const provider = new firebase.auth.GoogleAuthProvider();
+export const signInWithGoogle = () => {
+    auth.signInWithPopup(provider).catch(e => console.error("Failed to sign in with pop up", e));
+};
 
 export const generateUserDocument = async (user: firebase.User | null, additionalData?: firebase.firestore.DocumentData | undefined) => {
     if (!user) return;

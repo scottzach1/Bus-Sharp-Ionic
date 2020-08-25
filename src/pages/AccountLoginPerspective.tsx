@@ -9,6 +9,7 @@ import {
     IonCheckbox,
     IonContent,
     IonHeader,
+    IonIcon,
     IonInput,
     IonItem,
     IonLabel,
@@ -16,7 +17,9 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth} from "../services/Firebase";
+import {auth, signInWithGoogle} from "../services/Firebase";
+import {logoGoogle} from "ionicons/icons";
+import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
 
 interface Props {
 }
@@ -40,8 +43,7 @@ class AccountLoginPerspective extends Component<Props, State> {
         }
     }
 
-    signInWithEmailAndPasswordHandler = (event: any, email: string, password: string) => {
-        event.preventDefault();
+    signInWithEmailAndPasswordHandler = (email: string, password: string) => {
         auth.signInWithEmailAndPassword(email, password)
             .then(r => console.log(r))
             .catch(error => {
@@ -85,6 +87,7 @@ class AccountLoginPerspective extends Component<Props, State> {
                                 <IonInput
                                     type={"password"}
                                     autocomplete={"current-password"}
+                                    placeholder={"password"}
                                     value={this.state.password}
                                     onIonChange={(e) => this.setState({password: e.detail.value!})}
                                 />
@@ -100,13 +103,19 @@ class AccountLoginPerspective extends Component<Props, State> {
                             <IonButton
                                 expand={"block"}
                                 type={"submit"}
-                                onClick={(e) => this.signInWithEmailAndPasswordHandler(e, this.state.email, this.state.password)}
+                                onClick={() => this.signInWithEmailAndPasswordHandler(this.state.email, this.state.password)}
                             >
                                 Login
                             </IonButton>
                             <IonItem>
                                 <IonLabel>Don't have an account? <a href="/signup">Sign up here</a></IonLabel>
                             </IonItem>
+                            <IonItem>
+                                <IonLabel>
+                                    Optionally, you can
+                                </IonLabel>
+                            </IonItem>
+                            <SignInWithGoogleButton/>
                         </IonCardContent>
                     </IonCard>
                     {this.state.error &&
