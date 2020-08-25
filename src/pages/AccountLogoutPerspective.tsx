@@ -1,5 +1,16 @@
 import React, {Component} from "react";
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonLabel,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react";
+import {auth} from "../services/Firebase";
 
 interface Props {
 
@@ -27,7 +38,7 @@ class AccountLogoutPerspective extends Component<Props, State> {
                             <IonTitle size="large">Account Info</IonTitle>
                         </IonToolbar>
                     </IonHeader>
-                    <IonLabel>TODO:</IonLabel>
+                    <IonButton onClick={() => auth.signOut()}>Logout</IonButton>
                 </IonContent>
             </IonPage>
         );

@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar} from "@ionic/react";
+import {UserContext} from "../providers/UserProvider";
 
 interface Props {
 
@@ -9,7 +10,12 @@ interface State {
 
 }
 
-class AccountInfoPerspective extends Component<Props, State> {
+class AccountInfoPerspective extends Component {
+    static contextType = UserContext;
+
+    componentDidMount() {
+    }
+
     render() {
         return (
             <IonPage>
@@ -27,11 +33,12 @@ class AccountInfoPerspective extends Component<Props, State> {
                             <IonTitle size="large">Account Info</IonTitle>
                         </IonToolbar>
                     </IonHeader>
-                    <IonLabel>TODO</IonLabel>
+                    {this.context && <IonLabel>{this.context.displayName}</IonLabel>}
                 </IonContent>
             </IonPage>
         );
     }
 }
+// AccountInfoPerspective.contextType = UserContext;
 
 export default AccountInfoPerspective;
