@@ -7,11 +7,11 @@ export const UserContextConsumer = UserContext.Consumer;
 
 class UserProvider extends Component {
     state = {
-        user: null
+        user: null,
     };
 
     async componentDidMount() {
-        auth.onAuthStateChanged(async userAuth => {
+        auth.onAuthStateChanged(async (userAuth) => {
             generateUserDocument(userAuth)
                 .then((user) => {
                     this.setState({user})

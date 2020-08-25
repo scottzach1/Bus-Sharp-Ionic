@@ -16,6 +16,10 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {auth, generateUserDocument} from "../services/Firebase";
+import {Plugins} from "@capacitor/core";
+import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
+
+const {Storage} = Plugins;
 
 interface Props {
 }
@@ -41,19 +45,23 @@ class AccountSignupPerspective extends Component<Props, State> {
         }
     }
 
-    createUserWithEmailAndPasswordHandler = async (event: any, email: string, password: string, passwordConfirmation: string) => {
-        event.preventDefault();
-
+    createUserWithEmailAndPasswordHandler = async (email: string, password: string, passwordConfirmation: string) => {
         if (password !== passwordConfirmation) {
             this.setState({error: "Passwords don't match!"})
             return;
         }
 
-        this.setState({error: null});
-
         try {
             const {user} = await auth.createUserWithEmailAndPassword(email, password);
-            await generateUserDocument(user, {displayName: this.state.displayName});
+            const stopList = JSON.stringify(this.getSavedStops());
+            const serviceList = JSON.stringify(this.getSavedServices());
+            console.log('additional', stopList, serviceList)
+            await generateUserDocument(user, {
+                displayName: this.state.displayName,
+                savedStops: stopList,
+                savedServices: serviceList,
+            });
+            this.setState({error: null});
         } catch (error) {
             this.setState({error: error.message});
             console.error('Error Signing up with email and password', error);
@@ -66,6 +74,29 @@ class AccountSignupPerspective extends Component<Props, State> {
             displayName: "",
         })
     };
+
+    componentDidMount() {
+        console.log('fuck this took too long!')
+        this.getSavedStops();
+    }
+
+    async getSavedStops() {
+        return await Storage.get({key: 'savedStops'})
+            .then((res) => res.value)
+            .catch((e) => {
+                console.error('failed to get saved stops', e);
+                return [];
+            })
+    }
+
+    async getSavedServices() {
+        return await Storage.get({key: 'savedServices'})
+            .then(res => res.value)
+            .catch((e) => {
+                console.error('failed to get saved services', e);
+                return [];
+            })
+    }
 
     render() {
         return (
@@ -130,11 +161,19 @@ class AccountSignupPerspective extends Component<Props, State> {
                                 expand={"block"}
                                 type={"submit"}
                                 onClick={(e) =>
-                                    this.createUserWithEmailAndPasswordHandler(
-                                        e, this.state.email, this.state.password, this.state.passwordConfirmation)}
+                                    this.createUserWithEmailAndPasswordHandler(this.state.email, this.state.password, this.state.passwordConfirmation)}
                             >
                                 Signup
                             </IonButton>
+                            <IonItem>
+                                <IonLabel>Already have an account? <a href="/login">Login here</a></IonLabel>
+                            </IonItem>
+                            <IonItem>
+                                <IonLabel>
+                                    Optionally, you can
+                                </IonLabel>
+                            </IonItem>
+                            <SignInWithGoogleButton/>
                         </IonCardContent>
                     </IonCard>
                     {this.state.error &&

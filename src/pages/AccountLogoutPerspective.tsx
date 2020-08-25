@@ -5,7 +5,6 @@ import {
     IonButtons,
     IonContent,
     IonHeader,
-    IonLabel,
     IonPage,
     IonTitle,
     IonToolbar
@@ -17,7 +16,7 @@ interface Props {
 }
 
 interface State {
-
+    signedOut: boolean,
 }
 
 class AccountLogoutPerspective extends Component<Props, State> {

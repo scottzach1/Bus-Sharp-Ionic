@@ -79,7 +79,7 @@ class MetlinkSavedList extends Component<{}, State> {
                 );
             }
             if (stopCards.length === 0) stopCards.push(
-                <IonItem key='empty-services'>
+                <IonItem key='empty-stops'>
                     <IonLabel>Empty</IonLabel>
                 </IonItem>
             )
@@ -125,7 +125,7 @@ class MetlinkSavedList extends Component<{}, State> {
                     <IonCardContent>
                         <IonList lines="full">
                             {this.state.savedStopCards ? this.state.savedStopCards :
-                                <IonItem><IonLabel>Failed to load!</IonLabel></IonItem>}
+                                <IonItem key={"failed to load stops"}><IonLabel>Failed to load!</IonLabel></IonItem>}
                         </IonList>
                     </IonCardContent>
                 </IonCard>
@@ -139,7 +139,7 @@ class MetlinkSavedList extends Component<{}, State> {
                     <IonCardContent>
                         <IonList lines="full">
                             {this.state.savedServiceCards ? this.state.savedServiceCards :
-                                <IonItem><IonLabel>Failed to load!</IonLabel></IonItem>}
+                                <IonItem key={"failed to load services"}><IonLabel>Failed to load!</IonLabel></IonItem>}
                         </IonList>
                     </IonCardContent>
                 </IonCard>
