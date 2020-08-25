@@ -9,7 +9,6 @@ import {
     IonCheckbox,
     IonContent,
     IonHeader,
-    IonIcon,
     IonInput,
     IonItem,
     IonLabel,
@@ -17,8 +16,7 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth, signInWithGoogle} from "../services/Firebase";
-import {logoGoogle} from "ionicons/icons";
+import {auth} from "../services/Firebase";
 import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
 
 interface Props {

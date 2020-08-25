@@ -16,10 +16,8 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {auth, generateUserDocument} from "../services/Firebase";
-import {Plugins} from "@capacitor/core";
 import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
-
-const {Storage} = Plugins;
+import {getSavedServices, getSavedStops} from "../services/StorageManager";
 
 interface Props {
 }
@@ -45,7 +43,7 @@ class AccountSignupPerspective extends Component<Props, State> {
         }
     }
 
-    createUserWithEmailAndPasswordHandler = async (email: string, password: string, passwordConfirmation: string) => {
+    createUserWithCredentials = async (email: string, password: string, passwordConfirmation: string) => {
         if (password !== passwordConfirmation) {
             this.setState({error: "Passwords don't match!"})
             return;
@@ -53,8 +51,8 @@ class AccountSignupPerspective extends Component<Props, State> {
 
         try {
             const {user} = await auth.createUserWithEmailAndPassword(email, password);
-            const stopList = JSON.stringify(this.getSavedStops());
-            const serviceList = JSON.stringify(this.getSavedServices());
+            const stopList = JSON.stringify(await getSavedStops());
+            const serviceList = JSON.stringify(await getSavedServices());
             console.log('additional', stopList, serviceList)
             await generateUserDocument(user, {
                 displayName: this.state.displayName,
@@ -74,29 +72,6 @@ class AccountSignupPerspective extends Component<Props, State> {
             displayName: "",
         })
     };
-
-    componentDidMount() {
-        console.log('fuck this took too long!')
-        this.getSavedStops();
-    }
-
-    async getSavedStops() {
-        return await Storage.get({key: 'savedStops'})
-            .then((res) => res.value)
-            .catch((e) => {
-                console.error('failed to get saved stops', e);
-                return [];
-            })
-    }
-
-    async getSavedServices() {
-        return await Storage.get({key: 'savedServices'})
-            .then(res => res.value)
-            .catch((e) => {
-                console.error('failed to get saved services', e);
-                return [];
-            })
-    }
 
     render() {
         return (
@@ -160,8 +135,8 @@ class AccountSignupPerspective extends Component<Props, State> {
                             <IonButton
                                 expand={"block"}
                                 type={"submit"}
-                                onClick={(e) =>
-                                    this.createUserWithEmailAndPasswordHandler(this.state.email, this.state.password, this.state.passwordConfirmation)}
+                                onClick={() =>
+                                    this.createUserWithCredentials(this.state.email, this.state.password, this.state.passwordConfirmation)}
                             >
                                 Signup
                             </IonButton>

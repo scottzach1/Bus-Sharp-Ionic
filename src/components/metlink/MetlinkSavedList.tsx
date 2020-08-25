@@ -10,10 +10,14 @@ import {
     IonLabel,
     IonList
 } from "@ionic/react";
-import {Plugins} from '@capacitor/core';
 import ListComponent from "../ui/ListComponent";
-
-const {Storage} = Plugins;
+import {
+    getSavedServices,
+    getSavedStops, getServices,
+    getStops,
+    setSavedServices,
+    setSavedStops
+} from "../../services/StorageManager";
 
 interface State {
     savedStopCards: any[] | null,
@@ -36,37 +40,26 @@ class MetlinkSavedList extends Component<{}, State> {
     }
 
     componentDidMount() {
-        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
-            if (res.value) this.setState({stopData: JSON.parse(res.value)});
-        })
-
-        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
-            if (res.value) this.setState({serviceData: JSON.parse(res.value)});
-        })
+        if (!this.state.stopData) getStops().then(stops => this.setState({stopData: stops}));
+        if (!this.state.serviceData) getServices().then(services => this.setState({serviceData: services}));
 
         this.updateSavedCards();
     }
 
     clearSavedStops() {
-        Storage.set({key: 'savedStops', value: JSON.stringify([])})
-            .then(() => this.updateSavedCards())
-            .catch(e => console.error(e));
+        setSavedStops([]).then(this.updateSavedCards);
     }
 
     clearSavedServices() {
-        Storage.set({key: 'savedServices', value: JSON.stringify([])})
-            .then(() => this.updateSavedCards())
-            .catch(e => console.error(e));
+        setSavedServices([]).then(this.updateSavedCards);
     }
 
     updateSavedCards() {
-        Storage.get({key: 'savedStops'}).then(res => {
-            if (!res.value) return;
+        getSavedStops().then((stops) => {
             let stopCards: any[] = [];
 
             let counter: number = 0;
-            for (const stopCode of JSON.parse(res.value)) {
-
+            for (const stopCode of stops) {
                 let stopName: string = (this.state.stopData) ? this.state.stopData[stopCode].stop_name : '';
 
                 stopCards.push(
@@ -86,12 +79,11 @@ class MetlinkSavedList extends Component<{}, State> {
             this.setState({savedStopCards: stopCards});
         });
 
-        Storage.get({key: 'savedServices'}).then(res => {
-            if (!res.value) return;
+        getSavedServices().then(services => {
             let serviceCards: any[] = [];
 
             let counter: number = 0;
-            for (const serviceCode of JSON.parse(res.value)) {
+            for (const serviceCode of services) {
                 let serviceName: string = (this.state.serviceData) ? this.state.serviceData[serviceCode].route_long_name : '';
 
                 serviceCards.push(
