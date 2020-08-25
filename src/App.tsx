@@ -1,5 +1,5 @@
 import 'fetch';
-import React from 'react';
+import React, {Component} from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
@@ -8,6 +8,7 @@ import SearchTab from './pages/SearchTab';
 import MapTab from './pages/MapTab';
 import SavedTab from './pages/SavedTab';
 import SettingsTab from './pages/SettingsTab';
+import { firebase } from './services/Firebase'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -27,6 +28,9 @@ import StopPerspective from "./pages/StopPerspective";
 import ServicePerspective from "./pages/ServicePerspective";
 import {readRemoteFile} from "react-papaparse";
 import {IonReactRouter} from "@ionic/react-router";
+import AccountLoginPerspective from "./pages/AccountLoginPerspective";
+import AccountSignupPerspective from "./pages/AccountSignupPerspective";
+import AccountLogoutPerspective from "./pages/AccountLogoutPerspective";
 
 const {Storage} = Plugins;
 
@@ -93,7 +97,6 @@ class App extends React.Component<{}, AppState> {
         }).catch(e => console.error(e));
     }
 
-
     render() {
         return (
             <IonApp>
@@ -112,6 +115,11 @@ class App extends React.Component<{}, AppState> {
                             {/* Hidden Perspectives*/}
                             <Route path="/service/:serviceCode" component={ServicePerspective}/>
                             <Route path="/stop/:stopCode" component={StopPerspective}/>
+
+                            {/* Accounts */}
+                            <Route path={"/login"} component={AccountLoginPerspective}/>
+                            <Route path={"/signup"} component={AccountSignupPerspective}/>
+                            <Route path={"/logout"} component={AccountLogoutPerspective}/>
                         </IonRouterOutlet>
                         <IonTabBar slot="bottom">
                             <IonTabButton tab="search" href="/search">
