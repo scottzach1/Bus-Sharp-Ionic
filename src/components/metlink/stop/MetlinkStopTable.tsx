@@ -93,7 +93,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
                     <IonCardTitle>Upcoming Services</IonCardTitle>
                     <IonCardSubtitle>
                         <IonItem onClick={() => setShowHours(!showHours)}>
-                            <IonLabel>Toggle Hours / Time</IonLabel>
+                            <IonLabel>Toggle Time / Hours</IonLabel>
                             <IonToggle checked={showHours}/>
                         </IonItem>
                     </IonCardSubtitle>
