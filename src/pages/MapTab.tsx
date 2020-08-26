@@ -18,8 +18,8 @@ const libraries = ["places"];
 
 const MapTab: FC = () => {
     const searchResults = useRef<any>(null)
+    const searchLocation= useRef<google.maps.GeocoderResult | undefined>(undefined)
     const [searchText, setSearchText] = useState<string>("")
-    const [searchLocation, setSearchLocation] = useState<google.maps.GeocoderResult | undefined>(undefined)
 
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -48,14 +48,22 @@ const MapTab: FC = () => {
                     <IonItem
                         key={result.description}
                         onClick={() => {
-                            geocodeByAddress(result.description).then(location => setSearchLocation(location[0]));
-                            setSearchText("")
+                            geocodeByAddress(result.description).then(location => {
+                                searchLocation.current = location[0]
+                                setSearchText("")
+                            });
                         }}>
                         {result.description}
                     </IonItem>
                 )}
             </IonList>
         )
+    }
+
+    function getGeolocation(){
+        let before = searchLocation.current
+        searchLocation.current = undefined;
+        return before
     }
 
     if (loadError) console.error('Failed to load', loadError);
@@ -68,7 +76,7 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <MetlinkStopsMap geoCoderResult={searchLocation}/>
+                <MetlinkStopsMap geoCoderResult={getGeolocation()}/>
                 <IonSearchbar id={"searchbar"} value={searchText} onIonChange={e => setSearchText(e.detail.value!)}/>
                 {searchText && (
                     <IonCard>
