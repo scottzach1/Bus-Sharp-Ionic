@@ -53,7 +53,7 @@ let selectedId = "";
 
 // STICK AROUND LOCATION TO ENSURE THEY DON'T RE-RENDER
 let userLocation: StopMarker | null = null
-let searchLocation: StopMarker | null = null
+let searchLocation: StopMarker | undefined = undefined
 
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
@@ -86,9 +86,11 @@ const GoogleMapWidget: FC<Props> = (props) => {
     }
 
     // If a new geolocation has been sent through, set that new geolocation to the center
-    if (props.geoCoderResult) {
-        isSameSearchLocation()
+    setSearchLocation()
+    if (props.geoCoderResult === undefined) {
+        searchLocation = undefined
     }
+
 
     // If the device allows for geolocation, attempt to find the users location
     if (!userLocation && navigator.geolocation) {
@@ -125,13 +127,14 @@ const GoogleMapWidget: FC<Props> = (props) => {
      * Returning TRUE means that the search location will be avoided. In this case, returning true is the fail safe
      * method.
      */
-    function isSameSearchLocation() {
+    function setSearchLocation() {
         if (props.geoCoderResult === undefined) return
 
         getLatLng(props.geoCoderResult)
             .then(latLng => {
-                if (latLng.lat !== searchLocation?.location.latitude
-                    || latLng.lng !== searchLocation.location.longitude) {
+                if (searchLocation === undefined
+                    || searchLocation.location.latitude !== latLng.lat
+                    || searchLocation.location.longitude !== latLng.lng) {
                     searchLocation = new StopMarker(
                         null,
                         "SearchLocation",
@@ -160,21 +163,8 @@ const GoogleMapWidget: FC<Props> = (props) => {
 
 
     function selectItem(marker: StopMarker) {
-        // If no selected item, set the marker to the selected item
-        if (!selectedItem) {
-            setSelectedItem(marker)
-            setNewSelection(true)
-        }
-        // If the selected item is the same, then remove the selected item.
-        else if (selectedItem.location.latitude === marker.location.latitude && selectedItem.location.longitude === marker.location.longitude) {
-            selectedId = ""
-            setSelectedItem(null)
-        }
-        // select the new item
-        else {
-            setSelectedItem(marker);
-            setNewSelection(true)
-        }
+        setSelectedItem(marker);
+        setNewSelection(true)
     }
 
     function deselectItem() {
@@ -198,9 +188,8 @@ const GoogleMapWidget: FC<Props> = (props) => {
                 zoom={16}
                 center={mapLocation}
                 options={options}
-                onClick={event => {
-                    console.log(event);
-                }}
+                onClick={deselectItem}
+                onDragStart={deselectItem}
             >
 
                 {userLocation && (
