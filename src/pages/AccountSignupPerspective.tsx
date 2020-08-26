@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import {
-    IonBackButton,
     IonButton,
-    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -18,6 +16,7 @@ import {
 import {auth, generateUserDocument} from "../services/Firebase";
 import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
 import {getSavedServices, getSavedStops} from "../services/StorageManager";
+import BackButton from "../components/ui/BackButton";
 
 interface Props {
 }
@@ -78,9 +77,7 @@ class AccountSignupPerspective extends Component<Props, State> {
             <IonPage>
                 <IonHeader>
                     <IonToolbar>
-                        <IonButtons slot="start">
-                            <IonBackButton/>
-                        </IonButtons>
+                        <BackButton/>
                         <IonTitle>Account Signup</IonTitle>
                     </IonToolbar>
                 </IonHeader>

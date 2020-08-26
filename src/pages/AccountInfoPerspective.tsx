@@ -1,7 +1,5 @@
 import React, {Component} from "react";
 import {
-    IonBackButton,
-    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -19,6 +17,7 @@ import {UserContext} from "../providers/UserProvider";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import LogoutButton from "../components/account/LogoutButton";
 import {getUserDocument} from "../services/Firebase";
+import BackButton from "../components/ui/BackButton";
 
 interface Props {
 }
@@ -50,9 +49,7 @@ class AccountInfoPerspective extends Component<Props, State> {
             <IonPage>
                 <IonHeader>
                     <IonToolbar>
-                        <IonButtons slot="start">
-                            <IonBackButton/>
-                        </IonButtons>
+                        <BackButton/>
                         <IonTitle>Account Info</IonTitle>
                     </IonToolbar>
                 </IonHeader>
