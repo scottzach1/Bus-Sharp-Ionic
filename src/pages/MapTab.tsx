@@ -11,7 +11,7 @@ import {
     IonToolbar
 } from '@ionic/react';
 import {useLoadScript} from "@react-google-maps/api";
-import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
+import {geocodeByAddress} from "react-places-autocomplete";
 import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
 
 const libraries = ["places"];
@@ -37,35 +37,28 @@ const MapTab: FC = () => {
         fetch(proxy + urlBuilder.href + "&strictbounds")
             .then(results => results.json())
             .then(data => {
-                if (data.predictions) {
-                    searchResults.current = data.predictions
-                }
+                if (data.predictions) searchResults.current = getPredictions(data.predictions);
             })
     }
 
-
-    function getPredictions() {
+    function getPredictions(data: any) {
         return (
             <IonList>
-                {
-                    searchResults.current.map((result: any) =>
-                        <IonItem key={result.description} onClick={e => {
-                            geocodeByAddress(result.description)
-                                .then(location => {
-                                    setSearchLocation(location[0])
-                                })
+                {data.map((result: any) =>
+                    <IonItem
+                        key={result.description}
+                        onClick={() => {
+                            geocodeByAddress(result.description).then(location => setSearchLocation(location[0]));
                             setSearchText("")
                         }}>
-                            {result.description}
-                        </IonItem>
-                    )
-                }
+                        {result.description}
+                    </IonItem>
+                )}
             </IonList>
         )
     }
 
-
-    if (loadError) console.log(loadError);
+    if (loadError) console.error('Failed to load', loadError);
 
     return (
         <IonPage>
@@ -79,12 +72,9 @@ const MapTab: FC = () => {
                 <IonSearchbar id={"searchbar"} value={searchText} onIonChange={e => setSearchText(e.detail.value!)}/>
                 {searchText && (
                     <IonCard>
-                        {searchResults.current && (
-                            getPredictions()
-                        )}
-                        {!searchResults.current && (
+                        {searchResults.current ? searchResults.current :
                             <IonItem>No Results for "{searchText}"</IonItem>
-                        )}
+                        }
                     </IonCard>)
                 }
             </IonContent>
