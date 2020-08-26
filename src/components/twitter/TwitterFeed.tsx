@@ -1,20 +1,32 @@
 import React, {useEffect} from "react";
 import {IonCard} from "@ionic/react";
-import "./TwitterFeed.css"
 
 const TwitterFeed = () => {
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "http://platform.twitter.com/widgets.js";
         document.getElementsByClassName("twitter-embed")[0].appendChild(script);
-        // document.getElementsByClassName("twitter-embed")[0].setAttribute('display', 'none')
-        // document.getElementsByClassName("twitter-embed")[0].setAttribute('display', 'block')
-        // document.getElementsByClassName("twitter-embed")[0].setAttribute('overflow', 'auto')
-        console.log(document.getElementsByClassName("twitter-embed")[0].attributes)
-        document.getElementsByClassName("twitter-embed")[0].setAttribute('overflow', 'auto')
-
     }, []);
 
+    // Keep listening until the element is rendered, before manipulating overflow and max-width property.
+    async function styleFrame(maxAttempts: number, counter?: number) {
+        if (document.getElementById('twitter-widget-0')) {
+            // Unfortunately using `.setAttribute` wont work here. So we have to manually manipulate the objects styles.
+
+            // @ts-ignore - Add a scrollbar by manipulating the overflow property in DOM.
+            document.getElementsByClassName('twitter-embed')[0].style.overflow = 'auto';
+
+            let iframe = document.getElementById('twitter-widget-0')
+            // @ts-ignore - Remove content max-width by manipulating the maxWidth property in DOM.
+            iframe.contentWindow.document.getElementsByClassName('timeline-Widget')[0].style.maxWidth = 'none'
+        } else if (counter && counter >= maxAttempts) return;
+        else setTimeout(() => styleFrame(maxAttempts, (counter) ? counter + 1 : 1), 500);
+    }
+
+    // Try for 20 seconds before giving up.
+    styleFrame(20).catch((e) => console.error('Failed to add scrollbar to the embed widget', e));
+
+    // Dark theme preference.
     const prefersDark: boolean = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     return (
@@ -22,10 +34,7 @@ const TwitterFeed = () => {
             <a
                 className="twitter-timeline"
                 data-theme={(prefersDark) ? "dark" : "light"}
-                // data-tweet-limit="5"
-                // data-height="100"
-                // data-width="100"
-                data-chrome="noheader nofooter noborders transparent noscrollbar"
+                data-chrome="noheader nofooter noborders transparent"
                 href="https://twitter.com/metlinkwgtn"
             >
                 Tweets by metlinkwgtn
