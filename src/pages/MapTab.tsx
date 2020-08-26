@@ -30,11 +30,11 @@ const MapTab: FC = () => {
         let proxy = "https://cors-anywhere.herokuapp.com/";
         let urlBuilder = new URL("https://maps.googleapis.com/maps/api/place/autocomplete/json")
         urlBuilder.searchParams.append("input", searchText)
-        urlBuilder.searchParams.append("types", "address")
         urlBuilder.searchParams.append("location", "-41.28646,174.77623")
+        urlBuilder.searchParams.append("radius", "200000")
         urlBuilder.searchParams.append("key", process.env.REACT_APP_GOOGLE_MAPS_API_KEY + "")
 
-        fetch(proxy + urlBuilder.href)
+        fetch(proxy + urlBuilder.href + "&strictbounds")
             .then(results => results.json())
             .then(data => {
                 if (data.predictions) {
