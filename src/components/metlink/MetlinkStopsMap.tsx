@@ -10,7 +10,7 @@ const MetlinkStopsMap: FC<Props> = () => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
 
-    if (!dataIsLoaded) getStops().then(stops => {
+    if (!dataIsLoaded) getStops().then((stops) => {
         generateMapMarkers(stops);
         setDataIsLoaded(true);
     })

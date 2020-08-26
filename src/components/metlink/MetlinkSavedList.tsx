@@ -13,7 +13,8 @@ import {
 import ListComponent from "../ui/ListComponent";
 import {
     getSavedServices,
-    getSavedStops, getServices,
+    getSavedStops,
+    getServices,
     getStops,
     setSavedServices,
     setSavedStops
