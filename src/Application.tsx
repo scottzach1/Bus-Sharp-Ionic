@@ -29,6 +29,7 @@ import {UserContext} from "./providers/UserProvider";
 import AccountInfoPerspective from "./pages/AccountInfoPerspective";
 import AccountLoginPerspective from "./pages/AccountLoginPerspective";
 import AccountSignupPerspective from "./pages/AccountSignupPerspective";
+import TwitterFeedPerspective from "./pages/TwitterFeedPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;
@@ -53,6 +54,7 @@ class Application extends React.Component<{}, {}> {
                                     {/* Hidden Perspectives*/}
                                     <Route path="/service/:serviceCode" component={ServicePerspective}/>
                                     <Route path="/stop/:stopCode" component={StopPerspective}/>
+                                    <Route path="/twitter" component={TwitterFeedPerspective}/>
 
                                     {/*Account Perspectives*/}
                                     {userContext?.uid ?
