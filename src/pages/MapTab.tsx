@@ -13,9 +13,6 @@ import {
 import {useLoadScript} from "@react-google-maps/api";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
-import {readRemoteFile} from "react-papaparse";
-import {type} from "os";
-import {map} from "ionicons/icons";
 
 const libraries = ["places"];
 
@@ -36,17 +33,14 @@ const MapTab: FC = () => {
         urlBuilder.searchParams.append("types", "address")
         urlBuilder.searchParams.append("location", "-41.28646,174.77623")
         urlBuilder.searchParams.append("key", process.env.REACT_APP_GOOGLE_MAPS_API_KEY + "")
-        console.log(urlBuilder.href)
 
-        const response = async () => fetch(proxy + urlBuilder.href)
+        fetch(proxy + urlBuilder.href)
             .then(results => results.json())
             .then(data => {
                 if (data.predictions) {
-                    console.log("HERE2")
                     searchResults.current = data.predictions
                 }
             })
-        response()
     }
 
 
@@ -55,7 +49,13 @@ const MapTab: FC = () => {
             <IonList>
                 {
                     searchResults.current.map((result: any) =>
-                        <IonItem key={result.description}>
+                        <IonItem key={result.description} onClick={e => {
+                            geocodeByAddress(result.description)
+                                .then(location => {
+                                    setSearchLocation(location[0])
+                                })
+                            setSearchText("")
+                        }}>
                             {result.description}
                         </IonItem>
                     )

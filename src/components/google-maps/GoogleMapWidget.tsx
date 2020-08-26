@@ -86,10 +86,8 @@ const GoogleMapWidget: FC<Props> = (props) => {
     }
 
     // If a new geolocation has been sent through, set that new geolocation to the center
-    if (props.geoCoderResult && !isSameSearchLocation()) {
-        selectedId = "Search"
-        // Set the new location
-        mapToSearchLocation();
+    if (props.geoCoderResult) {
+        isSameSearchLocation()
     }
 
     // If the device allows for geolocation, attempt to find the users location
@@ -148,16 +146,22 @@ const GoogleMapWidget: FC<Props> = (props) => {
      * method.
      */
     function isSameSearchLocation() {
-        if (searchLocation === null) return false
+        if (props.geoCoderResult === undefined) return
 
-        if (props.geoCoderResult) {
-            return getLatLng(props.geoCoderResult).then(latLng => {
-                return (latLng.lat === searchLocation?.location.latitude && latLng.lng === searchLocation.location.longitude);
-            }).catch(e => {
-                return true
+        getLatLng(props.geoCoderResult)
+            .then(latLng => {
+                if (latLng.lat !== searchLocation?.location.latitude
+                    || latLng.lng !== searchLocation.location.longitude) {
+                    searchLocation = new StopMarker(
+                        null,
+                        "SearchLocation",
+                        props.geoCoderResult?.formatted_address ? props.geoCoderResult.formatted_address : "",
+                        "",
+                        new Position(latLng.lat, latLng.lng))
+                    selectedId = "Search"
+                    selectItem(searchLocation)
+                }
             })
-        }
-        return true;
     }
 
     /**
@@ -174,24 +178,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setShowToast(true)
     }
 
-    /**
-     * Create a new Stop Marker for the search location
-     */
-    function mapToSearchLocation() {
-        if (!props.geoCoderResult) return;
-        getLatLng(props.geoCoderResult).then(latLng => {
-            searchLocation = new StopMarker(
-                null,
-                "SearchLocation",
-                props.geoCoderResult?.formatted_address ? props.geoCoderResult.formatted_address : "",
-                "",
-                new Position(latLng.lat, latLng.lng))
-            if (searchLocation) {
-                selectedId = "Search"
-                selectItem(searchLocation)
-            }
-        })
-    }
 
     function selectItem(marker: StopMarker) {
         // If no selected item, set the marker to the selected item
