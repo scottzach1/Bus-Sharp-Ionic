@@ -18,7 +18,7 @@ const libraries = ["places"];
 
 const MapTab: FC = () => {
     const searchResults = useRef<any>(null)
-    const searchLocation= useRef<google.maps.GeocoderResult | undefined>(undefined)
+    const searchLocation = useRef<google.maps.GeocoderResult | undefined>(undefined)
     const [searchText, setSearchText] = useState<string>("")
 
     const {isLoaded, loadError} = useLoadScript({
@@ -60,7 +60,7 @@ const MapTab: FC = () => {
         )
     }
 
-    function getGeolocation(){
+    function getGeolocation() {
         let before = searchLocation.current
         searchLocation.current = undefined;
         return before

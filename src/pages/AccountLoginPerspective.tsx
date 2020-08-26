@@ -106,10 +106,14 @@ class AccountLoginPerspective extends Component<Props, State> {
                                 Login
                             </IonButton>
                             <IonItem>
-                                <IonLabel>Don't have an account? <a href="/signup">Sign up here</a></IonLabel>
+                                <IonLabel>
+                                    Don't have an account? <a href="/signup">Sign up here</a>.
+                                </IonLabel>
                             </IonItem>
                             <IonItem>
-                                <IonLabel>Forgot your password? <a href="/reset">Reset it here</a>.</IonLabel>
+                                <IonLabel>
+                                    Otherwise, forgot your password? <a href="/reset">Reset it here</a>.
+                                </IonLabel>
                             </IonItem>
                             <IonItem>
                                 <IonLabel>

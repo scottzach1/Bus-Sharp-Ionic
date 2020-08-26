@@ -1,8 +1,6 @@
 import React, {FC, useState} from "react";
 import {
-    IonBackButton,
     IonButton,
-    IonButtons,
     IonCard,
     IonCardContent,
     IonCardHeader,
@@ -16,6 +14,7 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {auth} from "../services/Firebase";
+import BackButton from "../components/ui/BackButton";
 
 const AccountPasswordResetPerspective: FC = () => {
     const [userEmail, setUserEmail] = useState<string>('');
@@ -34,9 +33,7 @@ const AccountPasswordResetPerspective: FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonBackButton/>
-                    </IonButtons>
+                    <BackButton/>
                     <IonTitle>Password Reset</IonTitle>
                 </IonToolbar>
             </IonHeader>
