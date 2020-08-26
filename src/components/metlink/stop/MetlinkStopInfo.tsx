@@ -12,7 +12,8 @@ import {
 import {close, heart, heartOutline, map, share} from "ionicons/icons";
 import {Plugins} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
-import {getSavedStops, getStops, setSavedStops} from "../../../services/StorageManager";
+import {getSavedStops, getStops, toggleSavedStop} from "../../../services/StorageManager";
+import {UserContext} from "../../../providers/UserProvider";
 
 const {Share} = Plugins;
 
@@ -29,6 +30,7 @@ interface State {
 }
 
 class MetlinkStopInfo extends Component<Props, State> {
+    static contextType = UserContext;
 
     constructor(props: Readonly<Props>) {
         super(props);
@@ -42,7 +44,7 @@ class MetlinkStopInfo extends Component<Props, State> {
 
     componentDidMount() {
         if (!this.state.stopData)
-            getStops().then((stops) => this.setState({stopData: stops![this.props.stopCode]}));
+            getStops().then((stops) => this.setState({stopData: stops[this.props.stopCode]}));
 
         getSavedStops().then((savedStops) => {
             let saved: boolean = savedStops!.includes(this.props.stopCode);
@@ -51,16 +53,8 @@ class MetlinkStopInfo extends Component<Props, State> {
     }
 
     toggleFavouriteStop() {
-        getSavedStops().then((savedStops) => {
-            // Remove from saved stops.
-            if (savedStops.includes(this.props.stopCode))
-                savedStops.splice(savedStops.indexOf(this.props.stopCode));
-            // Add to saved stops.
-            else
-                savedStops.push(this.props.stopCode);
-            // Update Storage.
-            setSavedStops(savedStops).then(() => this.setState({saved: savedStops.includes(this.props.stopCode)}));
-        });
+        toggleSavedStop(this.props.stopCode, this.context)
+            .then((saved: boolean) => this.setState({saved: saved}));
     }
 
     generateActionSheet() {

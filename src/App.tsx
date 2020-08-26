@@ -15,7 +15,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import UserProvider from "./providers/UserProvider";
+import UserProvider, {UserContext} from "./providers/UserProvider";
 import Application from "./Application";
 import {initSavedServices, initSavedStops, initServices, initStops, initTheme} from "./services/StorageManager";
 
@@ -25,15 +25,18 @@ interface AppProps {
 interface AppState {
     stops: any[];
     services: any[];
+    syncedWithCloud: boolean;
 }
 
 class App extends React.Component<AppProps, AppState> {
+    static contextType = UserContext;
 
     constructor(props: Readonly<AppProps>) {
         super(props);
         this.state = {
             stops: [],
             services: [],
+            syncedWithCloud: false,
         };
     }
 

@@ -12,7 +12,7 @@ import {
 import {close, heart, heartOutline, share} from "ionicons/icons";
 import {Share} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
-import {getSavedServices, getServices, setSavedServices} from "../../../services/StorageManager";
+import {getSavedServices, getServices, toggleSavedService} from "../../../services/StorageManager";
 
 interface Props {
     serviceCode: string
@@ -48,16 +48,8 @@ class MetlinkServiceInfo extends Component<Props, State> {
     }
 
     toggleFavouriteStop() {
-        getSavedServices().then((savedServices) => {
-            // Remove from saved services.
-            if (savedServices.includes(this.props.serviceCode))
-                savedServices.splice(savedServices.indexOf(this.props.serviceCode));
-            // Add to saved services.
-            else
-                savedServices.push(this.props.serviceCode);
-            // Update Storage.
-            setSavedServices(savedServices).then(() => this.setState({saved: savedServices.includes(this.props.serviceCode)}));
-        })
+        toggleSavedService(this.props.serviceCode, this.context)
+            .then((saved: boolean) => this.setState({saved: saved}));
     }
 
     generateActionSheet() {

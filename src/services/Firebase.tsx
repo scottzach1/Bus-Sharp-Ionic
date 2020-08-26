@@ -2,6 +2,10 @@ import * as firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
 
+// For some reason this isn't working!
+
+// require('dotenv').config()
+
 // const firebaseConfig = {
 //     apiKey: process.env.FIREBASE_APP_API_KEY,
 //     authDomain: process.env.FIREBASE_APP_AUTH_DOMAIN,
@@ -12,8 +16,6 @@ import '@firebase/firestore';
 //     appId: process.env.FIREBASE_APP_ID,
 //     measurementId: process.env.FIREBASE_APP_MEASUREMENT_ID
 // };
-
-require('dotenv').config()
 
 const firebaseConfig = {
     apiKey: "AIzaSyCQmHKMWJjeGz5kJuC_NgZmLzUBah_aLU4",
@@ -26,6 +28,12 @@ const firebaseConfig = {
     measurementId: "G-Z7NRDEESN2"
 };
 
+/**
+ * NOTE: This file was heavily inspired from the following blog post (as well as official documentation):
+ * - "https://blog.logrocket.com/user-authentication-firebase-react-apps/"
+ * The code was listed under MIT, and has been heavily altered to meet this projects requirements.
+ */
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -37,9 +45,13 @@ export const firestore = firebase.firestore();
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogle = () => {
     auth.signInWithPopup(googleAuthProvider).catch(e => console.error("Failed to sign in with pop up", e));
-};
+}
 
-// Get user document, create new entry if doesn't exist.
+/**
+ * Gets the user document from Firestore, creating a new entry if one isn't present.
+ * @param user: User reference to obtain / create user's document in firestore.
+ * @param additionalData: Data to set within Firestore if creating entry.
+ */
 export const generateUserDocument = async (user: firebase.User | null, additionalData?: firebase.firestore.DocumentData | undefined) => {
     if (!user) return null;
 
@@ -58,11 +70,33 @@ export const generateUserDocument = async (user: firebase.User | null, additiona
     }
 
     // Get entry from database.
-    return getUserDocument(user.uid);
+    return getUserDocument(user);
 };
 
-// Get user document from the firestore.
-const getUserDocument = async (uid: string) => {
+/**
+ * Updates the users document in firestore with the data attributes within `additionalData`.
+ * @param user: User reference to update user's document in firestore.
+ * @param additionalData: Data to update within Firestore.
+ */
+export const updateUserDocument = async (user: firebase.User | null, additionalData: firebase.firestore.DocumentData) => {
+    if (!user) return;
+
+    // Get user firestore entry.
+    const userRef = firestore.doc(`users/${user.uid}`);
+
+    await userRef.update({
+        ...additionalData
+    }).catch((e) => console.error("Error updating user document", e));
+}
+
+/**
+ * Get the users document stored within firestore.
+ * @param user: User reference to get user's document in firestore.
+ * @return any | null: Object with document if present, `null` otherwise.
+ */
+export const getUserDocument = async (user: firebase.User) => {
+    const uid: string = user.uid;
+
     if (!uid) return null;
 
     return await firestore.doc(`users/${uid}`).get()
@@ -70,7 +104,7 @@ const getUserDocument = async (uid: string) => {
             return {uid, ...userDocument.data()};
         })
         .catch((e) => {
-            console.error("Error fetching user", e)
+            console.error("Error fetching user", e);
             return null;
         });
 };

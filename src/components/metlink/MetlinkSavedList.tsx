@@ -18,6 +18,7 @@ import {
     setSavedServices,
     setSavedStops
 } from "../../services/StorageManager";
+import {UserContext} from "../../providers/UserProvider";
 
 interface State {
     savedStopCards: any[] | null,
@@ -27,7 +28,8 @@ interface State {
 }
 
 class MetlinkSavedList extends Component<{}, State> {
-    // Can be true or false, flipping it causes the component to refresh.
+    static contextType = UserContext;
+
     constructor(props: Readonly<{}>) {
         super(props);
 
@@ -47,11 +49,11 @@ class MetlinkSavedList extends Component<{}, State> {
     }
 
     clearSavedStops() {
-        setSavedStops([]).then(this.updateSavedCards);
+        setSavedStops([], this.context).then(() => this.updateSavedCards);
     }
 
     clearSavedServices() {
-        setSavedServices([]).then(this.updateSavedCards);
+        setSavedServices([], this.context).then(() => this.updateSavedCards);
     }
 
     updateSavedCards() {
@@ -79,7 +81,7 @@ class MetlinkSavedList extends Component<{}, State> {
             this.setState({savedStopCards: stopCards});
         });
 
-        getSavedServices().then(services => {
+        getSavedServices().then((services) => {
             let serviceCards: any[] = [];
 
             let counter: number = 0;
