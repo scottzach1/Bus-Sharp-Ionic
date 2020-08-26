@@ -27,6 +27,7 @@ import StopPerspective from "./pages/StopPerspective";
 import ServicePerspective from "./pages/ServicePerspective";
 import {readRemoteFile} from "react-papaparse";
 import {IonReactRouter} from "@ionic/react-router";
+import TwitterFeedPerspective from "./pages/TwitterFeedPerspective";
 
 const {Storage} = Plugins;
 
@@ -112,6 +113,7 @@ class App extends React.Component<{}, AppState> {
                             {/* Hidden Perspectives*/}
                             <Route path="/service/:serviceCode" component={ServicePerspective}/>
                             <Route path="/stop/:stopCode" component={StopPerspective}/>
+                            <Route path="/twitter" component={TwitterFeedPerspective}/>
                         </IonRouterOutlet>
                         <IonTabBar slot="bottom">
                             <IonTabButton tab="search" href="/search">

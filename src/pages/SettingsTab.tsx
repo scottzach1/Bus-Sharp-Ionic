@@ -5,6 +5,7 @@ import SettingsShareAppItem from "../components/settings/SettingsShareAppItem";
 import SettingsClearStorageItem from "../components/settings/SettingsClearStorageItem";
 import SettingsThemeSelector from "../components/settings/SettingsThemeSelector";
 import SettingsSourceCodeItem from "../components/settings/SettingsSourceCodeItem";
+import SettingsTwitterFeedItem from "../components/settings/SettingsTwitterFeedItem";
 
 interface Props {
 }
@@ -51,6 +52,7 @@ class SettingsTab extends Component<Props, State> {
                     <SettingsClearStorageItem/>
                     <SettingsThemeSelector/>
                     <SettingsSourceCodeItem/>
+                    <SettingsTwitterFeedItem/>
                     <SettingsShareAppItem/>
                     <SettingsFeedbackItem/>
                 </IonContent>
