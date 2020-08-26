@@ -14,10 +14,8 @@ import {
     IonToolbar
 } from "@ionic/react";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import {Plugins} from '@capacitor/core';
 import ListComponent from "../components/ui/ListComponent";
-
-const {Storage} = Plugins;
+import {getServices, getStops} from "../services/StorageManager";
 
 
 interface State {
@@ -41,17 +39,11 @@ class SearchTab extends Component<{}, State> {
     }
 
     componentDidMount() {
-        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
-            if (res.value) this.setState({
-                stopData: this.parseStopData(JSON.parse(res.value))
-            });
-        }).catch(e => console.log(e));
+        if (!this.state.stopData) getStops()
+            .then(stops => this.setState({stopData: this.parseStopData(stops)}));
 
-        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
-            if (res.value) this.setState({
-                serviceData: this.parseServiceData(JSON.parse(res.value))
-            });
-        }).catch(e => console.log(e));
+        if (!this.state.serviceData) getServices()
+            .then(services => this.setState({serviceData: this.parseServiceData(services)}));
     }
 
     parseStopData(stopData: any[]) {

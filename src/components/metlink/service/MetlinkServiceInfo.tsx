@@ -10,11 +10,9 @@ import {
     IonToast
 } from "@ionic/react";
 import {close, heart, heartOutline, share} from "ionicons/icons";
-import {Plugins, Share} from '@capacitor/core';
+import {Share} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
-
-const {Storage} = Plugins;
-
+import {getSavedServices, getServices, toggleSavedService} from "../../../services/StorageManager";
 
 interface Props {
     serviceCode: string
@@ -40,38 +38,18 @@ class MetlinkServiceInfo extends Component<Props, State> {
     }
 
     componentDidMount() {
-        if (!this.state.serviceData) Storage.get({key: 'services'}).then(res => {
-            if (res.value) this.setState({
-                serviceData: JSON.parse(res.value)[this.props.serviceCode],
-            });
-        }).catch(e => console.log(e));
+        if (!this.state.serviceData)
+            getServices().then((services) => this.setState({serviceData: services![this.props.serviceCode]}))
 
-        Storage.get({key: 'savedServices'}).then(res => {
-            if (res.value) {
-                let saved: boolean = JSON.parse(res.value).includes(this.props.serviceCode)
-                if (this.state.saved !== saved) this.setState({
-                    saved: saved,
-                });
-            }
-        }).catch(e => console.log(e));
+        getSavedServices().then((savedServices) => {
+            let saved: boolean = savedServices!.includes(this.props.serviceCode);
+            if (saved !== this.state.saved) this.setState({saved: saved});
+        })
     }
 
     toggleFavouriteStop() {
-        Storage.get({key: 'savedServices'}).then(res => {
-            if (res.value) {
-                let savedServices: any[] = JSON.parse(res.value);
-                if (savedServices.includes(this.props.serviceCode))
-                    savedServices.splice(savedServices.indexOf(this.props.serviceCode));
-                else
-                    savedServices.push(this.props.serviceCode);
-                Storage.set({
-                    key: 'savedServices',
-                    value: JSON.stringify(savedServices)
-                }).then(() => this.setState({
-                    saved: savedServices.includes(this.props.serviceCode)
-                })).catch(e => console.log(e));
-            }
-        });
+        toggleSavedService(this.props.serviceCode, this.context)
+            .then((saved: boolean) => this.setState({saved: saved}));
     }
 
     generateActionSheet() {

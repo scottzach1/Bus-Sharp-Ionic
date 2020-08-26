@@ -1,9 +1,8 @@
 import React, {Component} from "react";
 import {IonAlert, IonButton, IonIcon, IonItem, IonLabel, IonToast} from "@ionic/react";
 import {trashBinSharp} from "ionicons/icons";
-import {Plugins} from "@capacitor/core";
+import {clearSavedData} from "../../services/StorageManager";
 
-const {Storage} = Plugins;
 
 interface Props {
 }
@@ -27,11 +26,10 @@ class SettingsClearStorageItem extends Component<Props, State> {
     }
 
     clearStorage() {
-        Storage.clear()
+        clearSavedData()
             .then(() => this.setState({showClearedToastSuccess: true}))
             .catch(() => this.setState({showClearedToastFailure: true}));
     }
-
 
     render() {
         return (
