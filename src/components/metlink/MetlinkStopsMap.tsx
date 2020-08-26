@@ -4,9 +4,10 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 import {getStops} from "../../services/StorageManager";
 
 interface Props {
+    geoCoderResult?: google.maps.GeocoderResult
 }
 
-const MetlinkStopsMap: FC<Props> = () => {
+const MetlinkStopsMap: FC<Props> = (props) => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
 
@@ -47,7 +48,7 @@ const MetlinkStopsMap: FC<Props> = () => {
                 <LoadingSpinner/>
             )}
             {dataIsLoaded && (
-                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null}/>)
+                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} geoCoderResult={props.geoCoderResult}/>)
             }
         </div>
     );
