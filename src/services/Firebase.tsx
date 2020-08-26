@@ -2,30 +2,15 @@ import * as firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
 
-// For some reason this isn't working!
-
-// require('dotenv').config()
-
-// const firebaseConfig = {
-//     apiKey: process.env.FIREBASE_APP_API_KEY,
-//     authDomain: process.env.FIREBASE_APP_AUTH_DOMAIN,
-//     databaseURL: process.env.FIREBASE_APP_DATABASE_URL,
-//     projectId: process.env.FIREBASE_APP_PROJECT_ID,
-//     storageBucket: process.env.FIREBASE_APP_STORAGE_BUCKET,
-//     messagingSenderId: process.env.FIREBASE_APP_MESSAGE_SENDER_ID,
-//     appId: process.env.FIREBASE_APP_ID,
-//     measurementId: process.env.FIREBASE_APP_MEASUREMENT_ID
-// };
-
 const firebaseConfig = {
-    apiKey: "AIzaSyCQmHKMWJjeGz5kJuC_NgZmLzUBah_aLU4",
-    authDomain: "bus-sharp.firebaseapp.com",
-    databaseURL: "https://bus-sharp.firebaseio.com",
-    projectId: "bus-sharp",
-    storageBucket: "bus-sharp.appspot.com",
-    messagingSenderId: "483376447021",
-    appId: "1:483376447021:web:5820efb82ad44df85e42a4",
-    measurementId: "G-Z7NRDEESN2"
+    apiKey: process.env.REACT_APP_FIREBASE_APP_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGE_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 /**
