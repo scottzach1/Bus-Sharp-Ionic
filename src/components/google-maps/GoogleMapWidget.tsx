@@ -2,10 +2,10 @@ import React, {FC, useState} from "react";
 import {GoogleMap, InfoWindow, Marker, Polyline, useLoadScript} from "@react-google-maps/api";
 import {IonIcon, IonToast} from "@ionic/react";
 import {locationSharp} from "ionicons/icons";
-import {readRemoteFile} from "react-papaparse";
 import "./GoogleMapWidget.css";
 import {mapStyles} from "./GoogleMapWidgetStyles";
 import {getLatLng} from "react-places-autocomplete";
+import {getSavedStops} from "../../services/StorageManager";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -107,27 +107,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
      * Asynchronously get the stop data currently available.
      */
     async function getStopData() {
-        if (stopData) return;
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
-
-        // Read Remote CSV.
-        readRemoteFile(proxy + url, {
-            download: true,
-            header: true,
-            complete: (results: any) => {
-                let data: any = {};
-
-                for (const stop of results.data) {
-                    const name: string = stop.stop_id + ' - ' + stop.stop_name;
-                    const code: string = stop.stop_id;
-                    data[code] = name;
-                }
-
-                setStopData(data);
-            },
-        })
-
+        if (!stopData) setStopData((await getSavedStops())!);
     }
 
     /**

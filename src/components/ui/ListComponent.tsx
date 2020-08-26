@@ -8,7 +8,6 @@ interface Props {
     isStop: boolean,
     code: string,
     title: string,
-    key: string,
     remaining?: string,
     isLive?: boolean,
 }
@@ -18,11 +17,6 @@ class ListComponent extends Component<Props, State> {
         super(props);
         this.state = {}
     }
-
-    componentDidMount() {
-
-    }
-
 
     render() {
         let href: string = ((this.props.isStop) ? '/stop/' : '/service/') + this.props.code;
@@ -34,7 +28,7 @@ class ListComponent extends Component<Props, State> {
         }
 
         return (
-            <IonItem href={href} key={this.props.code + ' - ' + this.props.title}>
+            <IonItem href={href} key={this.props.code + '- list component'}>
                 <IonBadge slot={"start"} color={this.props.isStop ? "primary" : "warning"}>
                     {this.props.code}
                 </IonBadge>

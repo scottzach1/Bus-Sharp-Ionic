@@ -1,9 +1,7 @@
 import React, {FC, useState} from "react";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import {Plugins} from '@capacitor/core';
-
-const {Storage} = Plugins;
+import {getStops} from "../../services/StorageManager";
 
 interface Props {
     geoCoderResult?: google.maps.GeocoderResult
@@ -13,13 +11,10 @@ const MetlinkStopsMap: FC<Props> = (props) => {
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([]);
 
-    if (!dataIsLoaded) Storage.get({key: 'stops'}).then(res => {
-        if (res.value) {
-            let stopData: any = JSON.parse(res.value);
-            generateMapMarkers(stopData);
-            setDataIsLoaded(true);
-        }
-    }).catch(e => console.error(e));
+    if (!dataIsLoaded) getStops().then((stops) => {
+        generateMapMarkers(stops);
+        setDataIsLoaded(true);
+    })
 
     function generateMapMarkers(data: any) {
         let parsedMarkers: StopMarker[] = [];

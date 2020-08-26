@@ -12,8 +12,10 @@ import {
 import {close, heart, heartOutline, map, share} from "ionicons/icons";
 import {Plugins} from '@capacitor/core';
 import LoadingSpinner from "../../ui/LoadingSpinner";
+import {getSavedStops, getStops, toggleSavedStop} from "../../../services/StorageManager";
+import {UserContext} from "../../../providers/UserProvider";
 
-const {Storage, Share} = Plugins;
+const {Share} = Plugins;
 
 
 interface Props {
@@ -28,6 +30,7 @@ interface State {
 }
 
 class MetlinkStopInfo extends Component<Props, State> {
+    static contextType = UserContext;
 
     constructor(props: Readonly<Props>) {
         super(props);
@@ -40,38 +43,18 @@ class MetlinkStopInfo extends Component<Props, State> {
     };
 
     componentDidMount() {
-        if (!this.state.stopData) Storage.get({key: 'stops'}).then(res => {
-            if (res.value) this.setState({
-                stopData: JSON.parse(res.value)[this.props.stopCode],
-            });
-        }).catch(e => console.log(e));
+        if (!this.state.stopData)
+            getStops().then((stops) => this.setState({stopData: stops[this.props.stopCode]}));
 
-        Storage.get({key: 'savedStops'}).then(res => {
-            if (res.value) {
-                let saved: boolean = JSON.parse(res.value).includes(this.props.stopCode)
-                if (this.state.saved !== saved) this.setState({
-                    saved: saved,
-                })
-            }
-        }).catch(e => console.log(e));
+        getSavedStops().then((savedStops) => {
+            let saved: boolean = savedStops!.includes(this.props.stopCode);
+            if (saved !== this.state.saved) this.setState({saved: saved});
+        });
     }
 
     toggleFavouriteStop() {
-        Storage.get({key: 'savedStops'}).then(res => {
-            if (res.value) {
-                let savedStops: any[] = JSON.parse(res.value);
-                if (savedStops.includes(this.props.stopCode))
-                    savedStops.splice(savedStops.indexOf(this.props.stopCode));
-                else
-                    savedStops.push(this.props.stopCode);
-                Storage.set({
-                    key: 'savedStops',
-                    value: JSON.stringify(savedStops)
-                }).then(() => this.setState({
-                    saved: savedStops.includes(this.props.stopCode)
-                })).catch(e => console.log(e));
-            }
-        });
+        toggleSavedStop(this.props.stopCode, this.context)
+            .then((saved: boolean) => this.setState({saved: saved}));
     }
 
     generateActionSheet() {
