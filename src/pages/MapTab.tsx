@@ -1,28 +1,70 @@
-import React, {FC, useState} from 'react';
-import {IonCard, IonContent, IonHeader, IonItem, IonPage, IonSearchbar, IonTitle, IonToolbar} from '@ionic/react';
+import React, {FC, useRef, useState} from 'react';
+import {
+    IonCard,
+    IonContent,
+    IonHeader,
+    IonItem,
+    IonList,
+    IonPage,
+    IonSearchbar,
+    IonTitle,
+    IonToolbar
+} from '@ionic/react';
 import {useLoadScript} from "@react-google-maps/api";
-import PlacesAutocomplete, {geocodeByAddress, getLatLng} from "react-places-autocomplete";
+import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
+import {readRemoteFile} from "react-papaparse";
+import {type} from "os";
+import {map} from "ionicons/icons";
 
 const libraries = ["places"];
 
 const MapTab: FC = () => {
-    const [address, setAddress] = useState<string>('');
+    const rerenderSearch = useRef<boolean>(false)
+    const [searchResults, setSearchResults] = useState<any>(null)
+    const searchText = useRef<string>("")
+    const [searchLocation, setSearchLocation] = useState<google.maps.GeocoderResult | undefined>(undefined)
+
     const {isLoaded, loadError} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     })
-    const [searchLocation, setSearchLocation] = useState<google.maps.GeocoderResult | undefined>(undefined)
 
-    function handleChange(address: any) {
-        setAddress(address);
+    function setSearch(event: CustomEvent) {
+        searchText.current = event.detail.value!
+        rerenderSearch.current = true
+        let proxy = "https://cors-anywhere.herokuapp.com/";
+        let urlBuilder = new URL("https://maps.googleapis.com/maps/api/place/autocomplete/json")
+        urlBuilder.searchParams.append("input", searchText.current)
+        urlBuilder.searchParams.append("types", "address")
+        urlBuilder.searchParams.append("location", "-41.28646,174.77623")
+        urlBuilder.searchParams.append("key", process.env.REACT_APP_GOOGLE_MAPS_API_KEY + "")
+
+        fetch(proxy + urlBuilder.href)
+            .then(results => results.json())
+            .then(data => {
+                rerenderSearch.current = false
+                if (data.predictions) {
+                    setSearchResults(data.predictions)
+                }
+            })
     }
 
-    function handleSelect(address: any) {
-        geocodeByAddress(address)
-            .then(results => setSearchLocation(results[0]))
-            .catch(error => console.error('Error', error));
+
+    function getPredictions() {
+        return (
+            <IonList>
+                {
+                    searchResults.map((result: any) =>
+                        <IonItem key={result.description}>
+                            {result.description}
+                        </IonItem>
+                    )
+                }
+            </IonList>
+        )
     }
+
 
     if (loadError) console.log(loadError);
 
@@ -35,63 +77,9 @@ const MapTab: FC = () => {
             </IonHeader>
             <IonContent>
                 <MetlinkStopsMap geoCoderResult={searchLocation}/>
-                {isLoaded && (
-                    <PlacesAutocomplete
-                        value={address}
-                        onChange={handleChange}
-                        onSelect={handleSelect}
-                        searchOptions={{
-                            location: new google.maps.LatLng(-40.702633, 174.515182), // Wellington
-                            radius: 100000, // 1000km
-                            types: ['address']
-                        }}
-                        debounce={1000 /* Quick delay to stop search until user temp stopped typing. */}
-                    >
-                        {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
-                            <div className={"location-search-component"}>
-                                <IonSearchbar
-                                    value={address}
-                                    onIonChange={(e) => {
-                                        // Small hack to replace the expected <input/> with an <IonSearchBar/>
-                                        getInputProps().onChange({target: {value: e.detail.value!}});
-                                    }}
-                                    className={"location-search-input"}
-                                    autocomplete={"off"}
-                                />
-
-                                <div className="autocomplete-dropdown-container">
-                                    <IonCard>
-                                        {loading && <IonItem>Loading...</IonItem>}
-                                        {(document.querySelector('input')?.value === address) && suggestions.map((suggestion) => {
-                                            const className = suggestion.active
-                                                ? 'suggestion-item--active'
-                                                : 'suggestion-item';
-                                            // inline style for demonstration purpose
-                                            const style = suggestion.active
-                                                ? {backgroundColor: '#fafafa', cursor: 'pointer'}
-                                                : {backgroundColor: '#ffffff', cursor: 'pointer'};
-
-                                            const key: string = suggestion.index + ' - ' + suggestion.id;
-                                            return (
-                                                <IonItem
-                                                    {...getSuggestionItemProps(suggestion, {
-                                                        className,
-                                                        style,
-                                                    })}
-                                                    key={key + ' - container'}
-                                                    onSelect={() => handleSelect(suggestion.placeId)}
-                                                >
-                                                        <span key={key + ' - entry'}>
-                                                        {suggestion.description}
-                                                        </span>
-                                                </IonItem>
-                                            )
-                                        })}
-                                    </IonCard>
-                                </div>
-                            </div>
-                        )}
-                    </PlacesAutocomplete>
+                <IonSearchbar id={"searchbar"} value={searchText.current} onIonChange={e => searchText.current = e.detail.value!}/>
+                {searchResults && (
+                    <IonCard> {getPredictions()} </IonCard>
                 )}
             </IonContent>
         </IonPage>
