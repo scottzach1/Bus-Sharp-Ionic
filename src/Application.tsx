@@ -30,6 +30,7 @@ import AccountInfoPerspective from "./pages/AccountInfoPerspective";
 import AccountLoginPerspective from "./pages/AccountLoginPerspective";
 import AccountSignupPerspective from "./pages/AccountSignupPerspective";
 import TwitterFeedPerspective from "./pages/TwitterFeedPerspective";
+import AccountPasswordResetPerspective from "./pages/AccountPasswordResetPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;
@@ -60,6 +61,10 @@ class Application extends React.Component<{}, {}> {
                                     {userContext?.uid ?
                                         <Route path={"/account"} component={AccountInfoPerspective}/> :
                                         <Redirect from={"/account"} to={"/login"}/>
+                                    }
+                                    {!userContext?.uid ?
+                                        <Route path={"/reset"} component={AccountPasswordResetPerspective}/> :
+                                        <Redirect from={"/reset"} to={"/login"}/>
                                     }
                                     {!userContext?.uid ?
                                         <Route path={"/login"} component={AccountLoginPerspective}/> :
