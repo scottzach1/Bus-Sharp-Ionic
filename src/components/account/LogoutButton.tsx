@@ -1,11 +1,25 @@
-import React, {FC} from "react";
-import {IonButton} from "@ionic/react";
+import React, {FC, useState} from "react";
+import {IonButton, IonToast} from "@ionic/react";
 import {auth} from "../../services/Firebase";
 
 const LogoutButton: FC = () => {
+    const [showToast, setShowToast] = useState<boolean>(false);
+
     return (
-        <IonButton onClick={() => auth.signOut()} expand={"block"}>Logout</IonButton>
-    )
+        <div>
+            <IonButton
+                onClick={() => auth.signOut().then(() => setShowToast(true))}
+                expand={"block"}>
+                Logout
+            </IonButton>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message="Sign out successful!"
+                duration={1200}
+            />
+        </div>
+    );
 }
 
 export default LogoutButton;

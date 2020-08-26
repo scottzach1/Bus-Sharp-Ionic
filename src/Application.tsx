@@ -27,7 +27,6 @@ import ServicePerspective from "./pages/ServicePerspective";
 import {IonReactRouter} from "@ionic/react-router";
 import {UserContext} from "./providers/UserProvider";
 import AccountInfoPerspective from "./pages/AccountInfoPerspective";
-import AccountLogoutPerspective from "./pages/AccountLogoutPerspective";
 import AccountLoginPerspective from "./pages/AccountLoginPerspective";
 import AccountSignupPerspective from "./pages/AccountSignupPerspective";
 
@@ -59,10 +58,6 @@ class Application extends React.Component<{}, {}> {
                                     {userContext?.uid ?
                                         <Route path={"/account"} component={AccountInfoPerspective}/> :
                                         <Redirect from={"/account"} to={"/login"}/>
-                                    }
-                                    {userContext?.uid ?
-                                        <Route path={"/logout"} component={AccountLogoutPerspective}/> :
-                                        <Redirect from={"/logout"} to={"/login"}/>
                                     }
                                     {!userContext?.uid ?
                                         <Route path={"/login"} component={AccountLoginPerspective}/> :
