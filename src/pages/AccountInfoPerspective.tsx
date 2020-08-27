@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 import {UserContext} from "../providers/UserProvider";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import LogoutButton from "../components/account/LogoutButton";
+import AccountLogoutButton from "../components/account/AccountLogoutButton";
 import {getUserDocument} from "../services/Firebase";
 import BackButton from "../components/ui/BackButton";
 
@@ -75,7 +75,7 @@ class AccountInfoPerspective extends Component<Props, State> {
                                 </IonTextarea>
                             </IonItem>
                             {!this.context?.uid && <LoadingSpinner/>}
-                            <LogoutButton/>
+                            <AccountLogoutButton/>
                         </IonCardContent>
                     </IonCard>
                 </IonContent>

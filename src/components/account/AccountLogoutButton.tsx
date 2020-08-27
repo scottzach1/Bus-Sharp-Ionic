@@ -2,7 +2,7 @@ import React, {FC, useState} from "react";
 import {IonButton, IonToast} from "@ionic/react";
 import {auth} from "../../services/Firebase";
 
-const LogoutButton: FC = () => {
+const AccountLogoutButton: FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
 
     return (
@@ -22,4 +22,4 @@ const LogoutButton: FC = () => {
     );
 }
 
-export default LogoutButton;
+export default AccountLogoutButton;

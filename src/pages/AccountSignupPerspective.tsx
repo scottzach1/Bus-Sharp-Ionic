@@ -14,7 +14,7 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {auth, generateUserDocument} from "../services/Firebase";
-import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
+import AccountSignInWithGoogleButton from "../components/account/AccountSignInWithGoogleButton";
 import {getSavedServices, getSavedStops} from "../services/StorageManager";
 import BackButton from "../components/ui/BackButton";
 
@@ -145,7 +145,7 @@ class AccountSignupPerspective extends Component<Props, State> {
                                     Optionally, you can
                                 </IonLabel>
                             </IonItem>
-                            <SignInWithGoogleButton/>
+                            <AccountSignInWithGoogleButton/>
                         </IonCardContent>
                     </IonCard>
                     {this.state.error &&
