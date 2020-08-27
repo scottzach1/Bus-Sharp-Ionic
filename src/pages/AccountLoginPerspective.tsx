@@ -15,7 +15,7 @@ import {
     IonToolbar
 } from "@ionic/react";
 import {auth} from "../services/Firebase";
-import SignInWithGoogleButton from "../components/account/SignInWithGoogleButton";
+import AccountSignInWithGoogleButton from "../components/account/AccountSignInWithGoogleButton";
 import BackButton from "../components/ui/BackButton";
 
 interface Props {
@@ -117,7 +117,7 @@ class AccountLoginPerspective extends Component<Props, State> {
                                     Optionally, you can
                                 </IonLabel>
                             </IonItem>
-                            <SignInWithGoogleButton/>
+                            <AccountSignInWithGoogleButton/>
                         </IonCardContent>
                     </IonCard>
                     {this.state.error &&

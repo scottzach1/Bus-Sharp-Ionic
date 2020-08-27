@@ -3,7 +3,7 @@ import {signInWithGoogle} from "../../services/Firebase";
 import {logoGoogle} from "ionicons/icons";
 import React, {FC} from "react";
 
-const SignInWithGoogleButton: FC = () => {
+const AccountSignInWithGoogleButton: FC = () => {
     return (
         <IonButton color={"danger"} expand={"block"} type={"submit"} onClick={signInWithGoogle}>
             <IonIcon icon={logoGoogle}/>
@@ -13,4 +13,4 @@ const SignInWithGoogleButton: FC = () => {
     )
 }
 
-export default SignInWithGoogleButton;
+export default AccountSignInWithGoogleButton;
