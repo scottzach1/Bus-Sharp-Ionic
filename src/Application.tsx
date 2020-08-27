@@ -3,10 +3,10 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
-import SearchTab from './pages/SearchTab';
-import MapTab from './pages/MapTab';
-import SavedTab from './pages/SavedTab';
-import SettingsTab from './pages/SettingsTab';
+import SearchTab from './pages/tabs/SearchTab';
+import MapTab from './pages/tabs/MapTab';
+import SavedTab from './pages/tabs/SavedTab';
+import SettingsTab from './pages/tabs/SettingsTab';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -22,15 +22,15 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import StopPerspective from "./pages/StopPerspective";
-import ServicePerspective from "./pages/ServicePerspective";
+import StopPerspective from "./pages/perspectives/StopPerspective";
+import ServicePerspective from "./pages/perspectives/ServicePerspective";
 import {IonReactRouter} from "@ionic/react-router";
 import {UserContext} from "./providers/UserProvider";
-import AccountInfoPerspective from "./pages/AccountInfoPerspective";
-import AccountLoginPerspective from "./pages/AccountLoginPerspective";
-import AccountSignupPerspective from "./pages/AccountSignupPerspective";
-import TwitterFeedPerspective from "./pages/TwitterFeedPerspective";
-import AccountPasswordResetPerspective from "./pages/AccountPasswordResetPerspective";
+import AccountInfoPerspective from "./pages/perspectives/AccountInfoPerspective";
+import AccountLoginPerspective from "./pages/perspectives/AccountLoginPerspective";
+import AccountSignupPerspective from "./pages/perspectives/AccountSignupPerspective";
+import TwitterFeedPerspective from "./pages/perspectives/TwitterFeedPerspective";
+import AccountPasswordResetPerspective from "./pages/perspectives/AccountPasswordResetPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;

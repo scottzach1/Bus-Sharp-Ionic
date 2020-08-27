@@ -13,8 +13,8 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth} from "../services/Firebase";
-import BackButton from "../components/ui/BackButton";
+import {auth} from "../../services/Firebase";
+import BackButton from "../../components/ui/BackButton";
 
 const AccountPasswordResetPerspective: FC = () => {
     const [userEmail, setUserEmail] = useState<string>('');
