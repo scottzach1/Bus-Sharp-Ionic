@@ -1,7 +1,7 @@
 # Bus# (Bus-Sharp)
 
 > A lightweight utility app to manage public transport in the Wellington
-> region.
+> region. Visit [welly.live](https://welly.live)!
 
 
 ## About
