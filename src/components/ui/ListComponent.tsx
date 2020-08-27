@@ -22,7 +22,7 @@ class ListComponent extends Component<Props, State> {
         let href: string = ((this.props.isStop) ? '/stop/' : '/service/') + this.props.code;
         let spaces: any[] = [];
 
-        for (let i = this.props.code.length; i !== 5; ++i) {
+        for (let i = this.props.code.length; i !== 4; ++i) {
             // Insert 2 spaces, such that all names are aligned horizontally.
             spaces.push(<span>&nbsp;&nbsp;</span>)
         }
