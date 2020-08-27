@@ -4,7 +4,7 @@ import {IonCard} from "@ionic/react";
 const TwitterFeed = () => {
     useEffect(() => {
         const script = document.createElement("script");
-        script.src = "http://platform.twitter.com/widgets.js";
+        script.src = "https://platform.twitter.com/widgets.js";
         document.getElementsByClassName("twitter-embed")[0].appendChild(script);
     }, []);
 
