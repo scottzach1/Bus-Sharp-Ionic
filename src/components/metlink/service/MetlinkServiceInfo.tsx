@@ -104,9 +104,9 @@ class MetlinkServiceInfo extends Component<Props, State> {
                         </IonCardContent>
                     </IonCard>
                 )}
-                {!this.state.serviceData && (
-                    <LoadingSpinner/>
-                )}
+
+                <LoadingSpinner hidden={this.state.serviceData}/>
+
                 <IonToast
                     isOpen={this.state.showToast}
                     onDidDismiss={() => this.setState({showToast: false})}
