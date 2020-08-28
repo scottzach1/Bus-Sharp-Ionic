@@ -7,7 +7,6 @@ import {
     IonCheckbox,
     IonContent,
     IonHeader,
-    IonInput,
     IonItem,
     IonLabel,
     IonPage,
@@ -17,6 +16,8 @@ import {
 import {auth} from "../../services/Firebase";
 import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
 import BackButton from "../../components/ui/BackButton";
+import AccountEmailField from "../../components/account/AccountEmailField";
+import AccountPasswordField from "../../components/account/AccountPasswordField";
 
 interface Props {
 }
@@ -67,26 +68,14 @@ class AccountLoginPerspective extends Component<Props, State> {
                     </IonHeader>
                     <IonCard>
                         <IonCardContent>
-                            <IonItem>
-                                <IonLabel>Email</IonLabel>
-                                <IonInput
-                                    inputmode={"email"}
-                                    autocomplete={"email"}
-                                    placeholder={"user@example.com"}
-                                    value={this.state.email}
-                                    onIonChange={(e) => this.setState({email: e.detail.value!})}
-                                />
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel>Password</IonLabel>
-                                <IonInput
-                                    type={"password"}
-                                    autocomplete={"current-password"}
-                                    placeholder={"password"}
-                                    value={this.state.password}
-                                    onIonChange={(e) => this.setState({password: e.detail.value!})}
-                                />
-                            </IonItem>
+                            <AccountEmailField
+                                value={this.state.email}
+                                handler={(email => this.setState({email: email}))}
+                            />
+                            <AccountPasswordField
+                                value={this.state.password}
+                                handler={(password) => this.setState({password: password})}
+                            />
                             <IonItem>
                                 <IonLabel>Remember me</IonLabel>
                                 <IonCheckbox

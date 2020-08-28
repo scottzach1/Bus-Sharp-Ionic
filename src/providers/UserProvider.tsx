@@ -22,7 +22,7 @@ class UserProvider extends Component {
             generateUserDocument(userAuth)
                 .then((user) => this.setState({user}))
                 .then(() => syncSavedData(this.state.user!))
-                .catch((e) => console.error('Failed to get user document', e))
+                .catch((e) => console.error('Failed to get user document', e));
         });
     };
 
