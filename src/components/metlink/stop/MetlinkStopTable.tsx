@@ -46,7 +46,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
             day: '2-digit',
             hour: 'numeric',
             minute: 'numeric'
-        })
+        });
         return dateTimeFormat.format(arrivalDate);
     }
 

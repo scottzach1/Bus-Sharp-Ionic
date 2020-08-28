@@ -9,12 +9,12 @@ import {syncSavedData} from "../services/StorageManager";
  * The code was listed under MIT, and has been heavily altered to meet this projects requirements.
  */
 
-export const UserContext = createContext<firebase.User | null>(null);
+export const UserContext = createContext<firebase.User | null | undefined>(undefined);
 export const UserContextConsumer = UserContext.Consumer;
 
 class UserProvider extends Component {
     state = {
-        user: null,
+        user: undefined,
     };
 
     async componentDidMount() {
@@ -22,7 +22,7 @@ class UserProvider extends Component {
             generateUserDocument(userAuth)
                 .then((user) => this.setState({user}))
                 .then(() => syncSavedData(this.state.user!))
-                .catch((e) => console.error('Failed to get user document', e))
+                .catch((e) => console.error('Failed to get user document', e));
         });
     };
 

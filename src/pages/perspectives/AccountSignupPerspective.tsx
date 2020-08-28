@@ -6,17 +6,18 @@ import {
     IonCardHeader,
     IonContent,
     IonHeader,
-    IonInput,
     IonItem,
     IonLabel,
     IonPage,
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth, generateUserDocument} from "../../services/Firebase";
+import AuthenticationResponse, {createUserWithCredentials} from "../../services/Firebase";
 import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
-import {getSavedServices, getSavedStops} from "../../services/StorageManager";
 import BackButton from "../../components/ui/BackButton";
+import AccountEmailField from "../../components/account/AccountEmailField";
+import AccountPasswordField from "../../components/account/AccountPasswordField";
+import AccountDisplayNameField from "../../components/account/AccountDisplayNameField";
 
 interface Props {
 }
@@ -42,35 +43,31 @@ class AccountSignupPerspective extends Component<Props, State> {
         }
     }
 
-    createUserWithCredentials = async (email: string, password: string, passwordConfirmation: string) => {
-        if (password !== passwordConfirmation) {
-            this.setState({error: "Passwords don't match!"})
-            return;
-        }
-
-        try {
-            const {user} = await auth.createUserWithEmailAndPassword(email, password);
-            const stopList = JSON.stringify(await getSavedStops());
-            const serviceList = JSON.stringify(await getSavedServices());
-            console.log('additional', stopList, serviceList)
-            await generateUserDocument(user, {
-                displayName: this.state.displayName,
-                savedStops: stopList,
-                savedServices: serviceList,
-            });
-            this.setState({error: null});
-        } catch (error) {
-            this.setState({error: error.message});
-            console.error('Error Signing up with email and password', error);
-        }
-
+    async createUserAccountHandler() {
         this.setState({
-            email: "",
-            password: "",
-            passwordConfirmation: "",
-            displayName: "",
-        })
-    };
+            error: null,
+        });
+
+        const resp: AuthenticationResponse = await createUserWithCredentials(
+            this.state.email,
+            this.state.password,
+            this.state.passwordConfirmation,
+            this.state.displayName,
+        );
+
+        if (resp.success) {
+            this.setState({
+                email: '',
+                password: '',
+                passwordConfirmation: '',
+                displayName: '',
+            });
+        } else {
+            this.setState({
+                error: resp.errorMessage,
+            });
+        }
+    }
 
     render() {
         return (
@@ -89,51 +86,29 @@ class AccountSignupPerspective extends Component<Props, State> {
                     </IonHeader>
                     <IonCard>
                         <IonCardContent>
-                            <IonItem>
-                                <IonLabel>Display Name</IonLabel>
-                                <IonInput
-                                    inputmode={"text"}
-                                    autocomplete={"name"}
-                                    placeholder={"Bobby"}
-                                    value={this.state.displayName}
-                                    onIonChange={(e) => this.setState({displayName: e.detail.value!})}
-                                />
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel>Email</IonLabel>
-                                <IonInput
-                                    inputmode={"email"}
-                                    autocomplete={"email"}
-                                    placeholder={"user@example.com"}
-                                    value={this.state.email}
-                                    onIonChange={(e) => this.setState({email: e.detail.value!})}
-                                />
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel>Password</IonLabel>
-                                <IonInput
-                                    type={"password"}
-                                    autocomplete={"new-password"}
-                                    placeholder={"new password"}
-                                    value={this.state.password}
-                                    onIonChange={(e) => this.setState({password: e.detail.value!})}
-                                />
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel>Password</IonLabel>
-                                <IonInput
-                                    type={"password"}
-                                    autocomplete={"new-password"}
-                                    placeholder={"re-enter password"}
-                                    value={this.state.passwordConfirmation}
-                                    onIonChange={(e) => this.setState({passwordConfirmation: e.detail.value!})}
-                                />
-                            </IonItem>
+                            <AccountDisplayNameField
+                                value={this.state.displayName}
+                                handler={(displayName) => this.setState({displayName: displayName})}
+                            />
+                            <AccountEmailField
+                                value={this.state.email}
+                                handler={(email => this.setState({email: email}))}
+                            />
+                            <AccountPasswordField
+                                value={this.state.password}
+                                handler={(password) => this.setState({password: password})}
+                                new={true}
+                            />
+                            <AccountPasswordField
+                                value={this.state.passwordConfirmation}
+                                handler={(password) => this.setState({passwordConfirmation: password})}
+                                new={true}
+                                confirmation={true}
+                            />
                             <IonButton
                                 expand={"block"}
                                 type={"submit"}
-                                onClick={() =>
-                                    this.createUserWithCredentials(this.state.email, this.state.password, this.state.passwordConfirmation)}
+                                onClick={() => this.createUserAccountHandler()}
                             >
                                 Signup
                             </IonButton>
