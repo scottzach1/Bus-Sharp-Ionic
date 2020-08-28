@@ -14,9 +14,9 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth} from "../services/Firebase";
-import AccountSignInWithGoogleButton from "../components/account/AccountSignInWithGoogleButton";
-import BackButton from "../components/ui/BackButton";
+import {auth} from "../../services/Firebase";
+import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
+import BackButton from "../../components/ui/BackButton";
 
 interface Props {
 }

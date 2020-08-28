@@ -13,10 +13,10 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth, generateUserDocument} from "../services/Firebase";
-import AccountSignInWithGoogleButton from "../components/account/AccountSignInWithGoogleButton";
-import {getSavedServices, getSavedStops} from "../services/StorageManager";
-import BackButton from "../components/ui/BackButton";
+import {auth, generateUserDocument} from "../../services/Firebase";
+import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
+import {getSavedServices, getSavedStops} from "../../services/StorageManager";
+import BackButton from "../../components/ui/BackButton";
 
 interface Props {
 }

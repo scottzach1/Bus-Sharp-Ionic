@@ -12,7 +12,7 @@ import {
 } from '@ionic/react';
 import {useLoadScript} from "@react-google-maps/api";
 import {geocodeByAddress} from "react-places-autocomplete";
-import MetlinkStopsMap from "../components/metlink/MetlinkStopsMap";
+import MetlinkStopsMap from "../../components/metlink/MetlinkStopsMap";
 
 const libraries = ["places"];
 

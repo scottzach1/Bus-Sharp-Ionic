@@ -34,6 +34,7 @@ export const signInWithGoogle = () => {
 
 /**
  * Gets the user document from Firestore, creating a new entry if one isn't present.
+ *
  * @param user: User reference to obtain / create user's document in firestore.
  * @param additionalData: Data to set within Firestore if creating entry.
  */
@@ -60,6 +61,7 @@ export const generateUserDocument = async (user: firebase.User | null, additiona
 
 /**
  * Updates the users document in firestore with the data attributes within `additionalData`.
+ *
  * @param user: User reference to update user's document in firestore.
  * @param additionalData: Data to update within Firestore.
  */
@@ -76,6 +78,7 @@ export const updateUserDocument = async (user: firebase.User | null, additionalD
 
 /**
  * Get the users document stored within firestore.
+ *
  * @param user: User reference to get user's document in firestore.
  * @return any | null: Object with document if present, `null` otherwise.
  */

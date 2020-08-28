@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import {IonBackButton, IonButtons, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import SettingsFeedbackItem from "../components/settings/SettingsFeedbackItem";
-import SettingsShareAppItem from "../components/settings/SettingsShareAppItem";
-import SettingsClearStorageItem from "../components/settings/SettingsClearStorageItem";
-import SettingsThemeSelector from "../components/settings/SettingsThemeSelector";
-import SettingsSourceCodeItem from "../components/settings/SettingsSourceCodeItem";
-import SettingsAccountItem from "../components/settings/SettingsAccountItem";
-import SettingsTwitterFeedItem from "../components/settings/SettingsTwitterFeedItem";
+import SettingsFeedbackItem from "../../components/settings/SettingsFeedbackItem";
+import SettingsShareAppItem from "../../components/settings/SettingsShareAppItem";
+import SettingsClearStorageItem from "../../components/settings/SettingsClearStorageItem";
+import SettingsThemeSelector from "../../components/settings/SettingsThemeSelector";
+import SettingsSourceCodeItem from "../../components/settings/SettingsSourceCodeItem";
+import SettingsAccountItem from "../../components/settings/SettingsAccountItem";
+import SettingsTwitterFeedContainer from "../../components/settings/SettingsTwitterFeedContainer";
 
 interface Props {
 }
@@ -54,7 +54,7 @@ class SettingsTab extends Component<Props, State> {
                         <SettingsClearStorageItem/>
                         <SettingsThemeSelector/>
                         <SettingsSourceCodeItem/>
-                        <SettingsTwitterFeedItem/>
+                        <SettingsTwitterFeedContainer/>
                         <SettingsShareAppItem/>
                         <SettingsFeedbackItem/>
                         <SettingsAccountItem/>

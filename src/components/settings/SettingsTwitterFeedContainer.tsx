@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import {IonIcon, IonItem, IonLabel} from "@ionic/react";
 import {alertCircleSharp, logoTwitter} from "ionicons/icons";
 
-const SettingsTwitterFeedItem: FC = () => {
+const SettingsTwitterFeedContainer: FC = () => {
     return (
         <IonItem href={"/twitter"}>
             <IonIcon icon={logoTwitter}/>
@@ -13,4 +13,4 @@ const SettingsTwitterFeedItem: FC = () => {
     )
 };
 
-export default SettingsTwitterFeedItem;
+export default SettingsTwitterFeedContainer;

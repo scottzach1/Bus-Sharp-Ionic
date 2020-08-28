@@ -13,11 +13,11 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {UserContext} from "../providers/UserProvider";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
-import AccountLogoutButton from "../components/account/AccountLogoutButton";
-import {getUserDocument} from "../services/Firebase";
-import BackButton from "../components/ui/BackButton";
+import {UserContext} from "../../providers/UserProvider";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import AccountLogoutButton from "../../components/account/AccountLogoutButton";
+import {getUserDocument} from "../../services/Firebase";
+import BackButton from "../../components/ui/BackButton";
 
 interface Props {
 }

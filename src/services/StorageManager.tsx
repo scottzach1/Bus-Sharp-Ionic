@@ -87,6 +87,7 @@ export const initTheme = async () => {
 
 /**
  * Gets and parses the saved stops from within the Local storage.
+ *
  * @return string[]: Saved stops from within Local storage.
  */
 export const getSavedStops = async () => {
@@ -100,6 +101,7 @@ export const getSavedStops = async () => {
 
 /**
  * Gets and parses the saved services from within the local storage.
+ *
  * @return any[]: Saved services from within Local storage.
  */
 export const getSavedServices = async () => {
@@ -113,6 +115,7 @@ export const getSavedServices = async () => {
 
 /**
  * Gets and parses the stop data from within the local storage.
+ *
  * @return any[]: Stop data saved within Local storage.
  */
 export const getStops = async () => {
@@ -126,6 +129,7 @@ export const getStops = async () => {
 
 /**
  * Gets and parses the service data from within the local storage.
+ *
  * @return any[]: Service data saved within Local storage.
  */
 export const getServices = async () => {
@@ -142,6 +146,7 @@ export const getServices = async () => {
 /**
  * Updates the saved stops data within the Local storage. Will also update the document within
  * Firestore if user parameter is present.
+ *
  * @param savedStops: Stops to save to local storage.
  * @param user?: Optionally user reference to save in Firestore.
  */
@@ -157,6 +162,7 @@ export const setSavedStops = async (savedStops: any, user?: firebase.User) => {
 /**
  * Updates the saved services data within the Local storage. Will also update the document within
  * Firestore if user parameter is present.
+ *
  * @param savedServices: Services to save to local storage.
  * @param user?: Optionally user reference to save in Firestore.
  */
@@ -172,6 +178,7 @@ export const setSavedServices = async (savedServices: any, user?: firebase.User)
 /**
  * Clears the saved stop and service data within the Local storage. Will also clear the stop and
  * service data within Firestore if the user parameter is present.
+ *
  * @param user?: Optionally a user reference to update Firestore.
  */
 export const clearSavedData = async (user?: firebase.User) => {
@@ -186,6 +193,7 @@ export const clearSavedData = async (user?: firebase.User) => {
  * Toggles a saved stop within the saved stops in Local storage. Will add the stopCode to the saved
  * stops list if it isn't present, or will remove from the list otherwise. Will also update the
  * document within Firestore if user parameter is present.
+ *
  * @param stopCode: Code to toggle within the Local storage.
  * @param user?: Optionally a user reference to update Firestore.
  * @return boolean: `true` if added, `false` otherwise.
@@ -213,6 +221,7 @@ export const toggleSavedStop = async (stopCode: string, user?: firebase.User) =>
  * Toggles a saved service within the saved services in Local storage. Will add the serviceCode to
  * the saved services list if it isn't present, or will remove from the list otherwise. Will also
  * update the document within Firestore if user parameter is present.
+ *
  * @param serviceCode: Code to toggle within the Local storage.
  * @param user?: Optionally a user reference to update Firestore.
  * @return boolean: `true` if added, `false` otherwise.

@@ -13,11 +13,11 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
-import ListComponent from "../components/ui/ListComponent";
-import {getServices, getStops} from "../services/StorageManager";
-import SearchTabSearchbarDescriptionCard from "../components/search-tab/SearchTabSearchbarDescriptionCard";
-import SearchTabTabsDescriptionCard from "../components/search-tab/SearchTabTabsDescriptionCard";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import ListComponent from "../../components/ui/ListComponent";
+import {getServices, getStops} from "../../services/StorageManager";
+import SearchTabSearchbarDescriptionCard from "../../components/search-tab/SearchTabSearchbarDescriptionCard";
+import SearchTabTabsDescriptionCard from "../../components/search-tab/SearchTabTabsDescriptionCard";
 
 
 interface State {

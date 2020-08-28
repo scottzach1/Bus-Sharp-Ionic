@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkSavedList from "../components/metlink/MetlinkSavedList";
+import MetlinkSavedList from "../../components/metlink/MetlinkSavedList";
 
 const SavedTab: FC = () => {
     return (

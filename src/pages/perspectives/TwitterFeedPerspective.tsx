@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import BackButton from "../components/ui/BackButton";
-import TwitterFeed from "../components/twitter/TwitterFeed";
+import BackButton from "../../components/ui/BackButton";
+import TwitterFeed from "../../components/twitter/TwitterFeed";
 
 interface Props {
 }
