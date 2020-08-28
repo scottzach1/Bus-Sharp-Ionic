@@ -1,32 +1,26 @@
 import React, {FC, useState} from 'react';
 import GoogleMapWidget, {Position, ServiceRoute, StopMarker} from "../../google-maps/GoogleMapWidget";
+import {fetchServiceRoutes} from "../../../services/StorageManager";
+import ErrorCard from "../../ui/ErrorCard";
 
 interface Props {
     serviceCode: string;
 }
 
 const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
-    const [serviceName, setServiceName] = useState<string | null>(null);
     const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
     const [serviceRoutes, setServiceRoutes] = React.useState<ServiceRoute[]>([]);
     const [stopMarkers, setStopMarkers] = React.useState<StopMarker[]>([])
-    const [errorMessage, setErrorMessage] = useState<string>()
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-    async function getRouteData() {
-        if (dataIsLoaded) return;
-        const proxy = "https://cors-anywhere.herokuapp.com/";
-        const url = "https://www.metlink.org.nz/api/v1/ServiceMap/";
-
-        fetch(proxy + url + serviceCode)
-            .then(resp => {
-                if (!resp.ok) setErrorMessage(resp.statusText);
-                else Promise.resolve(resp.json())
-                    .then(data => {
-                        setServiceName(data.Name);
-                        setDataIsLoaded(true);
-                        generateMapRoute(data);
-                    });
-            });
+    if (!dataIsLoaded) {
+        fetchServiceRoutes(serviceCode).then((res) => {
+            if (res.data) {
+                setDataIsLoaded(true);
+                generateMapRoute(res.data);
+            }
+            setErrorMessage(res.errorMessage);
+        })
     }
 
     function generateMapRoute(mapData: any) {
@@ -73,14 +67,11 @@ const MetlinkServiceView: FC<Props> = ({serviceCode}) => {
         if (stopMarkers.length === 0) setStopMarkers(parsedMarkers);
     }
 
-    getRouteData().then();
-
     return (
-        <div className={"metlink-service-view"}>
-            {dataIsLoaded && (
-                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={serviceRoutes}/>
-            )}
-        </div>
+        <>
+            <GoogleMapWidget stopMarkers={stopMarkers} routePaths={serviceRoutes}/>
+            <ErrorCard errorMessage={errorMessage}/>
+        </>
     );
 }
 

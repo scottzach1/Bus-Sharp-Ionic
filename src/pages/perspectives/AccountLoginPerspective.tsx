@@ -3,7 +3,6 @@ import {
     IonButton,
     IonCard,
     IonCardContent,
-    IonCardHeader,
     IonCheckbox,
     IonContent,
     IonHeader,
@@ -18,6 +17,7 @@ import AccountSignInWithGoogleButton from "../../components/account/AccountSignI
 import BackButton from "../../components/ui/BackButton";
 import AccountEmailField from "../../components/account/AccountEmailField";
 import AccountPasswordField from "../../components/account/AccountPasswordField";
+import ErrorCard from "../../components/ui/ErrorCard";
 
 interface Props {
 }
@@ -111,12 +111,7 @@ class AccountLoginPerspective extends Component<Props, State> {
                             <AccountSignInWithGoogleButton/>
                         </IonCardContent>
                     </IonCard>
-                    {this.state.error &&
-                    <IonCard color={"danger"}>
-                        <IonCardHeader>
-                            {this.state.error}
-                        </IonCardHeader>
-                    </IonCard>}
+                    <ErrorCard errorMessage={this.state.error}/>
                 </IonContent>
             </IonPage>
         );
