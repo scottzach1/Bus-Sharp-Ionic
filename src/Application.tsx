@@ -31,73 +31,86 @@ import AccountLoginPerspective from "./pages/perspectives/AccountLoginPerspectiv
 import AccountSignupPerspective from "./pages/perspectives/AccountSignupPerspective";
 import TwitterFeedPerspective from "./pages/perspectives/TwitterFeedPerspective";
 import AccountPasswordResetPerspective from "./pages/perspectives/AccountPasswordResetPerspective";
+import AccountWaitingPerspective from "./pages/perspectives/AccountWaitingPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;
 
+    componentDidMount() {
+        this.render();
+    }
+
+    getUserContextRoutes() {
+        if (typeof this.context === 'undefined')
+            // Context has not mounted, defer to loading screen.
+            return [
+                <Route path={"/account"} component={AccountWaitingPerspective}/>,
+                <Route path={"/reset"} component={AccountWaitingPerspective}/>,
+                <Route path={"/login"} component={AccountWaitingPerspective}/>,
+                <Route path={"/signup"} component={AccountWaitingPerspective}/>,
+            ]
+        else if (this.context && this.context.uid)
+            // Context has mounted, user account detected.
+            return [
+                <Route path={"/account"} component={AccountInfoPerspective}/>,
+                <Redirect from={"/reset"} to={"account"}/>,
+                <Redirect from={"/login"} to={"account"}/>,
+                <Redirect from={"/signup"} to={"account"}/>,
+            ]
+        else
+            // Context has mounted, no user account detected.
+            return [
+                <Redirect from={"/account"} to={"/login"}/>,
+                <Route path={"/reset"} component={AccountPasswordResetPerspective}/>,
+                <Route path={"/login"} component={AccountLoginPerspective}/>,
+                <Route path={"/signup"} component={AccountSignupPerspective}/>
+            ]
+    }
+
     render() {
         return (
-            <UserContext.Consumer>
-                {(userContext) => (
-                    <IonApp>
-                        <IonReactRouter>
-                            <IonTabs>
-                                <IonRouterOutlet>
-                                    {/* Home */}
-                                    <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
+            <IonApp>
+                <IonReactRouter>
+                    <IonTabs>
+                        <IonRouterOutlet>
+                            {/* Home */}
+                            <Route path="/" render={() => <Redirect to="/search"/>} exact={true}/>
 
-                                    {/* Tabs */}
-                                    <Route path="/search" component={SearchTab}/>
-                                    <Route path="/map" component={MapTab}/>
-                                    <Route path="/saved" component={SavedTab}/>
-                                    <Route path="/settings" component={SettingsTab}/>
+                            {/* Tabs */}
+                            <Route path="/search" component={SearchTab}/>
+                            <Route path="/map" component={MapTab}/>
+                            <Route path="/saved" component={SavedTab}/>
+                            <Route path="/settings" component={SettingsTab}/>
 
-                                    {/* Hidden Perspectives*/}
-                                    <Route path="/service/:serviceCode" component={ServicePerspective}/>
-                                    <Route path="/stop/:stopCode" component={StopPerspective}/>
-                                    <Route path="/twitter" component={TwitterFeedPerspective}/>
+                            {/* Hidden Perspectives*/}
+                            <Route path="/service/:serviceCode" component={ServicePerspective}/>
+                            <Route path="/stop/:stopCode" component={StopPerspective}/>
+                            <Route path="/twitter" component={TwitterFeedPerspective}/>
 
-                                    {/*Account Perspectives*/}
-                                    {userContext?.uid ?
-                                        <Route path={"/account"} component={AccountInfoPerspective}/> :
-                                        <Redirect from={"/account"} to={"/login"}/>
-                                    }
-                                    {!userContext?.uid ?
-                                        <Route path={"/reset"} component={AccountPasswordResetPerspective}/> :
-                                        <Redirect from={"/reset"} to={"/login"}/>
-                                    }
-                                    {!userContext?.uid ?
-                                        <Route path={"/login"} component={AccountLoginPerspective}/> :
-                                        <Redirect from={"/login"} to={"/account"}/>
-                                    }
-                                    {!userContext?.uid ?
-                                        <Route path={"/signup"} component={AccountSignupPerspective}/> :
-                                        <Redirect from={"/signup"} to={"account"}/>
-                                    }
-                                </IonRouterOutlet>
-                                <IonTabBar slot="bottom">
-                                    <IonTabButton tab="search" href="/search">
-                                        <IonIcon icon={searchCircleSharp}/>
-                                        <IonLabel>Search</IonLabel>
-                                    </IonTabButton>
-                                    <IonTabButton tab="map" href="/map">
-                                        <IonIcon icon={mapSharp}/>
-                                        <IonLabel>Map</IonLabel>
-                                    </IonTabButton>
-                                    <IonTabButton tab="saved" href="/saved">
-                                        <IonIcon icon={saveSharp}/>
-                                        <IonLabel>Saved</IonLabel>
-                                    </IonTabButton>
-                                    <IonTabButton tab="settings" href="/settings">
-                                        <IonIcon icon={settingsSharp}/>
-                                        <IonLabel>Settings</IonLabel>
-                                    </IonTabButton>
-                                </IonTabBar>
-                            </IonTabs>
-                        </IonReactRouter>
-                    </IonApp>
-                )}
-            </UserContext.Consumer>
+                            {/* Account Perspectives */}
+                            {this.getUserContextRoutes()}
+                        </IonRouterOutlet>
+                        <IonTabBar slot="bottom">
+                            <IonTabButton tab="search" href="/search">
+                                <IonIcon icon={searchCircleSharp}/>
+                                <IonLabel>Search</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="map" href="/map">
+                                <IonIcon icon={mapSharp}/>
+                                <IonLabel>Map</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="saved" href="/saved">
+                                <IonIcon icon={saveSharp}/>
+                                <IonLabel>Saved</IonLabel>
+                            </IonTabButton>
+                            <IonTabButton tab="settings" href="/settings">
+                                <IonIcon icon={settingsSharp}/>
+                                <IonLabel>Settings</IonLabel>
+                            </IonTabButton>
+                        </IonTabBar>
+                    </IonTabs>
+                </IonReactRouter>
+            </IonApp>
         );
     }
 }

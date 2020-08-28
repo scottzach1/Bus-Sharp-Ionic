@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
+import {getSavedServices, getSavedStops} from "./StorageManager";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_APP_API_KEY,
@@ -96,3 +97,64 @@ export const getUserDocument = async (user: firebase.User) => {
             return null;
         });
 };
+
+/**
+ * Signs into a user with provided credentials.
+ *
+ * @param email: Of user account.
+ * @param password: Of user account
+ * @return AuthenticationResponse: Containing success / failure and error message.
+ */
+export const signInWithCredentials = async (email: string, password: string) => {
+    return auth.signInWithEmailAndPassword(email, password)
+        .then(() => new AuthenticationResponse(true))
+        .catch((e) => new AuthenticationResponse(false, e.message));
+}
+
+/**
+ * Creates a user with provided credentials and information.
+ *
+ * @param email: Of user account.
+ * @param password: Of user account
+ * @param passwordConfirmation: Of user account (verify intended credentials).
+ * @param displayName: Of user to save.
+ * @return AuthenticationResponse: Containing success / failure and error message.
+ */
+export const createUserWithCredentials = async (email: string, password: string, passwordConfirmation: string, displayName: string) => {
+    if (password !== passwordConfirmation)
+        return new AuthenticationResponse(false, "Passwords don't match!");
+
+    try {
+        const {user} = await auth.createUserWithEmailAndPassword(email, password);
+
+        await generateUserDocument(user, {
+            displayName: displayName,
+            savedStops: JSON.stringify(await getSavedStops()),
+            savedServices: JSON.stringify(await getSavedServices()),
+        });
+        return new AuthenticationResponse(true);
+    } catch (error) {
+        return new AuthenticationResponse(false, error.message);
+    }
+}
+
+/**
+ * Describes the return type of requests.
+ */
+class AuthenticationResponse {
+    public success: boolean;
+    public errorMessage: string | null;
+
+    /**
+     * Describes the return type of requests.
+     *
+     * @param success: `true` if successful, `false` otherwise.
+     * @param errorMessage: (Optional) to notify user.
+     */
+    constructor(success: boolean, errorMessage?: string) {
+        this.success = success;
+        this.errorMessage = (errorMessage) ? errorMessage : null;
+    }
+}
+
+export default AuthenticationResponse;

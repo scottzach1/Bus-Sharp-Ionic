@@ -13,7 +13,7 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth} from "../../services/Firebase";
+import AuthenticationResponse, {signInWithCredentials} from "../../services/Firebase";
 import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
 import BackButton from "../../components/ui/BackButton";
 import AccountEmailField from "../../components/account/AccountEmailField";
@@ -41,14 +41,16 @@ class AccountLoginPerspective extends Component<Props, State> {
         }
     }
 
-    signInWithEmailAndPasswordHandler = (email: string, password: string) => {
-        auth.signInWithEmailAndPassword(email, password)
-            .then(r => console.log(r))
-            .catch(error => {
-                this.setState({error: error.message});
-                console.error("Error signing in with password and email", error);
-            });
-    };
+    async signInUserAccountHandler() {
+        this.setState({error: null});
+
+        const resp: AuthenticationResponse = await signInWithCredentials(this.state.email, this.state.password);
+
+        if (resp.success)
+            this.setState({email: '', password: ''});
+        else
+            this.setState({error: resp.errorMessage});
+    }
 
     render() {
 
@@ -87,7 +89,7 @@ class AccountLoginPerspective extends Component<Props, State> {
                             <IonButton
                                 expand={"block"}
                                 type={"submit"}
-                                onClick={() => this.signInWithEmailAndPasswordHandler(this.state.email, this.state.password)}
+                                onClick={() => this.signInUserAccountHandler()}
                             >
                                 Login
                             </IonButton>

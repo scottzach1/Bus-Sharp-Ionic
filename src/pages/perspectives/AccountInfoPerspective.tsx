@@ -42,6 +42,7 @@ class AccountInfoPerspective extends Component<Props, State> {
             if (!doc) return;
             this.setState({userData: JSON.stringify(doc, null, 4)});
         })
+
     }
 
     render() {

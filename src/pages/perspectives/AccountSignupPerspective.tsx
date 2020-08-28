@@ -12,9 +12,8 @@ import {
     IonTitle,
     IonToolbar
 } from "@ionic/react";
-import {auth, generateUserDocument} from "../../services/Firebase";
+import AuthenticationResponse, {createUserWithCredentials} from "../../services/Firebase";
 import AccountSignInWithGoogleButton from "../../components/account/AccountSignInWithGoogleButton";
-import {getSavedServices, getSavedStops} from "../../services/StorageManager";
 import BackButton from "../../components/ui/BackButton";
 import AccountEmailField from "../../components/account/AccountEmailField";
 import AccountPasswordField from "../../components/account/AccountPasswordField";
@@ -44,35 +43,31 @@ class AccountSignupPerspective extends Component<Props, State> {
         }
     }
 
-    createUserWithCredentials = async (email: string, password: string, passwordConfirmation: string) => {
-        if (password !== passwordConfirmation) {
-            this.setState({error: "Passwords don't match!"})
-            return;
-        }
-
-        try {
-            const {user} = await auth.createUserWithEmailAndPassword(email, password);
-            const stopList = JSON.stringify(await getSavedStops());
-            const serviceList = JSON.stringify(await getSavedServices());
-            console.log('additional', stopList, serviceList)
-            await generateUserDocument(user, {
-                displayName: this.state.displayName,
-                savedStops: stopList,
-                savedServices: serviceList,
-            });
-            this.setState({error: null});
-        } catch (error) {
-            this.setState({error: error.message});
-            console.error('Error Signing up with email and password', error);
-        }
-
+    async createUserAccountHandler() {
         this.setState({
-            email: "",
-            password: "",
-            passwordConfirmation: "",
-            displayName: "",
-        })
-    };
+            error: null,
+        });
+
+        const resp: AuthenticationResponse = await createUserWithCredentials(
+            this.state.email,
+            this.state.password,
+            this.state.passwordConfirmation,
+            this.state.displayName,
+        );
+
+        if (resp.success) {
+            this.setState({
+                email: '',
+                password: '',
+                passwordConfirmation: '',
+                displayName: '',
+            });
+        } else {
+            this.setState({
+                error: resp.errorMessage,
+            });
+        }
+    }
 
     render() {
         return (
@@ -113,8 +108,7 @@ class AccountSignupPerspective extends Component<Props, State> {
                             <IonButton
                                 expand={"block"}
                                 type={"submit"}
-                                onClick={() =>
-                                    this.createUserWithCredentials(this.state.email, this.state.password, this.state.passwordConfirmation)}
+                                onClick={() => this.createUserAccountHandler()}
                             >
                                 Signup
                             </IonButton>

@@ -254,7 +254,7 @@ export const toggleSavedService = async (serviceCode: string, user?: firebase.Us
  *
  * @param user: User reference to sync with Local storage.
  */
-export const syncSavedData = async (user: firebase.User) => {
+export const syncSavedData = async (user: firebase.User | null) => {
     if (user && user.uid) getUserDocument(user).then(async (doc) => {
         // Merge Saved Stops
         let savedStopsSet = new Set(await getSavedStops());
