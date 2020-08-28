@@ -182,7 +182,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
     // -------------------------------------------------------------------------------------------------------------
 
     return (
-        <div>
+        <>
             <GoogleMap
                 mapContainerClassName={"map"}
                 zoom={16}
@@ -317,7 +317,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     }]}
                 />
             )}
-        </div>
+        </>
     )
 }
 
