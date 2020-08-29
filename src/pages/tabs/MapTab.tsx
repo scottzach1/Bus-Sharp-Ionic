@@ -66,8 +66,6 @@ const MapTab: FC = () => {
         return before
     }
 
-    if (loadError) console.error('Failed to load', loadError);
-
     return (
         <IonPage>
             <IonHeader>
@@ -76,7 +74,7 @@ const MapTab: FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent>
-                <MetlinkStopsMap geoCoderResult={getGeolocation()}/>
+                {!loadError && <MetlinkStopsMap geoCoderResult={getGeolocation()}/>}
                 <IonSearchbar id={"searchbar"} value={searchText} onIonChange={e => setSearchText(e.detail.value!)}/>
                 {searchText && (
                     <IonCard>

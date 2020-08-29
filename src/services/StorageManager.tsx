@@ -35,8 +35,9 @@ const proxy = "https://cors-anywhere.herokuapp.com/";
  */
 export const initStops = async () => {
     Storage.get({key: 'stops'}).then((res) => {
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
-        if (!res.value) readRemoteFile(proxy + url, {
+        const url = "data/stops.txt";
+        // const url = "http://transitfeeds.com/p/metlink/22/latest/download/stops.txt";
+        if (!res.value) readRemoteFile(url, {
             download: true, header: true,
             complete: async (results: any) => {
                 let stopData: any = {};
@@ -56,9 +57,10 @@ export const initStops = async () => {
  * will initialise it with the latest pull of stop data from the transit-feeds website.
  */
 export const initServices = async () => {
+    // const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
+    const url = "data/routes.txt";
     Storage.get({key: 'services'}).then((res) => {
-        const url = "http://transitfeeds.com/p/metlink/22/latest/download/routes.txt";
-        if (!res.value) readRemoteFile(proxy + url, {
+        if (!res.value) readRemoteFile(url, {
             download: true, header: true,
             complete: async (results: any) => {
                 let serviceData: any = {};
@@ -71,6 +73,87 @@ export const initServices = async () => {
             }
         })
     }).catch(e => console.error('Failed to initialise services', e));
+}
+
+
+/* Fetcher Methods */
+
+/**
+ * Fetches the stop times for a given stop code. The fetched data will also be cached within the
+ * local storage. If the function fails to fetch the fresh data, then the error will be propagated
+ * into the `StorageResponse`. Additionally, if the requested data has been cached locally, then
+ * this information will also be returned within the `StorageResponse`.
+ *
+ * @param stopCode: of the stop to search.
+ * @return response containing success / failure as well as any relevant errors or data.
+ */
+export const fetchStopTimes = async (stopCode: string): Promise<StorageResponse> => {
+    try {
+        // Download Stop Timetable
+        const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
+
+        return new StorageResponse(true, null,
+            await fetch(proxy + url + stopCode)
+                .then((resp) => {
+                    if (resp.ok) return Promise.resolve(resp.json());
+                    else throw TypeError('Request returned bad response: ' + resp.statusText);
+                })
+                .then((data) => {
+                    if (!data) throw TypeError('Could not parse response!');
+                    setStopTimes(stopCode, data);
+                    return data;
+                })
+        );
+    } catch (error) {
+        // Search Data Locally
+        return new StorageResponse(false, error.message,
+            await Storage.get({key: 'stopTimes'})
+                .then((res) => {
+                    if (res.value) return JSON.parse(res.value)[stopCode];
+                    else return null;
+                })
+                .catch(() => null)
+        );
+    }
+}
+
+/**
+ * Fetches the service routes for a given service code. The fetched data will also be cached within
+ * the local storage. If the function fails to fetch the fresh data, then the error will be propagated
+ * into the `StorageResponse`. Additionally, if the requested data has been cached locally, then
+ * this information will also be returned within the `StorageResponse`.
+ *
+ * @param serviceCode: of the service to search.
+ * @return response containing success / failure as well as any relevant errors or data.
+ */
+export const fetchServiceRoutes = async (serviceCode: string): Promise<StorageResponse> => {
+    try {
+        // Download Service Routes
+        const url = "https://www.metlink.org.nz/api/v1/ServiceMap/";
+
+        return new StorageResponse(true, null,
+            await fetch(proxy + url + serviceCode)
+                .then((resp) => {
+                    if (resp.ok) return Promise.resolve(resp.json());
+                    else throw TypeError('Request returned bad response!');
+                })
+                .then((data) => {
+                    if (!data) throw TypeError('Could not parse response!');
+                    setServiceRoutes(serviceCode, data);
+                    return data;
+                })
+        );
+    } catch (error) {
+        // Search Data Locally
+        return new StorageResponse(false, error.message,
+            await Storage.get({key: 'serviceRoutes'})
+                .then((res) => {
+                    if (res.value) return JSON.parse(res.value)[serviceCode];
+                    else return null;
+                })
+                .catch(() => null)
+        );
+    }
 }
 
 /**
@@ -176,6 +259,51 @@ export const setSavedServices = async (savedServices: any, user?: firebase.User)
 }
 
 /**
+ * Updates a selected stops most recently cached data with some more recent data. This will be updated
+ * within the browsers local storage.
+ *
+ * @param stopCode: of the stop to update cached data.
+ * @param data: to store in the cache.
+ */
+export const setStopTimes = async (stopCode: string, data: any) => {
+    Storage.get({key: 'stopTimes'})
+        .then((res) => {
+            // Get or init value
+            let allData: any = (res.value) ? JSON.parse(res.value) : {};
+            // Update with latest times.
+            allData[stopCode] = data;
+            // Store new values.
+            Storage.set({
+                key: 'stopTimes',
+                value: JSON.stringify(allData),
+            }).catch((e) => console.error('Failed to locally save service routes', e));
+        });
+}
+
+
+/**
+ * Updates a selected services most recently cached data with some more recent data. This will be
+ * updated within the browsers local storage.
+ *
+ * @param serviceCode: of the service to update cached data.
+ * @param data: to store in the cache.
+ */
+export const setServiceRoutes = async (serviceCode: string, data: any) => {
+    Storage.get({key: 'serviceRoutes'})
+        .then((res) => {
+            // Get or init value
+            let allData: any = (res.value) ? JSON.parse(res.value) : {};
+            // Update with latest route.
+            allData[serviceCode] = data;
+            // Store new values.
+            Storage.set({
+                key: 'serviceRoutes',
+                value: JSON.stringify(allData),
+            }).catch((e) => console.error('Failed to locally save service routes', e));
+        });
+}
+
+/**
  * Clears the saved stop and service data within the Local storage. Will also clear the stop and
  * service data within Firestore if the user parameter is present.
  *
@@ -278,4 +406,26 @@ export const syncSavedData = async (user: firebase.User | null) => {
             savedServices: JSON.stringify(savedServicesArray),
         })
     });
+}
+
+/**
+ * Describes the return type of requests.
+ */
+class StorageResponse {
+    public success: boolean;
+    public errorMessage: string | null;
+    public data: null | any;
+
+    /**
+     * Describes the return type of requests.
+     *
+     * @param success: `true` if successful, `false` otherwise.
+     * @param errorMessage: (Optional) to notify user.
+     * @param data: (Optional) the returned data.
+     */
+    constructor(success: boolean, errorMessage?: string | null, data?: string | null) {
+        this.success = success;
+        this.errorMessage = (errorMessage) ? errorMessage : null;
+        this.data = (data) ? data : null;
+    }
 }

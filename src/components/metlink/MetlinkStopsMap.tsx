@@ -1,6 +1,5 @@
 import React, {FC, useState} from "react";
 import GoogleMapWidget, {Position, StopMarker} from "../google-maps/GoogleMapWidget";
-import LoadingSpinner from "../ui/LoadingSpinner";
 import {getStops} from "../../services/StorageManager";
 
 interface Props {
@@ -43,14 +42,7 @@ const MetlinkStopsMap: FC<Props> = (props) => {
     }
 
     return (
-        <div className="metlink-stop-map">
-            {!dataIsLoaded && (
-                <LoadingSpinner/>
-            )}
-            {dataIsLoaded && (
-                <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} geoCoderResult={props.geoCoderResult}/>)
-            }
-        </div>
+        <GoogleMapWidget stopMarkers={stopMarkers} routePaths={null} geoCoderResult={props.geoCoderResult}/>
     );
 }
 
