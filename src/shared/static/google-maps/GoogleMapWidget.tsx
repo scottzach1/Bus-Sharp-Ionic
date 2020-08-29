@@ -44,7 +44,7 @@ const options = {
 /**
  * Location where the map-tab is centered
  */
-let center = {
+const center = {
     lat: -41.286461,
     lng: 174.776230,
 }
@@ -66,7 +66,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
 
     // SELECTED ITEM
     // A StopMarker used to represent the item, maintains information about the selected item.
-    const [newSelection, setNewSelection] = useState<boolean>(false)
     const [selectedItem, setSelectedItem] = useState<StopMarker | null>(null)
 
     const {isLoaded, loadError} = useLoadScript({
@@ -78,36 +77,25 @@ const GoogleMapWidget: FC<Props> = (props) => {
     // CHECKS RUN EVERY RENDER
     // -------------------------------------------------------------------------------------------------------------
 
-    // If the user has a new selection, center the map-tab on that location
-    if (newSelection && selectedItem) {
-        setNewSelection(false)
-    }
-
-    if (props.routePaths != undefined && props.routePaths?.length > 0) {
-        let route = props.routePaths[Math.round(props.routePaths.length / 2)]
-        let midLoc = route.path[Math.round(route.path.length / 2)]
-        center = {lat: midLoc.latitude, lng: midLoc.longitude}
-    }
-
-    // If a new geolocation has been sent through, set that new geolocation to the center
+// If a new geolocation has been sent through, set that new geolocation to the center
     setSearchLocation()
     if (props.geoCoderResult === undefined) {
         searchLocation = undefined
     }
 
 
-    // If the device allows for geolocation, attempt to find the users location
+// If the device allows for geolocation, attempt to find the users location
     if (!userLocation && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(successfulPosition);
     }
 
-    // Get all the stop data
+// Get all the stop data
     getStopData().then();
 
 
-    // -------------------------------------------------------------------------------------------------------------
-    // FUNCTIONS
-    // -------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------
+// FUNCTIONS
+// -------------------------------------------------------------------------------------------------------------
 
     /**
      * Asynchronously get the stop data currently available.
@@ -171,7 +159,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
             mapRef.panTo({lat: marker.location.latitude, lng: marker.location.longitude})
         }
         setSelectedItem(marker);
-        setNewSelection(true)
     }
 
     function deselectItem() {
@@ -179,9 +166,25 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setSelectedItem(null)
     }
 
-    // -------------------------------------------------------------------------------------------------------------
-    // RETURNING MAP
-    // -------------------------------------------------------------------------------------------------------------
+    function onLoad(map: google.maps.Map<Element>) {
+        mapRef = map
+
+        if (!props.routePaths || !mapRef) return
+
+        let route = props.routePaths[Math.round(props.routePaths.length / 2)]
+        let midLoc = route.path[Math.round(route.path.length / 2)]
+        selectedId = "Route"
+        selectItem(new StopMarker(
+            "Route",
+            route.key,
+            route.key,
+            "",
+            new Position(midLoc.latitude, midLoc.longitude)))
+    }
+
+// -------------------------------------------------------------------------------------------------------------
+// RETURNING MAP
+// -------------------------------------------------------------------------------------------------------------
 
     return (
         <>
@@ -192,9 +195,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     center={center}
                     options={options}
                     onDragStart={deselectItem}
-                    onLoad={(map) => {
-                        map && (mapRef = map)
-                    }}
+                    onLoad={(map) => {map && (onLoad(map))}}
                 >
 
                     {userLocation && (
