@@ -4,7 +4,7 @@ import MetlinkStopTable from "./MetlinkStopTable";
 import MetlinkStopInfo from "./MetlinkStopInfo";
 import BackButton from "../../static/ui/BackButton";
 
-const StopPerspective: FC<any> = ({match}) => {
+const StopTimetablePerspective: FC<any> = ({match}) => {
     const {params: {stopCode}} = match
 
     return (
@@ -12,13 +12,13 @@ const StopPerspective: FC<any> = ({match}) => {
             <IonHeader>
                 <IonToolbar>
                     <BackButton/>
-                    <IonTitle>Stop: {stopCode}</IonTitle>
+                    <IonTitle>Stop Timetable: {stopCode}</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">Stop</IonTitle>
+                        <IonTitle size="large">Stop Timetable</IonTitle>
                     </IonToolbar>
                 </IonHeader>
                 <MetlinkStopInfo stopCode={stopCode}/>
@@ -28,4 +28,4 @@ const StopPerspective: FC<any> = ({match}) => {
     )
 }
 
-export default StopPerspective;
+export default StopTimetablePerspective;
