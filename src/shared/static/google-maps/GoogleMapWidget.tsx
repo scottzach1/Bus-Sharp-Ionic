@@ -6,6 +6,7 @@ import "./GoogleMapWidget.css";
 import {mapStyles} from "./GoogleMapWidgetStyles";
 import {getLatLng} from "react-places-autocomplete";
 import {getSavedStops} from "../../../external/StorageManager";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface Props {
     stopMarkers: StopMarker[] | null,
@@ -172,17 +173,13 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setSelectedItem(null)
     }
 
-    // Separate returns here to stop 'too many reloads' error.
-    if (loadError) return (<p>"Error: load error"</p>)
-    if (!isLoaded) return (<p>"Error: not loaded"</p>)
-
-
     // -------------------------------------------------------------------------------------------------------------
     // RETURNING MAP
     // -------------------------------------------------------------------------------------------------------------
 
     return (
         <>
+            {(loadError || !isLoaded) ? <LoadingSpinner/> :
             <GoogleMap
                 mapContainerClassName={"map"}
                 zoom={16}
@@ -295,7 +292,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     </InfoWindow>
                 )}
 
-            </GoogleMap>
+            </GoogleMap>}
 
             {(showToast && userLocation) && (
                 <IonToast
