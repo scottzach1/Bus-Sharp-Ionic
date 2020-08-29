@@ -50,6 +50,7 @@ const center = {
 
 // Global variables that allow for changing state without re-rendering the object
 let selectedId = "";
+let mapRef: google.maps.Map | null = null;
 
 // STICK AROUND LOCATION TO ENSURE THEY DON'T RE-RENDER
 let userLocation: StopMarker | null = null
@@ -163,6 +164,9 @@ const GoogleMapWidget: FC<Props> = (props) => {
 
 
     function selectItem(marker: StopMarker) {
+        if (mapRef != null) {
+            mapRef.panTo({lat: marker.location.latitude, lng: marker.location.longitude})
+        }
         setSelectedItem(marker);
         setNewSelection(true)
     }
@@ -182,14 +186,16 @@ const GoogleMapWidget: FC<Props> = (props) => {
     // -------------------------------------------------------------------------------------------------------------
 
     return (
-        <div>
+        <>
             <GoogleMap
                 mapContainerClassName={"map"}
                 zoom={16}
-                center={mapLocation}
+                center={center}
                 options={options}
-                onClick={deselectItem}
                 onDragStart={deselectItem}
+                onLoad={(map) => {
+                    map && (mapRef = map)
+                }}
             >
 
                 {userLocation && (
@@ -317,7 +323,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     }]}
                 />
             )}
-        </div>
+        </>
     )
 }
 

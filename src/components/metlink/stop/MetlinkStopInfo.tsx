@@ -113,9 +113,7 @@ class MetlinkStopInfo extends Component<Props, State> {
                         </IonCardContent>
                     </IonCard>
                 )}
-                {!this.state.stopData && (
-                    <LoadingSpinner/>
-                )}
+                <LoadingSpinner hidden={this.state.stopData}/>
                 <IonToast
                     isOpen={this.state.showToast}
                     onDidDismiss={() => this.setState({showToast: false})}
