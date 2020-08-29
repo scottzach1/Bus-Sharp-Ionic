@@ -6,6 +6,8 @@ import {
     IonCardTitle,
     IonContent,
     IonHeader,
+    IonItem,
+    IonLabel,
     IonPage,
     IonSearchbar,
     IonSegment,
@@ -97,21 +99,30 @@ class SearchTab extends Component<{}, State> {
 
     generateCards(items: SearchItem[]) {
         let counter: number = 0;
-        return items
-            .filter(item => this.filterItem(item))
-            .slice(0, Math.min(items.length, 50))
-            .map(item => (
+        let cards: any = items.filter(item => this.filterItem(item));
+
+        let totalCount = cards.length;
+
+        cards = cards
+            // Limit to 50 cards
+            .slice(0, Math.min(items.length, 51))
+            .map((item: SearchItem) =>
                 <ListComponent
                     isStop={item.isStop}
                     code={item.code}
                     title={item.name}
                     key={counter++ + ' - ' + item.name}
-                />
-            ));
+                />);
+
+        if (cards.length === 51) {
+            cards[50] = <IonItem><IonLabel>Hit 50 limit! ({(totalCount - counter)} remaining).</IonLabel></IonItem>
+        }
+
+        return cards;
     }
 
     render() {
-        const stopCards: any[] | null = (this.state.stopData) ? this.generateCards(this.state.stopData) : null;
+        let stopCards: any[] | null = (this.state.stopData) ? this.generateCards(this.state.stopData) : null;
         const routeCards: any[] | null = (this.state.serviceData) ? this.generateCards(this.state.serviceData) : null;
         const results: boolean = Boolean(stopCards && routeCards);
 
