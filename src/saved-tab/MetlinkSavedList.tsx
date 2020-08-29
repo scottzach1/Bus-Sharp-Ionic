@@ -50,11 +50,11 @@ class MetlinkSavedList extends Component<{}, State> {
     }
 
     clearSavedStops() {
-        setSavedStops([], this.context).then(() => this.updateSavedCards);
+        setSavedStops([], this.context).then(() => this.updateSavedCards());
     }
 
     clearSavedServices() {
-        setSavedServices([], this.context).then(() => this.updateSavedCards);
+        setSavedServices([], this.context).then(() => this.updateSavedCards());
     }
 
     updateSavedCards() {

@@ -39,7 +39,6 @@ class ListComponent extends Component<Props, State> {
             saved: await ((this.props.isStop) ?
                 toggleSavedStop(this.props.code) : toggleSavedService(this.props.code))
         })
-        window.location.reload();
     }
 
     getHref() {
@@ -47,9 +46,11 @@ class ListComponent extends Component<Props, State> {
     }
 
     handleClick(e: any) {
-        if (e.target.id === "star")
+        if (e.target.id === "star") {
             this.toggleSaved().catch((e) => console.error('Failed to toggle saved', e));
-        else
+            if (window.location.pathname !== "/search")
+                window.location.reload();
+        } else
             window.location.href = this.getHref();
     }
 
@@ -80,7 +81,6 @@ class ListComponent extends Component<Props, State> {
                     id={"star"}
                     icon={(this.state.saved) ? starSharp : starOutline}
                     slot={"end"}
-                    onClick={() => this.toggleSaved()}
                 />
             </IonItem>
         );
