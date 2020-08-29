@@ -22,7 +22,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import StopPerspective from "./shared/dynamic/stop-perspective/StopPerspective";
+import StopTimetablePerspective from "./shared/dynamic/stop-timetable-perspective/StopTimetablePerspective";
 import ServicePerspective from "./shared/dynamic/service-perspective/ServicePerspective";
 import {IonReactRouter} from "@ionic/react-router";
 import {UserContext} from "./providers/UserProvider";
@@ -32,6 +32,7 @@ import AccountSignupPerspective from "./settings-tab/account/AccountSignupPerspe
 import TwitterFeedPerspective from "./settings-tab/twitter/TwitterFeedPerspective";
 import AccountPasswordResetPerspective from "./settings-tab/account/AccountPasswordResetPerspective";
 import AccountWaitingPerspective from "./settings-tab/account/AccountWaitingPerspective";
+import StopMapPerspective from "./shared/dynamic/stop-timetable-perspective/stop-map-perspective/StopMapPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;
@@ -84,7 +85,8 @@ class Application extends React.Component<{}, {}> {
 
                             {/* Hidden Perspectives*/}
                             <Route path="/service/:serviceCode" component={ServicePerspective}/>
-                            <Route path="/stop/:stopCode" component={StopPerspective}/>
+                            <Route path="/stop/:stopCode" component={StopTimetablePerspective}/>
+                            <Route path="/map/:stopCode" component={StopMapPerspective}/>
                             <Route path="/twitter" component={TwitterFeedPerspective}/>
 
                             {/* Account Perspectives */}
