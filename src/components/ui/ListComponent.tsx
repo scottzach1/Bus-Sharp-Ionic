@@ -39,6 +39,7 @@ class ListComponent extends Component<Props, State> {
             saved: await ((this.props.isStop) ?
                 toggleSavedStop(this.props.code) : toggleSavedService(this.props.code))
         })
+        window.location.reload();
     }
 
     getHref() {
