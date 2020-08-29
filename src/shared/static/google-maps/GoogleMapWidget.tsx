@@ -57,6 +57,9 @@ let mapRef: google.maps.Map | null = null;
 let userLocation: StopMarker | null = null
 let searchLocation: StopMarker | undefined = undefined
 
+let routeLoaded = false
+let googleLoaded = false;
+
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
     const [stopData, setStopData] = useState<any | null>(null);
@@ -81,6 +84,21 @@ const GoogleMapWidget: FC<Props> = (props) => {
     setSearchLocation()
     if (props.geoCoderResult === undefined) {
         searchLocation = undefined
+    }
+
+    if (props.routePaths && !routeLoaded && googleLoaded) {
+        if (props.routePaths.length !== 0) {
+            let route = props.routePaths[Math.round(props.routePaths.length / 2) - 1]
+            let midLoc = route.path[Math.round(route.path.length / 2) - 1]
+            selectedId = "Route"
+            selectItem(new StopMarker(
+                "Route",
+                route.key,
+                route.key,
+                "",
+                new Position(midLoc.latitude, midLoc.longitude)))
+            routeLoaded = true
+        }
     }
 
 
@@ -166,20 +184,11 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setSelectedItem(null)
     }
 
-    function onLoad(map: google.maps.Map<Element>) {
-        mapRef = map
+    function onLoad(map: google.maps.Map<Element> | null) {
+        if (map)
+            mapRef = map
 
-        if (!props.routePaths || !mapRef) return
-
-        let route = props.routePaths[Math.round(props.routePaths.length / 2)]
-        let midLoc = route.path[Math.round(route.path.length / 2)]
-        selectedId = "Route"
-        selectItem(new StopMarker(
-            "Route",
-            route.key,
-            route.key,
-            "",
-            new Position(midLoc.latitude, midLoc.longitude)))
+        googleLoaded = true
     }
 
 // -------------------------------------------------------------------------------------------------------------
@@ -195,7 +204,9 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     center={center}
                     options={options}
                     onDragStart={deselectItem}
-                    onLoad={(map) => {map && (onLoad(map))}}
+                    onLoad={(map) => {
+                        map && (onLoad(map))
+                    }}
                 >
 
                     {userLocation && (
