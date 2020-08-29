@@ -3,10 +3,10 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs} from '@ionic/react';
 import {mapSharp, saveSharp, searchCircleSharp, settingsSharp} from 'ionicons/icons';
-import SearchTab from './pages/tabs/SearchTab';
-import MapTab from './pages/tabs/MapTab';
-import SavedTab from './pages/tabs/SavedTab';
-import SettingsTab from './pages/tabs/SettingsTab';
+import SearchTab from './search-tab/SearchTab';
+import MapTab from './map-tab/MapTab';
+import SavedTab from './saved-tab/SavedTab';
+import SettingsTab from './settings-tab/SettingsTab';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -22,16 +22,16 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-import StopPerspective from "./pages/perspectives/StopPerspective";
-import ServicePerspective from "./pages/perspectives/ServicePerspective";
+import StopPerspective from "./shared/dynamic/stop-perspective/StopPerspective";
+import ServicePerspective from "./shared/dynamic/service-perspective/ServicePerspective";
 import {IonReactRouter} from "@ionic/react-router";
 import {UserContext} from "./providers/UserProvider";
-import AccountInfoPerspective from "./pages/perspectives/AccountInfoPerspective";
-import AccountLoginPerspective from "./pages/perspectives/AccountLoginPerspective";
-import AccountSignupPerspective from "./pages/perspectives/AccountSignupPerspective";
-import TwitterFeedPerspective from "./pages/perspectives/TwitterFeedPerspective";
-import AccountPasswordResetPerspective from "./pages/perspectives/AccountPasswordResetPerspective";
-import AccountWaitingPerspective from "./pages/perspectives/AccountWaitingPerspective";
+import AccountInfoPerspective from "./settings-tab/account/AccountInfoPerspective";
+import AccountLoginPerspective from "./settings-tab/account/AccountLoginPerspective";
+import AccountSignupPerspective from "./settings-tab/account/AccountSignupPerspective";
+import TwitterFeedPerspective from "./settings-tab/twitter/TwitterFeedPerspective";
+import AccountPasswordResetPerspective from "./settings-tab/account/AccountPasswordResetPerspective";
+import AccountWaitingPerspective from "./settings-tab/account/AccountWaitingPerspective";
 
 class Application extends React.Component<{}, {}> {
     static contextType = UserContext;

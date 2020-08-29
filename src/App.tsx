@@ -17,7 +17,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import UserProvider, {UserContext} from "./providers/UserProvider";
 import Application from "./Application";
-import {initSavedServices, initSavedStops, initServices, initStops, initTheme} from "./services/StorageManager";
+import {initSavedServices, initSavedStops, initServices, initStops, initTheme} from "./external/StorageManager";
 
 interface AppProps {
 }
@@ -44,11 +44,11 @@ class App extends React.Component<AppProps, AppState> {
         // Initialise user saved data.
         initTheme().catch((e) => console.log('Failed to init theme', e));
         initSavedStops().catch((e) => console.log('Failed to init saved stops', e));
-        initSavedServices().catch((e) => console.log('Failed to init saved services', e));
+        initSavedServices().catch((e) => console.log('Failed to init saved external', e));
 
         // Initialise cached data.
         initStops().catch((e) => console.log('Failed to init stops', e));
-        initServices().catch((e) => console.log('Failed to init services', e));
+        initServices().catch((e) => console.log('Failed to init external', e));
     }
 
     render() {
