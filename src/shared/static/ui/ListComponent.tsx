@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {IonBadge, IonIcon, IonItem, IonLabel} from "@ionic/react";
 import {getSavedServices, getSavedStops, toggleSavedService, toggleSavedStop} from "../../../external/StorageManager";
 import {starOutline, starSharp} from "ionicons/icons";
+import {UserContext} from "../../../providers/UserProvider";
 
 interface State {
     saved: boolean,
@@ -16,6 +17,8 @@ interface Props {
 }
 
 class ListComponent extends Component<Props, State> {
+    static contextType = UserContext;
+
     constructor(props: Readonly<Props>) {
         super(props);
         this.state = {
@@ -37,7 +40,7 @@ class ListComponent extends Component<Props, State> {
     async toggleSaved() {
         this.setState({
             saved: await ((this.props.isStop) ?
-                toggleSavedStop(this.props.code) : toggleSavedService(this.props.code))
+                toggleSavedStop(this.props.code, this.context) : toggleSavedService(this.props.code, this.context))
         })
     }
 
