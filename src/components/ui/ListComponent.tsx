@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import {IonBadge, IonItem, IonLabel} from "@ionic/react";
+import {IonBadge, IonIcon, IonItem, IonLabel} from "@ionic/react";
+import {getSavedServices, getSavedStops, toggleSavedService, toggleSavedStop} from "../../services/StorageManager";
+import {starOutline, starSharp} from "ionicons/icons";
 
 interface State {
+    saved: boolean,
 }
 
 interface Props {
@@ -15,11 +18,42 @@ interface Props {
 class ListComponent extends Component<Props, State> {
     constructor(props: Readonly<Props>) {
         super(props);
-        this.state = {}
+        this.state = {
+            saved: false
+        }
+    }
+
+    async componentDidMount() {
+        this.setState({
+            saved: await this.checkSaved()
+        });
+    }
+
+    async checkSaved() {
+        return ((this.props.isStop) ? getSavedStops() : getSavedServices())
+            .then((saved) => saved.includes(this.props.code));
+    }
+
+    async toggleSaved() {
+        this.setState({
+            saved: await ((this.props.isStop) ?
+                toggleSavedStop(this.props.code) : toggleSavedService(this.props.code))
+        })
+        window.location.reload();
+    }
+
+    getHref() {
+        return ((this.props.isStop) ? '/stop/' : '/service/') + this.props.code
+    }
+
+    handleClick(e: any) {
+        if (e.target.id === "star")
+            this.toggleSaved().catch((e) => console.error('Failed to toggle saved', e));
+        else
+            window.location.href = this.getHref();
     }
 
     render() {
-        let href: string = ((this.props.isStop) ? '/stop/' : '/service/') + this.props.code;
         let spaces: any[] = [];
 
         for (let i = this.props.code.length; i !== 4; ++i) {
@@ -28,7 +62,7 @@ class ListComponent extends Component<Props, State> {
         }
 
         return (
-            <IonItem href={href} key={this.props.code + '- list component'}>
+            <IonItem onClick={(e) => this.handleClick(e)} key={this.props.code + '- list component'}>
                 <IonBadge slot={"start"} color={this.props.isStop ? "primary" : "warning"}>
                     {this.props.code}
                 </IonBadge>
@@ -42,8 +76,14 @@ class ListComponent extends Component<Props, State> {
                         live
                     </IonBadge>
                 }
+                <IonIcon
+                    id={"star"}
+                    icon={(this.state.saved) ? starSharp : starOutline}
+                    slot={"end"}
+                    onClick={() => this.toggleSaved()}
+                />
             </IonItem>
-        )
+        );
     }
 }
 
