@@ -1,7 +1,7 @@
 import React, {Component, createContext} from "react";
-import {auth, generateUserDocument} from "../services/Firebase";
 import firebase from "firebase";
-import {syncSavedData} from "../services/StorageManager";
+import {syncSavedData} from "../external/StorageManager";
+import {auth, generateUserDocument} from "../external/Firebase";
 
 /**
  * NOTE: This file was heavily inspired from the following blog post (as well as official documentation):
