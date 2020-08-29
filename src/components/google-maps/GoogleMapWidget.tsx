@@ -247,7 +247,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     <InfoWindow
                         key={selectedItem.key + "-selected"}
                         position={{
-                            lat: selectedItem.location.latitude + 0.0005,
+                            lat: selectedItem.location.latitude,
                             lng: selectedItem.location.longitude,
                         }}
                         onCloseClick={() => {
@@ -267,7 +267,7 @@ const GoogleMapWidget: FC<Props> = (props) => {
                     <InfoWindow
                         key={userLocation.name}
                         position={{
-                            lat: userLocation.location.latitude + 0.0003,
+                            lat: userLocation.location.latitude,
                             lng: userLocation.location.longitude,
                         }}
                         onCloseClick={() => {
