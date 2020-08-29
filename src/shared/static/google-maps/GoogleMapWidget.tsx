@@ -59,6 +59,7 @@ let searchLocation: StopMarker | undefined = undefined
 
 let routeLoaded = false
 let googleLoaded = false;
+let stopOneLoaded = false;
 
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
@@ -99,6 +100,13 @@ const GoogleMapWidget: FC<Props> = (props) => {
                 new Position(midLoc.latitude, midLoc.longitude)))
             routeLoaded = true
         }
+    }
+
+
+    if (props.stopMarkers?.length === 1 && googleLoaded && !stopOneLoaded){
+        stopOneLoaded = true
+        selectedId = "Stop"
+        selectItem(props.stopMarkers[0])
     }
 
 

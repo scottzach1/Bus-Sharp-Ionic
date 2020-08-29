@@ -80,7 +80,7 @@ class MetlinkStopInfo extends Component<Props, State> {
                 }, {
                     text: 'View on Map',
                     icon: map,
-                    handler: () => console.log('Map clicked')
+                    handler: () => window.location.href = "/map/" + this.props.stopCode
                 }, {
                     text: this.state.saved ? 'Unfavourite' : 'Favourite',
                     icon: this.state.saved ? heartOutline : heart,
