@@ -57,7 +57,7 @@ class ListComponent extends Component<Props, State> {
     render() {
         let spaces: any[] = [];
 
-        for (let i = this.props.code.length; i !== 4; ++i) {
+        for (let i = this.props.code.length; i < 5; ++i) {
             // Insert 2 spaces, such that all names are aligned horizontally.
             spaces.push(<span>&nbsp;&nbsp;</span>)
         }
