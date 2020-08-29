@@ -99,7 +99,7 @@ class SearchTab extends Component<{}, State> {
         let counter: number = 0;
         return items
             .filter(item => this.filterItem(item))
-            // .sort((a, b) => a.searchText[0].localeCompare(b.searchText[0]))
+            .slice(0, Math.min(items.length, 50))
             .map(item => (
                 <ListComponent
                     isStop={item.isStop}
