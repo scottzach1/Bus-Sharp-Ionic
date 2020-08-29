@@ -25,7 +25,7 @@ const ServicePerspective: FC<any> = ({match}) => {
             <IonHeader>
                 <IonToolbar>
                     <BackButton/>
-                    <IonTitle>Service: {serviceCode}</IonTitle>
+                    <IonTitle slot={"start"}>Service: {serviceCode}</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent scrollX={false} scrollY={false}>

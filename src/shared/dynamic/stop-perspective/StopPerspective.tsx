@@ -18,7 +18,7 @@ const StopPerspective: FC<any> = ({match}) => {
             <IonContent>
                 <IonHeader collapse="condense">
                     <IonToolbar>
-                        <IonTitle size="large">Map</IonTitle>
+                        <IonTitle size="large">Stop</IonTitle>
                     </IonToolbar>
                 </IonHeader>
                 <MetlinkStopInfo stopCode={stopCode}/>

@@ -135,28 +135,23 @@ class SearchTab extends Component<{}, State> {
                         </IonTitle>
                     </IonToolbar>
                     <IonToolbar>
-                        <IonTitle>
-                            <IonSearchbar value={this.state.searchText}
-                                          onIonChange={e => this.setState({searchText: e.detail.value!})}/>
-                            <IonSegment value={this.state.filter}>
-                                <IonSegmentButton onClick={() => this.setState({filter: "ALL"})}
-                                                  value="ALL">All</IonSegmentButton>
-                                <IonSegmentButton onClick={() => this.setState({filter: "ROUTES"})}
-                                                  value="ROUTES">Routes</IonSegmentButton>
-                                <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
-                                                  value="STOPS">Stops</IonSegmentButton>
-                                <IonSegmentButton onClick={() => this.setState({filter: "EXACT"})}
-                                                  value="EXACT">Exact</IonSegmentButton>
-                            </IonSegment>
-                        </IonTitle>
+                        <IonSearchbar value={this.state.searchText}
+                                      onIonChange={e => this.setState({searchText: e.detail.value!})}/>
+                    </IonToolbar>
+                    <IonToolbar>
+                        <IonSegment value={this.state.filter}>
+                            <IonSegmentButton onClick={() => this.setState({filter: "ALL"})}
+                                              value="ALL">All</IonSegmentButton>
+                            <IonSegmentButton onClick={() => this.setState({filter: "ROUTES"})}
+                                              value="ROUTES">Routes</IonSegmentButton>
+                            <IonSegmentButton onClick={() => this.setState({filter: "STOPS"})}
+                                              value="STOPS">Stops</IonSegmentButton>
+                            <IonSegmentButton onClick={() => this.setState({filter: "EXACT"})}
+                                              value="EXACT">Exact</IonSegmentButton>
+                        </IonSegment>
                     </IonToolbar>
                 </IonHeader>
                 <IonContent>
-                    <IonHeader collapse="condense">
-                        <IonToolbar>
-                            <IonTitle size="large">Search</IonTitle>
-                        </IonToolbar>
-                    </IonHeader>
 
                     {!results && <LoadingSpinner/>}
 
