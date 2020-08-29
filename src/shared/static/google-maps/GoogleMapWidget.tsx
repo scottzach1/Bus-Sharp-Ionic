@@ -57,6 +57,9 @@ let mapRef: google.maps.Map | null = null;
 let userLocation: StopMarker | null = null
 let searchLocation: StopMarker | undefined = undefined
 
+let routeLoaded = false
+let googleLoaded = false;
+
 const GoogleMapWidget: FC<Props> = (props) => {
     // ALL STOP DATA
     const [stopData, setStopData] = useState<any | null>(null);
@@ -66,7 +69,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
 
     // SELECTED ITEM
     // A StopMarker used to represent the item, maintains information about the selected item.
-    const [newSelection, setNewSelection] = useState<boolean>(false)
     const [selectedItem, setSelectedItem] = useState<StopMarker | null>(null)
 
     const {isLoaded, loadError} = useLoadScript({
@@ -78,30 +80,40 @@ const GoogleMapWidget: FC<Props> = (props) => {
     // CHECKS RUN EVERY RENDER
     // -------------------------------------------------------------------------------------------------------------
 
-    // If the user has a new selection, center the map-tab on that location
-    if (newSelection && selectedItem) {
-        setNewSelection(false)
-    }
-
-    // If a new geolocation has been sent through, set that new geolocation to the center
+// If a new geolocation has been sent through, set that new geolocation to the center
     setSearchLocation()
     if (props.geoCoderResult === undefined) {
         searchLocation = undefined
     }
 
+    if (props.routePaths && !routeLoaded && googleLoaded) {
+        if (props.routePaths.length !== 0) {
+            let route = props.routePaths[Math.round(props.routePaths.length / 2) - 1]
+            let midLoc = route.path[Math.round(route.path.length / 2) - 1]
+            selectedId = "Route"
+            selectItem(new StopMarker(
+                "Route",
+                route.key,
+                route.key,
+                "",
+                new Position(midLoc.latitude, midLoc.longitude)))
+            routeLoaded = true
+        }
+    }
 
-    // If the device allows for geolocation, attempt to find the users location
+
+// If the device allows for geolocation, attempt to find the users location
     if (!userLocation && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(successfulPosition);
     }
 
-    // Get all the stop data
+// Get all the stop data
     getStopData().then();
 
 
-    // -------------------------------------------------------------------------------------------------------------
-    // FUNCTIONS
-    // -------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------
+// FUNCTIONS
+// -------------------------------------------------------------------------------------------------------------
 
     /**
      * Asynchronously get the stop data currently available.
@@ -165,7 +177,6 @@ const GoogleMapWidget: FC<Props> = (props) => {
             mapRef.panTo({lat: marker.location.latitude, lng: marker.location.longitude})
         }
         setSelectedItem(marker);
-        setNewSelection(true)
     }
 
     function deselectItem() {
@@ -173,126 +184,133 @@ const GoogleMapWidget: FC<Props> = (props) => {
         setSelectedItem(null)
     }
 
-    // -------------------------------------------------------------------------------------------------------------
-    // RETURNING MAP
-    // -------------------------------------------------------------------------------------------------------------
+    function onLoad(map: google.maps.Map<Element> | null) {
+        if (map)
+            mapRef = map
+
+        googleLoaded = true
+    }
+
+// -------------------------------------------------------------------------------------------------------------
+// RETURNING MAP
+// -------------------------------------------------------------------------------------------------------------
 
     return (
         <>
             {(loadError || !isLoaded) ? <LoadingSpinner/> :
-            <GoogleMap
-                mapContainerClassName={"map"}
-                zoom={16}
-                center={center}
-                options={options}
-                onDragStart={deselectItem}
-                onLoad={(map) => {
-                    map && (mapRef = map)
-                }}
-            >
+                <GoogleMap
+                    mapContainerClassName={"map"}
+                    zoom={16}
+                    center={center}
+                    options={options}
+                    onDragStart={deselectItem}
+                    onLoad={(map) => {
+                        map && (onLoad(map))
+                    }}
+                >
 
-                {userLocation && (
-                    <Marker
-                        key={userLocation.name}
-                        position={{
-                            lat: userLocation.location.latitude,
-                            lng: userLocation.location.longitude,
-                        }}
-                        onClick={() => {
-                            if (userLocation) {
-                                selectedId = "User"
-                                selectItem(userLocation);
-                            }
-                        }}
-                        icon={{
-                            url: "assets/icon/current-location.png",
-                            scaledSize: new google.maps.Size(30, 30),
-                        }}
-                    />
-                )}
+                    {userLocation && (
+                        <Marker
+                            key={userLocation.name}
+                            position={{
+                                lat: userLocation.location.latitude,
+                                lng: userLocation.location.longitude,
+                            }}
+                            onClick={() => {
+                                if (userLocation) {
+                                    selectedId = "User"
+                                    selectItem(userLocation);
+                                }
+                            }}
+                            icon={{
+                                url: "assets/icon/current-location.png",
+                                scaledSize: new google.maps.Size(30, 30),
+                            }}
+                        />
+                    )}
 
-                {props.stopMarkers?.map((marker) => (
-                    <Marker
-                        key={marker.key}
-                        position={{
-                            lat: marker.location.latitude,
-                            lng: marker.location.longitude,
-                        }}
-                        onClick={() => {
-                            selectedId = "Stop"
-                            selectItem(marker)
-                        }}
-                    />
-                ))}
+                    {props.stopMarkers?.map((marker) => (
+                        <Marker
+                            key={marker.key}
+                            position={{
+                                lat: marker.location.latitude,
+                                lng: marker.location.longitude,
+                            }}
+                            onClick={() => {
+                                selectedId = "Stop"
+                                selectItem(marker)
+                            }}
+                        />
+                    ))}
 
-                {props.routePaths?.map((route) => (
-                    <Polyline
-                        key={route.key}
-                        path={route.path.map(position => ({
-                            lat: position.latitude,
-                            lng: position.longitude,
-                        }))}
-                        options={{strokeColor: route.color}}
-                    />
-                ))}
+                    {props.routePaths?.map((route) => (
+                        <Polyline
+                            key={route.key}
+                            path={route.path.map(position => ({
+                                lat: position.latitude,
+                                lng: position.longitude,
+                            }))}
+                            options={{strokeColor: route.color}}
+                        />
+                    ))}
 
-                {(selectedId === "Stop" && selectedItem) && (
-                    <InfoWindow
-                        key={selectedItem.key + "-selected"}
-                        position={{
-                            lat: selectedItem.location.latitude,
-                            lng: selectedItem.location.longitude,
-                        }}
-                        onCloseClick={() => {
-                            deselectItem()
-                        }}
-                    >
-                        <div id="selected-stop-popup">
-                            <a href={'/stop/' + selectedItem.code}>
+                    {(selectedId === "Stop" && selectedItem) && (
+                        <InfoWindow
+                            key={selectedItem.key + "-selected"}
+                            position={{
+                                lat: selectedItem.location.latitude,
+                                lng: selectedItem.location.longitude,
+                            }}
+                            onCloseClick={() => {
+                                deselectItem()
+                            }}
+                        >
+                            <div id="selected-stop-popup">
+                                <a href={'/stop/' + selectedItem.code}>
+                                    <span><IonIcon icon={locationSharp}/></span>
+                                    <strong>{getStopName(selectedItem)}</strong>
+                                </a>
+                            </div>
+                        </InfoWindow>
+                    )}
+
+                    {(selectedId === "User" && userLocation) && (
+                        <InfoWindow
+                            key={userLocation.name}
+                            position={{
+                                lat: userLocation.location.latitude,
+                                lng: userLocation.location.longitude,
+                            }}
+                            onCloseClick={() => {
+                                deselectItem()
+                            }}
+                        >
+                            <div id="selected-stop-popup">
                                 <span><IonIcon icon={locationSharp}/></span>
-                                <strong>{getStopName(selectedItem)}</strong>
-                            </a>
-                        </div>
-                    </InfoWindow>
-                )}
+                                <strong>{getStopName(userLocation)}</strong>
+                            </div>
+                        </InfoWindow>
+                    )}
 
-                {(selectedId === "User" && userLocation) && (
-                    <InfoWindow
-                        key={userLocation.name}
-                        position={{
-                            lat: userLocation.location.latitude,
-                            lng: userLocation.location.longitude,
-                        }}
-                        onCloseClick={() => {
-                            deselectItem()
-                        }}
-                    >
-                        <div id="selected-stop-popup">
-                            <span><IonIcon icon={locationSharp}/></span>
-                            <strong>{getStopName(userLocation)}</strong>
-                        </div>
-                    </InfoWindow>
-                )}
+                    {(selectedId === "Search" && searchLocation) && (
+                        <InfoWindow
+                            key={searchLocation.key}
+                            position={{
+                                lat: searchLocation.location.latitude,
+                                lng: searchLocation.location.longitude,
+                            }}
+                            onCloseClick={() => {
+                                deselectItem()
+                            }}
+                        >
+                            <div id="selected-stop-popup">
+                                <span><IonIcon icon={locationSharp}/></span>
+                                <strong>{searchLocation.key}</strong>
+                            </div>
+                        </InfoWindow>
+                    )}
 
-                {(selectedId === "Search" && searchLocation) && (
-                    <InfoWindow
-                        key={searchLocation.key}
-                        position={{
-                            lat: searchLocation.location.latitude,
-                            lng: searchLocation.location.longitude,
-                        }}
-                        onCloseClick={() => {
-                            deselectItem()
-                        }}
-                    >
-                        <div id="selected-stop-popup">
-                            <span><IonIcon icon={locationSharp}/></span>
-                            <strong>{searchLocation.key}</strong>
-                        </div>
-                    </InfoWindow>
-                )}
-
-            </GoogleMap>}
+                </GoogleMap>}
 
             {(showToast && userLocation) && (
                 <IonToast
