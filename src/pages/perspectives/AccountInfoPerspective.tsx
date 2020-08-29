@@ -75,7 +75,7 @@ class AccountInfoPerspective extends Component<Props, State> {
                                     User Data
                                 </IonTextarea>
                             </IonItem>
-                            {!this.context?.uid && <LoadingSpinner/>}
+                            <LoadingSpinner hidden={this.context?.uid}/>
                             <AccountLogoutButton/>
                         </IonCardContent>
                     </IonCard>

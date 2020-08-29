@@ -12,24 +12,24 @@ import {
 } from "@ionic/react";
 import LoadingSpinner from '../../ui/LoadingSpinner';
 import ListComponent from "../../ui/ListComponent";
+import {fetchStopTimes} from "../../../services/StorageManager";
+import ErrorCard from "../../ui/ErrorCard";
 
 interface Props {
     stopCode: string;
 }
 
 const MetlinkStopTable: FC<Props> = ({stopCode}) => {
-    const [stopTimetableData, setStopTimetableData] = useState<any>();
-    const [errorMessage, setErrorMessage] = useState<string>();
+    const [stopTimetableData, setStopTimetableData] = useState<any | null>();
+    const [errorMessage, setErrorMessage] = useState<string | null | undefined>();
     const [showHours, setShowHours] = useState<boolean>(false);
 
-    const proxy = "https://cors-anywhere.herokuapp.com/";
-    const url = 'https://www.metlink.org.nz/api/v1/StopDepartures/';
-
-    // Download Stop Timetable
-    if (!stopTimetableData) fetch(proxy + url + stopCode).then(resp => {
-        if (!resp.ok) setErrorMessage(resp.statusText);
-        else Promise.resolve(resp.json()).then(data => setStopTimetableData(data));
-    });
+    if (!stopTimetableData) {
+        fetchStopTimes(stopCode).then((res) => {
+            setStopTimetableData(res.data);
+            setErrorMessage(res.errorMessage);
+        });
+    }
 
     function getHoursRemaining(arrivalTime: string) {
         const arrivalDate: Date = new Date(arrivalTime);
@@ -55,6 +55,13 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
         const cards = [];
 
         let services = stopTimetableData.Services;
+
+        // Occasionally there is no service information for a given stop.
+        if (!services) {
+            setErrorMessage('No live departures available, please refer to timetable information.');
+            return;
+        }
+
         services.sort(function (a: { AimedArrival: number; }, b: { AimedArrival: number; }) {
             return a.AimedArrival - b.AimedArrival;
         })
@@ -87,7 +94,7 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
     }
 
     return (
-        <div>
+        <>
             <IonCard>
                 <IonCardHeader>
                     <IonCardTitle>Upcoming Services</IonCardTitle>
@@ -99,19 +106,13 @@ const MetlinkStopTable: FC<Props> = ({stopCode}) => {
                     </IonCardSubtitle>
                 </IonCardHeader>
 
+                {!errorMessage &&
                 <IonCardContent>
-                    {stopTimetableData && (
-                        generateStopCards()
-                    )}
-                    {errorMessage && (
-                        <p>Failed: {errorMessage}</p>
-                    )}
-                    {(!stopTimetableData && !errorMessage) && (
-                        <LoadingSpinner/>
-                    )}
-                </IonCardContent>
+                    {stopTimetableData ? generateStopCards() : <LoadingSpinner/>}
+                </IonCardContent>}
+                <ErrorCard errorMessage={errorMessage}/>
             </IonCard>
-        </div>
+        </>
     );
 }
 
