@@ -45,7 +45,6 @@ class SettingsClearStorageItem extends Component<Props, State> {
                 <IonAlert
                     isOpen={this.state.showClearAlert}
                     onDidDismiss={() => this.setState({showClearAlert: false})}
-                    cssClass='my-custom-class'
                     header={'Clear Storage'}
                     subHeader={'Are you sure?'}
                     message={'This will loose all user saved preferences such as saved stops, services and selected theme.'}
