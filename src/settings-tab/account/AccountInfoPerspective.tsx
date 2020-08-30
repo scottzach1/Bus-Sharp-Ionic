@@ -5,11 +5,14 @@ import {
     IonCardHeader,
     IonCardSubtitle,
     IonCardTitle,
+    IonCol,
     IonContent,
+    IonGrid,
     IonHeader,
     IonItem,
     IonPage,
-    IonTextarea,
+    IonRow,
+    IonText,
     IonTitle,
     IonToolbar
 } from "@ionic/react";
@@ -40,9 +43,31 @@ class AccountInfoPerspective extends Component<Props, State> {
     componentDidMount() {
         getUserDocument(this.context).then((doc: any | null) => {
             if (!doc) return;
-            this.setState({userData: JSON.stringify(doc, null, 4)});
+            // this.setState({userData: JSON.stringify(doc, null, '')});
+            this.setState({userData: doc});
         })
 
+    }
+
+    generateUserTable() {
+        if (!this.state.userData) return;
+
+        let rows: any[] = []
+
+        // Create array of arrays [key, value]
+        for (const attr in this.state.userData)
+            if (this.state.userData.hasOwnProperty(attr))
+                rows.push([attr, this.state.userData[attr]])
+
+        // Sort array alphabetically, then convert into grid rows.
+        rows = rows.sort(((a, b) => a[0].localeCompare(b[0]))).map((row) => (
+            <IonRow>
+                <IonCol>{row[0]}:</IonCol>
+                <IonCol><IonText>{row[1]}</IonText></IonCol>
+            </IonRow>
+        ));
+
+        return <IonGrid>{rows}</IonGrid>;
     }
 
     render() {
@@ -70,11 +95,8 @@ class AccountInfoPerspective extends Component<Props, State> {
                             </IonCardSubtitle>
                         </IonCardHeader>
                         <IonCardContent>
-                            <IonItem>
-                                <IonTextarea autoGrow={true} value={this.state.userData} inputmode={"none"}>
-                                    User Data
-                                </IonTextarea>
-                            </IonItem>
+                            <IonItem>User Saved Data:</IonItem>
+                            {this.generateUserTable()}
                             <LoadingSpinner hidden={this.context?.uid}/>
                             <AccountLogoutButton/>
                         </IonCardContent>
