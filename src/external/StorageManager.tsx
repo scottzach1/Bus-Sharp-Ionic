@@ -330,7 +330,7 @@ export const toggleSavedStop = async (stopCode: string, user?: firebase.User) =>
     return getSavedStops().then((savedStops) => {
         // Remove from saved stops.
         if (savedStops.includes(stopCode))
-            savedStops.splice(savedStops.indexOf(stopCode));
+            savedStops.splice(savedStops.indexOf(stopCode), 1);
         // Add to saved stops.
         else
             savedStops.push(stopCode);
@@ -358,7 +358,7 @@ export const toggleSavedService = async (serviceCode: string, user?: firebase.Us
     return getSavedServices().then((savedServices) => {
         // Remove from saved stops.
         if (savedServices.includes(serviceCode))
-            savedServices.splice(savedServices.indexOf(serviceCode));
+            savedServices.splice(savedServices.indexOf(serviceCode), 1);
         // Add to saved stops.
         else
             savedServices.push(serviceCode);
