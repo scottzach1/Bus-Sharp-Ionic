@@ -1,6 +1,7 @@
 import React, {FC} from "react";
 import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/react";
-import MetlinkSavedList from "./MetlinkSavedList";
+import MetlinkSavedServiceList from "./MetlinkSavedServiceList";
+import MetlinkSavedStopList from "./MetlinkSavedStopList";
 
 const SavedTab: FC = () => {
     return (
@@ -19,7 +20,8 @@ const SavedTab: FC = () => {
                         <IonTitle size="large">Saved</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <MetlinkSavedList/>
+                <MetlinkSavedStopList/>
+                <MetlinkSavedServiceList/>
             </IonContent>
         </IonPage>
     )

@@ -42,11 +42,8 @@ class AccountInfoPerspective extends Component<Props, State> {
 
     componentDidMount() {
         getUserDocument(this.context).then((doc: any | null) => {
-            if (!doc) return;
-            // this.setState({userData: JSON.stringify(doc, null, '')});
-            this.setState({userData: doc});
+            if (doc) this.setState({userData: doc});
         })
-
     }
 
     generateUserTable() {
