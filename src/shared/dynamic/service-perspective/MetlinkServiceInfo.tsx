@@ -64,11 +64,11 @@ class MetlinkServiceInfo extends Component<Props, State> {
                     handler: () => Share.share({
                         title: 'Metlink Stop: ' + this.props.serviceCode,
                         text: this.state.serviceData.stop_name,
-                        url: window.location.toString(),
+                        url: 'https://welly.live/stop/' + this.props.serviceCode,
                         dialogTitle: 'Share with your buddies'
                     }).catch(() => {
                         // Failed to open share API, resort to clipboard share.
-                        navigator.clipboard.writeText(window.location.toString())
+                        navigator.clipboard.writeText('https://welly.live/stop/' + this.props.serviceCode)
                             .then(() => this.setState({showToast: true}))
                             .catch(() => console.log('Failed to copy to clipboard'));
                     })
